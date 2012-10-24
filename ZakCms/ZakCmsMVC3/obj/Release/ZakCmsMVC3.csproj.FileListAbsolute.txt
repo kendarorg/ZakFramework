@@ -1,7 +1,0 @@
-C:\ProjectsPersonal\ZakCms\ZakCmsMVC3\bin\Release\ZakCmsMVC3.dll
-C:\ProjectsPersonal\ZakCms\ZakCmsMVC3\bin\Release\ZakCmsMVC3.pdb
-C:\ProjectsPersonal\ZakCms\ZakCmsMVC3\bin\Release\ZakDbCoreInterfaces.dll
-C:\ProjectsPersonal\ZakCms\ZakCmsMVC3\bin\Release\ZakDbCoreInterfaces.pdb
-C:\ProjectsPersonal\ZakCms\ZakCmsMVC3\obj\Release\ResolveAssemblyReference.cache
-C:\ProjectsPersonal\ZakCms\ZakCmsMVC3\obj\Release\ZakCmsMVC3.dll
-C:\ProjectsPersonal\ZakCms\ZakCmsMVC3\obj\Release\ZakCmsMVC3.pdb

@@ -1,5 +1,0 @@
-C:\ProjectsPersonal\ZakCms\ZakCoreUtilsInterfaces\bin\Release\ZakCoreUtilsInterfaces.dll
-C:\ProjectsPersonal\ZakCms\ZakCoreUtilsInterfaces\bin\Release\ZakCoreUtilsInterfaces.pdb
-C:\ProjectsPersonal\ZakCms\ZakCoreUtilsInterfaces\obj\Release\ResolveAssemblyReference.cache
-C:\ProjectsPersonal\ZakCms\ZakCoreUtilsInterfaces\obj\Release\ZakCoreUtilsInterfaces.dll
-C:\ProjectsPersonal\ZakCms\ZakCoreUtilsInterfaces\obj\Release\ZakCoreUtilsInterfaces.pdb

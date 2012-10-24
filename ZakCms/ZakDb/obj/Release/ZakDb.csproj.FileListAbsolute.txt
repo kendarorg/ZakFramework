@@ -1,7 +1,0 @@
-C:\ProjectsPersonal\ZakCms\ZakDb\bin\Release\ZakDbCore.dll
-C:\ProjectsPersonal\ZakCms\ZakDb\bin\Release\ZakDbCore.pdb
-C:\ProjectsPersonal\ZakCms\ZakDb\bin\Release\ZakDbCoreInterfaces.dll
-C:\ProjectsPersonal\ZakCms\ZakDb\bin\Release\ZakDbCoreInterfaces.pdb
-C:\ProjectsPersonal\ZakCms\ZakDb\obj\Release\ResolveAssemblyReference.cache
-C:\ProjectsPersonal\ZakCms\ZakDb\obj\Release\ZakDbCore.dll
-C:\ProjectsPersonal\ZakCms\ZakDb\obj\Release\ZakDbCore.pdb

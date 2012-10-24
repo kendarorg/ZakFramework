@@ -1,7 +1,0 @@
-C:\ProjectsPersonal\ZakCms\ZakCmsCore\bin\Debug\ZakCmsCore.dll
-C:\ProjectsPersonal\ZakCms\ZakCmsCore\bin\Debug\ZakCmsCore.pdb
-C:\ProjectsPersonal\ZakCms\ZakCmsCore\bin\Debug\ZakCmsCoreInterfaces.dll
-C:\ProjectsPersonal\ZakCms\ZakCmsCore\bin\Debug\ZakCmsCoreInterfaces.pdb
-C:\ProjectsPersonal\ZakCms\ZakCmsCore\obj\Debug\ResolveAssemblyReference.cache
-C:\ProjectsPersonal\ZakCms\ZakCmsCore\obj\Debug\ZakCmsCore.dll
-C:\ProjectsPersonal\ZakCms\ZakCmsCore\obj\Debug\ZakCmsCore.pdb

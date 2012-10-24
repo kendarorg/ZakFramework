@@ -1,7 +1,0 @@
-C:\ProjectsPersonal\ZakCms\ZakDbLibInterfaces\bin\Debug\ZakDbLibInterfaces.dll
-C:\ProjectsPersonal\ZakCms\ZakDbLibInterfaces\bin\Debug\ZakDbLibInterfaces.pdb
-C:\ProjectsPersonal\ZakCms\ZakDbLibInterfaces\bin\Debug\ZakCmsCoreInterfaces.dll
-C:\ProjectsPersonal\ZakCms\ZakDbLibInterfaces\bin\Debug\ZakCmsCoreInterfaces.pdb
-C:\ProjectsPersonal\ZakCms\ZakDbLibInterfaces\obj\Debug\ResolveAssemblyReference.cache
-C:\ProjectsPersonal\ZakCms\ZakDbLibInterfaces\obj\Debug\ZakDbLibInterfaces.dll
-C:\ProjectsPersonal\ZakCms\ZakDbLibInterfaces\obj\Debug\ZakDbLibInterfaces.pdb

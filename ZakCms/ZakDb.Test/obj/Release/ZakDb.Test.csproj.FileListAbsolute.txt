@@ -1,8 +1,0 @@
-C:\ProjectsPersonal\ZakCms\ZakDb.Test\bin\Release\ZakDb.Test.dll
-C:\ProjectsPersonal\ZakCms\ZakDb.Test\bin\Release\ZakDb.Test.pdb
-C:\ProjectsPersonal\ZakCms\ZakDb.Test\bin\Release\Moq.dll
-C:\ProjectsPersonal\ZakCms\ZakDb.Test\bin\Release\Moq.pdb
-C:\ProjectsPersonal\ZakCms\ZakDb.Test\bin\Release\Moq.xml
-C:\ProjectsPersonal\ZakCms\ZakDb.Test\obj\Release\ResolveAssemblyReference.cache
-C:\ProjectsPersonal\ZakCms\ZakDb.Test\obj\Release\ZakDb.Test.dll
-C:\ProjectsPersonal\ZakCms\ZakDb.Test\obj\Release\ZakDb.Test.pdb

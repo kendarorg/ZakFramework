@@ -1,9 +1,0 @@
-C:\ProjectsPersonal\ZakCms\Log4NetLogger\bin\Release\Log4NetLogger.dll
-C:\ProjectsPersonal\ZakCms\Log4NetLogger\bin\Release\Log4NetLogger.pdb
-C:\ProjectsPersonal\ZakCms\Log4NetLogger\bin\Release\log4net.dll
-C:\ProjectsPersonal\ZakCms\Log4NetLogger\bin\Release\ZakCoreUtilsInterfaces.dll
-C:\ProjectsPersonal\ZakCms\Log4NetLogger\bin\Release\ZakCoreUtilsInterfaces.pdb
-C:\ProjectsPersonal\ZakCms\Log4NetLogger\bin\Release\log4net.xml
-C:\ProjectsPersonal\ZakCms\Log4NetLogger\obj\Release\ResolveAssemblyReference.cache
-C:\ProjectsPersonal\ZakCms\Log4NetLogger\obj\Release\Log4NetLogger.dll
-C:\ProjectsPersonal\ZakCms\Log4NetLogger\obj\Release\Log4NetLogger.pdb
