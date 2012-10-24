@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Threading;
-using ZQueue.Threading;
+using ZakThread.Threading;
+using ZakThread.Logging;
 
 namespace ZQueue.Test.Threading.Simple
 {
-	public class SimpleThread : IStandardThreadBehaviour
+	public class SimpleThread : BaseThread
 	{
-		public string ThreadName { get; set; }
-
-		public bool RestartOnError { get; set; }
-
 		private readonly int _sleepTime;
 
 		public bool IsInitialized { get; private set; }
@@ -26,7 +23,8 @@ namespace ZQueue.Test.Threading.Simple
 
 		public Exception ThrowExceptionOnCleanUp { set; get; }
 
-		public SimpleThread(int sleepTime)
+		public SimpleThread(int sleepTime, string threadName, bool restartOnError=true)
+			: base(NullLogger.Create(), threadName, restartOnError)
 		{
 			ThrowExceptionOnInitialization = null;
 			ThrowExceptionOnCyclicExecution = null;
@@ -38,7 +36,7 @@ namespace ZQueue.Test.Threading.Simple
 			_sleepTime = sleepTime;
 		}
 
-		public bool CyclicExecution()
+		protected override bool RunSingleCycle()
 		{
 			if (ThrowExceptionOnCyclicExecution != null)
 			{ 
@@ -51,27 +49,22 @@ namespace ZQueue.Test.Threading.Simple
 			return true;
 		}
 
-		public void Initialize()
+		protected override void Initialize()
 		{
 			if (ThrowExceptionOnInitialization != null) throw ThrowExceptionOnInitialization;
 			IsInitialized = true;
 		}
 
-		public bool HandleException(Exception ex)
+		protected override bool HandleException(Exception ex)
 		{
 			IsExceptionHandled = true;
 			return true;
 		}
 
-		public void CleanUp()
+		protected override void CleanUp()
 		{
 			if (ThrowExceptionOnCleanUp != null) throw ThrowExceptionOnCleanUp;
 			IsCleanedUp = true;
-		}
-
-		public void ForceTermination()
-		{
-			
 		}
 	}
 }

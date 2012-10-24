@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using ZQueue.Threading;
-using ZQueue.Threading.Enums;
-using ZQueue.Threading.Model;
+using ZakThread.Test.Threading.Simple;
+using ZakThread.Threading.Enums;
 
 namespace ZQueue.Test.Threading.Simple
 {
@@ -17,8 +16,7 @@ namespace ZQueue.Test.Threading.Simple
 			const string testName = "TestThread";
 			string expectedTestName = testName.ToUpperInvariant();
 
-			var st = new SimpleMessageThreadConsumer(sleepTime) {ThreadName = testName};
-			var th = new MessageThread( st);
+			var th = new SimpleMessageThreadConsumer(sleepTime,testName);
 
 			Assert.AreEqual(expectedTestName, th.ThreadName);
 			Assert.AreEqual(null, th.LastError);
@@ -30,8 +28,7 @@ namespace ZQueue.Test.Threading.Simple
 		{
 			const int sleepTime = 100;
 			const string testName = "TestThread";
-			var st = new SimpleMessageThreadConsumer(sleepTime) {ThreadName = testName};
-			var th = new MessageThread( st);
+			var th = new SimpleMessageThreadConsumer(sleepTime,testName);
 
 			th.RunThread();
 			Thread.Sleep(100);
@@ -44,8 +41,8 @@ namespace ZQueue.Test.Threading.Simple
 			Assert.AreEqual(RunningStatus.Halted, th.Status);
 			Assert.IsNull(th.LastError);
 
-			Assert.IsTrue(st.IsInitialized);
-			Assert.IsTrue(st.IsCleanedUp);
+			Assert.IsTrue(th.IsInitialized);
+			Assert.IsTrue(th.IsCleanedUp);
 		}
 
 		[TestMethod]
@@ -54,15 +51,14 @@ namespace ZQueue.Test.Threading.Simple
 			const int sleepTime = 1;
 			const string testName = "TestThread";
 			const int messagesToSend = 100;
-			var st = new SimpleMessageThreadConsumer(sleepTime) {ThreadName = testName};
-			var th = new MessageThread( st);
+			var th = new SimpleMessageThreadConsumer(sleepTime,testName);
 
 			th.RunThread();
 			Thread.Sleep(100);
 
 			for (int i = 0; i < messagesToSend; i++)
 			{
-				th.AddIncomingMessage(new Message());
+				th.SendMessageToThread(new TestMessage());
 			}
 
 			Assert.AreEqual(RunningStatus.Running, th.Status);
@@ -74,9 +70,9 @@ namespace ZQueue.Test.Threading.Simple
 			Assert.AreEqual(RunningStatus.Halted, th.Status);
 			Assert.IsNull(th.LastError);
 
-			Assert.IsTrue(st.IsInitialized);
-			Assert.IsTrue(st.IsCleanedUp);
-			Assert.AreEqual(messagesToSend,st.HandledMessages);
+			Assert.IsTrue(th.IsInitialized);
+			Assert.IsTrue(th.IsCleanedUp);
+			Assert.AreEqual(messagesToSend,th.HandledMessages);
 		}
 
 		[TestMethod]
@@ -86,34 +82,33 @@ namespace ZQueue.Test.Threading.Simple
 			const string testName = "TestThread";
 			const int messagesToSend = 100;
 			var expectedException = new Exception("TEST");
-			var st = new SimpleMessageThreadConsumer(sleepTime) {ThreadName = testName};
-			var th = new MessageThread( st);
+			var th = new SimpleMessageThreadConsumer(sleepTime, testName,false);
 
 			th.RunThread();
 			Thread.Sleep(100);
 
 			for (int i = 0; i < messagesToSend; i++)
 			{
-				th.AddIncomingMessage(new Message());
+				th.SendMessageToThread(new TestMessage());
 			}
 
-			st.ThrowExceptionOnMessageHandling = expectedException;
+			th.ThrowExceptionOnMessageHandling = expectedException;
 
 			for (int i = 0; i < messagesToSend; i++)
 			{
-				th.AddIncomingMessage(new Message());
+				th.SendMessageToThread(new TestMessage());
 			}
 			Thread.Sleep(100);
 
 			Assert.AreEqual(RunningStatus.ExceptionThrown, th.Status);
 			Exception expectedEx = th.LastError;
 			Assert.IsNotNull(expectedEx);
-			Assert.AreEqual(expectedEx.Message, st.ThrowExceptionOnMessageHandling.Message);
+			Assert.AreEqual(expectedEx.Message, th.ThrowExceptionOnMessageHandling.Message);
 
 
-			Assert.IsTrue(st.IsInitialized);
-			Assert.IsFalse(st.IsCleanedUp);
-			Assert.AreNotEqual(messagesToSend*2, st.HandledMessages);
+			Assert.IsTrue(th.IsInitialized);
+			Assert.IsFalse(th.IsCleanedUp);
+			Assert.AreNotEqual(messagesToSend*2, th.HandledMessages);
 		}
 
 
@@ -125,22 +120,21 @@ namespace ZQueue.Test.Threading.Simple
 			const int messagesToSend = 100;
 			const bool restartOnError = true;
 			var expectedException = new Exception("TEST");
-			var st = new SimpleMessageThreadConsumer(sleepTime) {ThreadName = testName, RestartOnError = restartOnError};
-			var th = new MessageThread( st);
+			var th = new SimpleMessageThreadConsumer(sleepTime,testName, restartOnError);
 
 			th.RunThread();
 			Thread.Sleep(100);
 
 			for (int i = 0; i < messagesToSend; i++)
 			{
-				th.AddIncomingMessage(new Message());
+				th.SendMessageToThread(new TestMessage());
 			}
 			Thread.Sleep(100);
-			st.ThrowExceptionOnMessageHandling = expectedException;
+			th.ThrowExceptionOnMessageHandling = expectedException;
 			Thread.Sleep(100);
 			for (int i = 0; i < messagesToSend; i++)
 			{
-				th.AddIncomingMessage(new Message());
+				th.SendMessageToThread(new TestMessage());
 			}
 			Thread.Sleep(100);
 			th.Terminate();
@@ -150,9 +144,9 @@ namespace ZQueue.Test.Threading.Simple
 			Assert.IsNull(th.LastError);
 			
 
-			Assert.IsTrue(st.IsInitialized);
-			Assert.IsTrue(st.IsCleanedUp);
-			Assert.AreEqual(messagesToSend*2, st.HandledMessages);
+			Assert.IsTrue(th.IsInitialized);
+			Assert.IsTrue(th.IsCleanedUp);
+			Assert.AreEqual(messagesToSend*2, th.HandledMessages);
 		}
 	}
 }

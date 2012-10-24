@@ -8,6 +8,7 @@ namespace ZakWebUtils.Test
 		[TestMethod]
 		public void TestMethod1()
 		{
+			Assert.AreNotEqual(new object(),new object());
 		}
 	}
 }
