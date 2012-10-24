@@ -1,0 +1,21 @@
+﻿@model ZakCms.Models.PageCompanyAdminViewModel
+@{
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h3>
+	Companies Administration</h3>
+<table>
+	<tr>
+		<td>
+			<p>
+				@Html.ActionLink("Add Company", "Index", new {id = 0, view = "Create"})
+			</p>
+			<div class="menuWidth">
+				@{ Html.RenderPartial("CompaniesList", Model.Companies); }
+			</div>
+		</td>
+		<td>
+			@{ Html.RenderPartial(Model.View, Model.Company); }
+		</td>
+	</tr>
+</table>

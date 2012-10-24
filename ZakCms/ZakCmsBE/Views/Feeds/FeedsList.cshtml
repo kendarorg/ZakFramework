@@ -1,0 +1,22 @@
+﻿@model IEnumerable<ZakCms.Models.Entitites.FeedModel>
+<table>
+	<tr>
+		<th>
+			Title
+		</th>
+		<th>
+			Language
+		</th>
+	</tr>
+	@foreach (var item in Model)
+	{
+		<tr>
+			<td>
+				@Html.ActionLink(item.Title, "Index", new {id = item.Id, view = "Details"})
+			</td>
+			<td>
+				@item.Language.Description
+			</td>
+		</tr>
+	}
+</table>

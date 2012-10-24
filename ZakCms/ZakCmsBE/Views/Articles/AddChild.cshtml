@@ -1,0 +1,59 @@
+﻿@using ZakCms.Models.Entitites
+@model ArticleModel
+@{
+	var model = new ArticleModel {ParentId = Model.Id, Language = new LanguageModel(Model.Language.Id)};
+}
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+
+@using (Html.BeginForm("AddChild", "Articles", FormMethod.Post))
+{
+	@Html.ValidationSummary(true)
+	<fieldset class="bodyWidth">
+		<legend>Create Child Article</legend>
+		<p>
+			<input type="submit" value="Create" />
+		</p>
+		<div class="editor-label">
+			@Html.LabelFor(modelTemplate => model.Title)
+		</div>
+		<div class="editor-field">
+			@Html.EditorFor(modelTemplate => model.Title)
+			@Html.ValidationMessageFor(modelTemplate => model.Title)
+		</div>
+		<div class="editor-label">
+			@Html.LabelFor(modelTemplate => model.IsAuthenticated)
+		</div>
+		<div class="editor-field">
+			@Html.EditorFor(modelTemplate => model.IsAuthenticated)
+			@Html.ValidationMessageFor(modelTemplate => model.IsAuthenticated)
+		</div>
+		<div class="editor-label">
+			@Html.LabelFor(modelTemplate => model.Content)
+		</div>
+		<div class="editor-field">
+			<textarea rows="2" cols="30" id="Content" name="Content"></textarea>
+			@Html.ValidationMessageFor(modelTemplate => model.Content)
+		</div>
+		<div class="editor-label">
+			@Html.LabelFor(modelTemplate => model.UpdateTime)
+		</div>
+		<div class="display-field">
+			@Html.DisplayFor(modelTemplate => model.UpdateTime)
+		</div>
+		<div class="editor-label">
+			@Html.LabelFor(modelTemplate => model.ParentId)
+		</div>
+		<div class="display-field">
+			@Html.HiddenFor(modelTemplate => model.ParentId)
+			@Html.DisplayFor(modelTemplate => model.ParentId)
+		</div>
+		<div class="display-label">
+			Language</div>
+		<div class="display-field">
+			@Html.HiddenFor(modelTemplate => model.Language.Id)
+			@Html.DisplayFor(modelTemplate => model.Language.Description)
+		</div>
+		@Html.HiddenFor(modelTemplate => model.Company.Id)
+	</fieldset>
+}

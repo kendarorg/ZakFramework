@@ -1,0 +1,7 @@
+C:\ProjectsPersonal\ZakCms\ZakCmsCore\bin\Debug\ZakDbCore.dll
+C:\ProjectsPersonal\ZakCms\ZakCmsCore\bin\Debug\ZakDbCore.pdb
+C:\ProjectsPersonal\ZakCms\ZakCmsCore\bin\Debug\ZakDbCoreInterfaces.dll
+C:\ProjectsPersonal\ZakCms\ZakCmsCore\bin\Debug\ZakDbCoreInterfaces.pdb
+C:\ProjectsPersonal\ZakCms\ZakCmsCore\obj\Debug\ResolveAssemblyReference.cache
+C:\ProjectsPersonal\ZakCms\ZakCmsCore\obj\Debug\ZakDbCore.dll
+C:\ProjectsPersonal\ZakCms\ZakCmsCore\obj\Debug\ZakDbCore.pdb

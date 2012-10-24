@@ -1,0 +1,7 @@
+C:\ProjectsPersonal\ZakCms\ZakCmsLibInterfaces\bin\Release\ZakCmsLibInterfaces.dll
+C:\ProjectsPersonal\ZakCms\ZakCmsLibInterfaces\bin\Release\ZakCmsLibInterfaces.pdb
+C:\ProjectsPersonal\ZakCms\ZakCmsLibInterfaces\bin\Release\ZakDbCoreInterfaces.dll
+C:\ProjectsPersonal\ZakCms\ZakCmsLibInterfaces\bin\Release\ZakDbCoreInterfaces.pdb
+C:\ProjectsPersonal\ZakCms\ZakCmsLibInterfaces\obj\Release\ResolveAssemblyReference.cache
+C:\ProjectsPersonal\ZakCms\ZakCmsLibInterfaces\obj\Release\ZakCmsLibInterfaces.dll
+C:\ProjectsPersonal\ZakCms\ZakCmsLibInterfaces\obj\Release\ZakCmsLibInterfaces.pdb

@@ -1,0 +1,5 @@
+C:\ProjectsPersonal\ZakCms\ZakCmsAppData\bin\Release\ZakCmsAppData.dll
+C:\ProjectsPersonal\ZakCms\ZakCmsAppData\bin\Release\ZakCmsAppData.pdb
+C:\ProjectsPersonal\ZakCms\ZakCmsAppData\obj\x86\Release\ResolveAssemblyReference.cache
+C:\ProjectsPersonal\ZakCms\ZakCmsAppData\obj\x86\Release\ZakCmsAppData.dll
+C:\ProjectsPersonal\ZakCms\ZakCmsAppData\obj\x86\Release\ZakCmsAppData.pdb

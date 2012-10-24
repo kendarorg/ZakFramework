@@ -1,0 +1,84 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{327C8D25-5DBD-483B-8D4D-AA1EBF8C0360}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ZakCms</RootNamespace>
+    <AssemblyName>ZakCmsTestUtils</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Factories\SimpleFakeFactory.cs" />
+    <Compile Include="Models\PageArticleAdminViewModel.cs" />
+    <Compile Include="Models\PageArticleViewModel.cs" />
+    <Compile Include="Models\PageCompanyAdminViewModel.cs" />
+    <Compile Include="Models\PageFeedAdminViewModel.cs" />
+    <Compile Include="Models\PageLanguageAdminViewModel.cs" />
+    <Compile Include="Models\PageTagAdminViewModel.cs" />
+    <Compile Include="Models\PageUserAdminViewModel.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MarkdownRenderer\MarkdownRenderer.csproj">
+      <Project>{0FEBF702-6688-4C0E-B70F-2EF96EE34C5A}</Project>
+      <Name>MarkdownRenderer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ZakDbInterfaces\ZakDbInterfaces.csproj">
+      <Project>{B132FC86-7D79-42BE-9834-376453621D51}</Project>
+      <Name>ZakDbInterfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ZakDb\ZakDb.csproj">
+      <Project>{68A1E5E5-72E1-45D5-A60E-C506DD25B470}</Project>
+      <Name>ZakDb</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ZakCmsLibInterfaces\ZakCmsLibInterfaces.csproj">
+      <Project>{DBB7FF2B-B61E-4E5C-8ADA-5FFA2A0F3361}</Project>
+      <Name>ZakCmsLibInterfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ZakCmsLib\ZakCmsLib.csproj">
+      <Project>{70D7C05A-5E4D-43EB-A5DC-1EEC2AD08A7B}</Project>
+      <Name>ZakCmsLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ZakWebUtils\ZakWebUtils.csproj">
+      <Project>{9660C608-7CA5-4C6B-A20E-4D7A310EE545}</Project>
+      <Name>ZakWebUtils</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

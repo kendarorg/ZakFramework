@@ -1,0 +1,7 @@
+C:\ProjectsPersonal\ZakCms\ZakThreadInterfaces\bin\Release\ZakThreadInterfaces.dll
+C:\ProjectsPersonal\ZakCms\ZakThreadInterfaces\bin\Release\ZakThreadInterfaces.pdb
+C:\ProjectsPersonal\ZakCms\ZakThreadInterfaces\bin\Release\ZakCoreUtilsInterfaces.dll
+C:\ProjectsPersonal\ZakCms\ZakThreadInterfaces\bin\Release\ZakCoreUtilsInterfaces.pdb
+C:\ProjectsPersonal\ZakCms\ZakThreadInterfaces\obj\Release\ResolveAssemblyReference.cache
+C:\ProjectsPersonal\ZakCms\ZakThreadInterfaces\obj\Release\ZakThreadInterfaces.dll
+C:\ProjectsPersonal\ZakCms\ZakThreadInterfaces\obj\Release\ZakThreadInterfaces.pdb

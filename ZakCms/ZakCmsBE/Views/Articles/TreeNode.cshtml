@@ -1,0 +1,11 @@
+﻿@using ZakCms.Models.Entitites
+@model IEnumerable<ZakDb.Models.IModel>
+<ul>
+	@foreach (ArticleModel item in Model)
+	{
+		<li>
+			@Html.ActionLink(item.Title, "Index", new {id = item.Id, view = "Details"}) 
+			@{ Html.RenderPartial("TreeNode", item.Children); }
+		</li>
+	}
+</ul>

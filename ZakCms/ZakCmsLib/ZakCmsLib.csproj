@@ -1,0 +1,82 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{70D7C05A-5E4D-43EB-A5DC-1EEC2AD08A7B}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ZakCms</RootNamespace>
+    <AssemblyName>ZakCmsLib</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Plugins\AdditionalBehaviours\ArticlesFeedInteractionPlugin.cs" />
+    <Compile Include="Plugins\AdditionalBehaviours\ArticlesToFeedsPlugin.cs" />
+    <Compile Include="Plugins\AdditionalBehaviours\ArticleTagsToFeedsPlugin.cs" />
+    <Compile Include="Plugins\Selectors\ArticleAuthenticationSelectorPlugin.cs" />
+    <Compile Include="Plugins\Selectors\CompanySelectorPlugin.cs" />
+    <Compile Include="Plugins\AdditionalBehaviours\ElementTimestampPlugin.cs" />
+    <Compile Include="Plugins\Joins\JoinedCompanyPlugin.cs" />
+    <Compile Include="Plugins\Joins\JoinedLanguagePlugin.cs" />
+    <Compile Include="Plugins\Joins\JoinedTagPlugin.cs" />
+    <Compile Include="Plugins\Selectors\NumericLanguageSelectorPlugin.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\ArticlesToTagsRepository.cs" />
+    <Compile Include="Repositories\ArticlesRepository.cs" />
+    <Compile Include="Repositories\CompaniesRepository.cs" />
+    <Compile Include="Repositories\FeedsContentRepository.cs" />
+    <Compile Include="Repositories\FeedsRepository.cs" />
+    <Compile Include="Repositories\FeedsToTagsRepository.cs" />
+    <Compile Include="Repositories\LanguagesRepository.cs" />
+    <Compile Include="Repositories\TagsRepository.cs" />
+    <Compile Include="Repositories\UsersRepository.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ZakDbInterfaces\ZakDbInterfaces.csproj">
+      <Project>{B132FC86-7D79-42BE-9834-376453621D51}</Project>
+      <Name>ZakDbInterfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ZakDb\ZakDb.csproj">
+      <Project>{68A1E5E5-72E1-45D5-A60E-C506DD25B470}</Project>
+      <Name>ZakDb</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ZakCmsLibInterfaces\ZakCmsLibInterfaces.csproj">
+      <Project>{DBB7FF2B-B61E-4E5C-8ADA-5FFA2A0F3361}</Project>
+      <Name>ZakCmsLibInterfaces</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

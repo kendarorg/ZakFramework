@@ -1,0 +1,22 @@
+﻿@model ZakCms.Models.Entitites.UserModel
+<fieldset class="bodyWidth">
+	<legend>Actions</legend>
+	@Html.ActionLink("Edit", "Index", new {id = Model.Id, view = "Edit"}) |
+	@Html.ActionLink("Delete", "Delete", new {id = Model.Id})
+</fieldset>
+<fieldset class="bodyWidth">
+	<legend>@Model.UserId</legend>
+	<div class="display-label">Id</div>
+	<div class="display-field">
+		@Html.DisplayFor(model => model.Id)
+	</div>
+	<div class="display-label">UserId</div>
+	<div class="display-field">
+		@Html.DisplayFor(model => model.UserId)
+	</div>
+
+	<div class="display-label">User Password</div>
+	<div class="display-field">
+		@Html.DisplayFor(model => model.UserPassword)
+	</div>
+</fieldset>

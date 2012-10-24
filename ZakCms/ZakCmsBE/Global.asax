@@ -1,0 +1,1 @@
+﻿<%@ Application Codebehind="Global.asax.cs" Inherits="ZakCmsBE.MvcApplication" Language="C#" %>

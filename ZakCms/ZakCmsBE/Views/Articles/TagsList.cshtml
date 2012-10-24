@@ -1,0 +1,16 @@
+﻿@model List<ZakCms.Models.Entitites.TagModel>
+<fieldset class="bodyWidth">
+	<legend>Tags</legend>
+	@if (Model.Count > 0)
+	{
+		foreach (var item in Model)
+		{
+			<text>&#39;</text>
+			@Html.DisplayFor(modelItem => item.Description)<text>&#39;&nbsp;</text>
+		}
+	}
+	else
+	{
+		<text>No tags founded</text>
+	}
+</fieldset>

@@ -1,0 +1,24 @@
+﻿@model ZakCms.Models.Entitites.LanguageModel
+<fieldset class="bodyWidth">
+	<legend>Actions</legend>
+	@Html.ActionLink("Edit", "Index", new {id = Model.Id, view = "Edit"}) |
+	@Html.ActionLink("Delete", "Delete", new {id = Model.Id})
+</fieldset>
+<fieldset class="bodyWidth">
+	<legend>@Model.Description</legend>
+	<div class="display-label">
+		Id</div>
+	<div class="display-field">
+		@Html.DisplayFor(model => model.Id)
+	</div>
+	<div class="display-label">
+		Code</div>
+	<div class="display-field">
+		@Html.DisplayFor(model => model.Code)
+	</div>
+	<div class="display-label">
+		Description</div>
+	<div class="display-field">
+		@Html.DisplayFor(model => model.Description)
+	</div>
+</fieldset>

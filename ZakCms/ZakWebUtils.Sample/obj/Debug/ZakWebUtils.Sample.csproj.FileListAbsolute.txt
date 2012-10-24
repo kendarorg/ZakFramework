@@ -1,0 +1,2 @@
+C:\ProjectsPersonal\ZakCms\ZakWebUtils.Sample\obj\Debug\ResolveAssemblyReference.cache
+D:\Development\ZakCms\ZakWebUtils.Sample\obj\Debug\ResolveAssemblyReference.cache

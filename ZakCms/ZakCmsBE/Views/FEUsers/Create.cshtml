@@ -1,0 +1,31 @@
+﻿@using ZakCms.Models.Entitites
+@model UserModel
+@{
+	var model = new UserModel();
+}				 
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+@using (Html.BeginForm("Create", "Companies", FormMethod.Post))
+{
+	@Html.ValidationSummary(true)
+	<fieldset class="bodyWidth">
+		<legend>Create User</legend>
+		<p>
+			<input type="submit" value="Create" />
+		</p>
+		<div class="editor-label">
+			@Html.LabelFor(modelTemplate => model.UserId)
+		</div>
+		<div class="editor-field">
+			@Html.EditorFor(modelTemplate => model.UserId)
+			@Html.ValidationMessageFor(modelTemplate => model.UserId)
+		</div>
+		<div class="editor-label">
+			@Html.LabelFor(modelTemplate => model.UserPassword)
+		</div>
+		<div class="editor-field">
+			@Html.EditorFor(modelTemplate => model.UserPassword)
+			@Html.ValidationMessageFor(modelTemplate => model.UserPassword)
+		</div>
+	</fieldset>
+}

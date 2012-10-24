@@ -1,0 +1,44 @@
+﻿The Notification Engine requires a number of components to be installed and configured as part of the setup process.
+
+Required components:
+
+- Pipeline
+- GUI Shell
+- Notification Engine
+
+Whilst the Notification Engine can be installed on a single machine, the following minimum configuration is recommended for performance and security reasons:
+
+<table class="table table-striped table-condensed">
+    <thead>
+        <tr>
+            <td>Qty</td>
+            <td>Item</td>
+            <td>Hardware, OS and Software Specifications</td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>1</td>
+            <td>Database Server</td>
+            <td>Microsoft SQL Server Express or Enterprise edition (depending on number of users)<br />
+            CPU, RAM and Disk Space to meet minimum requirements for selected Microsoft SQL Server edition (see above)<br />
+            </td>
+        </tr>
+        <tr>
+            <td>1</td>
+            <td>Web Server</td>
+            <td>Windows Server 2008 RC2<br />
+            IIS<br />
+            .NET 4.0<br />
+            MVC3<br />
+            CPU, RAM and Disk Space to meet minimum requirements for Windows Server 2008 RC2</td>
+        </tr>
+        <tr>
+            <td>1</td>
+            <td>Application Server</td>
+            <td>Windows Server 2008 RC2<br />
+            .NET 4.0<br />
+            CPU, RAM and Disk Space to meet minimum requirements for Windows Server 2008 RC2</td>
+        </tr>
+    </tbody>
+</table>

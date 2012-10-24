@@ -1,0 +1,16 @@
+﻿@model ZakCms.Models.PageArticleViewModel
+@{
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<table>
+	<tr>
+		<td>
+			<div  class="menuWidth">
+				@{ Html.RenderPartial("TreeNode", Model.Articles); }
+			</div>
+		</td>
+		<td>
+			@{ Html.RenderPartial("Details", Model.Article); }
+		</td>
+	</tr>
+</table>

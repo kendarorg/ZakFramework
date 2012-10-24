@@ -1,0 +1,15 @@
+C:\ProjectsPersonal\ZakCms\ZakWebUtils\bin\Release\ZakWebUtils.dll
+C:\ProjectsPersonal\ZakCms\ZakWebUtils\bin\Release\ZakWebUtils.pdb
+C:\ProjectsPersonal\ZakCms\ZakWebUtils\bin\Release\ZakCoreUtilsInterfaces.dll
+C:\ProjectsPersonal\ZakCms\ZakWebUtils\bin\Release\ZakDbCoreInterfaces.dll
+C:\ProjectsPersonal\ZakCms\ZakWebUtils\bin\Release\ZakThread.dll
+C:\ProjectsPersonal\ZakCms\ZakWebUtils\bin\Release\ZakThreadInterfaces.dll
+C:\ProjectsPersonal\ZakCms\ZakWebUtils\bin\Release\ZakCoreUtils.dll
+C:\ProjectsPersonal\ZakCms\ZakWebUtils\bin\Release\ZakCoreUtilsInterfaces.pdb
+C:\ProjectsPersonal\ZakCms\ZakWebUtils\bin\Release\ZakDbCoreInterfaces.pdb
+C:\ProjectsPersonal\ZakCms\ZakWebUtils\bin\Release\ZakThreadInterfaces.pdb
+C:\ProjectsPersonal\ZakCms\ZakWebUtils\bin\Release\ZakThread.pdb
+C:\ProjectsPersonal\ZakCms\ZakWebUtils\bin\Release\ZakCoreUtils.pdb
+C:\ProjectsPersonal\ZakCms\ZakWebUtils\obj\Release\ResolveAssemblyReference.cache
+C:\ProjectsPersonal\ZakCms\ZakWebUtils\obj\Release\ZakWebUtils.dll
+C:\ProjectsPersonal\ZakCms\ZakWebUtils\obj\Release\ZakWebUtils.pdb

@@ -1,0 +1,18 @@
+﻿@model ZakCms.Models.PageArticleAdminViewModel
+@{ Html.RenderPartial("RemovableTagsList", Model); }
+@if (Model.AvailableTags.Count > 0)
+{
+	<fieldset class="bodyWidth">
+		<legend>Tags Editing</legend>
+		@using (Html.BeginForm("AddTag", "Articles", FormMethod.Post))
+		{
+			@Html.DropDownList(
+				"tagId",
+				new SelectList(Model.AvailableTags.Select(x => new {Value = x.Id, Text = x.Description}),
+											 "Value",
+											 "Text"))
+			<input type="hidden" value="@Model.Article.Id" name="articleId" id="articleId"/>
+			<input type="submit" value="Add" />
+		}
+	</fieldset>
+}

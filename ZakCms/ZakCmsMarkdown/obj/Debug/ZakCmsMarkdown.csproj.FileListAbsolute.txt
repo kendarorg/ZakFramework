@@ -1,0 +1,12 @@
+C:\ProjectsPersonal\ZakCms\ZakCmsMarkdown\bin\Debug\ZakCmsMarkdown.dll
+C:\ProjectsPersonal\ZakCms\ZakCmsMarkdown\bin\Debug\ZakCmsMarkdown.pdb
+C:\ProjectsPersonal\ZakCms\ZakCmsMarkdown\bin\Debug\MarkdownSharp.dll
+C:\ProjectsPersonal\ZakCms\ZakCmsMarkdown\bin\Debug\MarkdownSharp.pdb
+C:\ProjectsPersonal\ZakCms\ZakCmsMarkdown\bin\Debug\MarkdownSharp.xml
+C:\ProjectsPersonal\ZakCms\ZakCmsMarkdown\obj\Debug\ResolveAssemblyReference.cache
+C:\ProjectsPersonal\ZakCms\ZakCmsMarkdown\obj\Debug\ZakCmsMarkdown.dll
+C:\ProjectsPersonal\ZakCms\ZakCmsMarkdown\obj\Debug\ZakCmsMarkdown.pdb
+C:\ProjectsPersonal\ZakCms\ZakCmsMarkdown\bin\Debug\ZakCmsLibInterfaces.dll
+C:\ProjectsPersonal\ZakCms\ZakCmsMarkdown\bin\Debug\ZakDbCoreInterfaces.dll
+C:\ProjectsPersonal\ZakCms\ZakCmsMarkdown\bin\Debug\ZakCmsLibInterfaces.pdb
+C:\ProjectsPersonal\ZakCms\ZakCmsMarkdown\bin\Debug\ZakDbCoreInterfaces.pdb

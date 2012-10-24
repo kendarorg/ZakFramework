@@ -1,0 +1,27 @@
+﻿@model ZakCms.Models.Entitites.FeedModel
+@if (Model.Id > 0)
+{
+	<fieldset class="bodyWidth">
+		<legend>Actions</legend>
+		@Html.ActionLink("Edit", "Index", new {id = Model.Id, view = "Edit"}) |
+		@Html.ActionLink("Delete", "Delete", new {id = Model.Id})
+	</fieldset>
+	<fieldset class="bodyWidth">
+		<legend>@Model.Title</legend>
+		<div class="display-label">
+			Seo Title</div>
+		<div class="display-field">
+			@(new HtmlString(Model.SeoTitle))
+		</div>
+		<div class="display-label">
+			Language</div>
+		<div class="display-field">
+			@Html.DisplayFor(model => model.Language.Description)
+		</div>
+		<div class="display-label">
+			UpdateTime</div>
+		<div class="display-field">
+			@Html.DisplayFor(model => model.UpdateTime)
+		</div>
+	</fieldset>
+}

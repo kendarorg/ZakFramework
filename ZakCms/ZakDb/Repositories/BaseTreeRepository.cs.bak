@@ -1,0 +1,260 @@
+﻿using System;
+using System.Collections.Generic;
+using ZakCms.Models;
+using ZakCms.Repositories;
+using System.Data.SqlClient;
+using System.Transactions;
+
+namespace ZakCmsCore.Repositories
+{
+	public abstract class BaseTreeRepository<TItem> : BaseRepository<TItem>, ITreeRepository<TItem>
+		where TItem : ITreeModel<TItem>, new()
+	{
+		#region Protected Implementations
+		protected BaseTreeRepository(String connectionString) :
+			base(connectionString)
+		{
+
+		}
+		#endregion
+
+		#region Implementations
+
+		public virtual bool UseNestedSet { get { return true; } }
+
+		public void MoveUp(TItem item)
+		{
+			var childrens = GetChildren(item.ParentId);
+			TItem selectedElement = default(TItem);
+			Int32 imax = 0;
+			foreach (var child in childrens)
+			{
+				if (child.Ordering < item.Ordering && child.Ordering > imax)
+				{
+					imax = child.Ordering;
+					selectedElement = child;
+				}
+			}
+			UpdateOrderingIfNeeded(selectedElement, item);
+		}
+
+		public override void Update(TItem article)
+		{
+			TItem item = GetById(article.Id);
+			if(article.Ordering==-1) article.Ordering = item.Ordering;
+			if(UseNestedSet){
+				if (article.LeftNs == -1) article.LeftNs = item.LeftNs;
+				if (article.RightNs == -1) article.RightNs = item.RightNs;
+			}
+			base.Update(article);
+		}
+
+		private void UpdateOrderingIfNeeded(TItem selectedElement, TItem item)
+		{
+// ReSharper disable CompareNonConstrainedGenericWithNull
+			if (selectedElement != null)
+// ReSharper restore CompareNonConstrainedGenericWithNull
+			{
+				int tmp = selectedElement.Ordering;
+				selectedElement.Ordering = item.Ordering;
+				item.Ordering = tmp;
+
+				using (var scope = new TransactionScope())
+				{
+					Update(selectedElement);
+					Update(item);
+					scope.Complete();
+				}
+			}
+		}
+
+		public void MoveDown(TItem item)
+		{
+			var childrens = GetChildren(item.ParentId);
+			TItem selectedElement = default(TItem);
+			Int32 imax = Int32.MaxValue;
+			foreach (var child in childrens)
+			{
+				if (child.Ordering > item.Ordering && child.Ordering < imax)
+				{
+					imax = child.Ordering;
+					selectedElement = child;
+				}
+			}
+			UpdateOrderingIfNeeded(selectedElement, item);
+		}
+
+		public override void Delete(Int64 id)
+		{
+			TItem am = GetById(id);
+			var updateQuery = string.Format("UPDATE {0} SET ParentId={1}  WHERE ParentId={2}",
+				TableName,
+				am.ParentId,
+				id);
+
+			using (var scope = new TransactionScope())
+			{
+				ExecuteSql(updateQuery, QueryType.NonQuery);
+				base.Delete(id);
+				scope.Complete();
+			}
+		}
+
+		protected override string CreateQuery(TItem article)
+		{
+			string getMaxValue = string.Format("SELECT Max(Ordering) FROM {0} WHERE ParentId={1}",
+				TableName,
+				article.ParentId);
+			object result = ExecuteSql(getMaxValue, QueryType.Scalar);
+			article.Ordering = 0;
+			if (result == DBNull.Value || result == null) return base.CreateQuery(article);
+			article.Ordering = (Int32)result;
+			article.Ordering++;
+			return base.CreateQuery(article);
+		}
+
+		public override Int64 Create(TItem article)
+		{
+			if(!UseNestedSet){
+				return base.Create(article);
+			}
+			using (var scope = new TransactionScope())
+			{
+				TItem parentItem = GetById(article.ParentId);
+
+				object result;
+// ReSharper disable CompareNonConstrainedGenericWithNull
+				if (parentItem != null)
+// ReSharper restore CompareNonConstrainedGenericWithNull
+				{
+					var updateParentChildren = string.Format("UPDATE {0} SET LeftNs=(LeftNs+2),RightNs=(RightNs+2) WHERE LeftNs>{1} AND RightNs>{1}",
+						TableName,
+						parentItem.LeftNs);
+					article.LeftNs = parentItem.LeftNs + 1;
+					article.RightNs = parentItem.LeftNs + 2;
+					parentItem.RightNs+=2;
+					if (article.ParentId!=0) Update(parentItem);
+					ExecuteSql(updateParentChildren, QueryType.NonQuery);
+				}
+				else
+				{
+					var getMax = string.Format("SELECT MAX(RightNs) FROM {0}",
+						TableName);
+					result = ExecuteSql(getMax,QueryType.Scalar);
+					Int64 max = 0;
+					if (result != null) max = (Int64) result;
+					article.LeftNs = max + 1;
+					article.RightNs = max + 2;
+				}
+				
+			 result = ExecuteSql(CreateQuery(article), QueryType.Scalar);
+
+				if (result == null) return -1;
+				scope.Complete();
+				return (Int64)result;
+			}
+		}
+
+		public List<TItem> GetTree(Int64 id)
+		{
+			var am = (ITreeModel<TItem>)GetById(id);
+			if (am == null)
+			{
+				am = new TItem {Id = 0};
+			}
+			am.Children.Clear();
+			am.Children.AddRange(GetChildren(am.Id));
+
+			ITreeModel<TItem> par;
+			while ((par = GetById(am.ParentId)) != null)
+			{
+				par.Children.AddRange(GetChildren(par.Id));
+				foreach (var child in par.Children)
+				{
+					if (child.Id == am.Id) child.Children.AddRange(am.Children);
+				}
+				am = par;
+			}
+			par = new TItem
+			{
+				Id = 0
+			};
+			par.Children.AddRange(GetChildren(par.Id));
+			foreach (var child in par.Children)
+			{
+				if (child.Id == am.Id) child.Children.AddRange(am.Children);
+			}
+
+			return par.Children;
+		}
+
+		public virtual List<TItem> GetChildren(Int64 id)
+		{
+			return ExecuteSql(GetChildrenQuery(id)) as List<TItem>;
+		}
+
+		public virtual List<TItem> GetAllChildren(Int64 id)
+		{
+			if(!UseNestedSet) throw new NotSupportedOperation();
+			TItem current = GetById(id);
+			return ExecuteSql(GetAllChildrenQuery(current)) as List<TItem>;
+		}
+		#endregion
+
+		#region Abstracts
+		protected virtual string GetAllChildrenQuery(TItem current)
+		{
+			var selectQuery = string.Format("SELECT * FROM {0} WHERE LeftNs>{1} && RightNs<{2}",
+				TableName,
+				current.LeftNs,
+				current.RightNs);
+			return selectQuery;
+		}
+
+		protected virtual string GetChildrenQuery(Int64 id)
+		{
+			var selectQuery = string.Format("SELECT * FROM {0} WHERE ParentId={1} ORDER BY Ordering ASC",
+				TableName,
+				id);
+			return selectQuery;
+		}
+
+		protected override List<string> UpdatableFields
+		{
+			get
+			{
+				var toret = base.UpdatableFields;
+				toret.Add("ParentId");
+				toret.Add("Ordering");
+				if(UseNestedSet)
+				{
+					toret.Add("LeftNs");
+					toret.Add("RightNs");
+				}
+				return toret;
+			}
+		}
+
+		protected override void FillFromDb(SqlDataReader reader, TItem article)
+		{
+			base.FillFromDb(reader, article);
+			article.ParentId = (Int64)reader["ParentId"];
+			article.Ordering = (Int32)reader["Ordering"];
+if(UseNestedSet){
+			article.LeftNs = (Int64)reader["LeftNs"];
+			article.RightNs = (Int64)reader["RightNs"];
+}
+		}
+
+		protected override Dictionary<string, object> ConvertToDb(TItem source)
+		{
+			var toret = base.ConvertToDb(source);
+			toret.Add("ParentId", source.ParentId);
+			toret.Add("Ordering", source.Ordering);
+			toret.Add("LeftNs", source.LeftNs);
+			toret.Add("RightNs", source.RightNs);
+			return toret;
+		}
+		#endregion
+	}
+}

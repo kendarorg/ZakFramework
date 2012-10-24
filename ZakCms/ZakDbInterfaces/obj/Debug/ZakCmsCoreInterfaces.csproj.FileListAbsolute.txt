@@ -1,0 +1,5 @@
+C:\ProjectsPersonal\ZakCms\ZakCmsCoreInterfaces\bin\Debug\ZakCmsCoreInterfaces.dll
+C:\ProjectsPersonal\ZakCms\ZakCmsCoreInterfaces\bin\Debug\ZakCmsCoreInterfaces.pdb
+C:\ProjectsPersonal\ZakCms\ZakCmsCoreInterfaces\obj\Debug\ResolveAssemblyReference.cache
+C:\ProjectsPersonal\ZakCms\ZakCmsCoreInterfaces\obj\Debug\ZakCmsCoreInterfaces.dll
+C:\ProjectsPersonal\ZakCms\ZakCmsCoreInterfaces\obj\Debug\ZakCmsCoreInterfaces.pdb

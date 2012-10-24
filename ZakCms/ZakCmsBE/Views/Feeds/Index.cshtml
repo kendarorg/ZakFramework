@@ -1,0 +1,61 @@
+﻿@model ZakCms.Models.PageFeedAdminViewModel
+@{
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h3>
+	Feeds Administration</h3>
+<table>
+	<tr>
+		<td>
+			@Html.LabelFor(c => c.Feed.Language.Id)
+			@using (Html.BeginForm("ChooseLanguage", "Feeds", FormMethod.Post))
+			{
+				@Html.DropDownListFor(c => c.Feed.Language.Id,
+															new SelectList(Model.Languages,
+																						 "Id",
+																						 "Description",
+																						 Model.Feed.Language.Id),
+															null,
+															new {onchange = "this.form.submit();"})
+			}
+		</td>
+		<td>
+			@Html.LabelFor(c => c.Feed.Company.Id)
+			@using (Html.BeginForm("ChooseCompany", "Feeds", FormMethod.Post))
+			{
+				@Html.DropDownListFor(c => c.Feed.Company.Id,
+															new SelectList(Model.Companies,
+																						 "Id",
+																						 "Description",
+																						 Model.Feed.Company.Id),
+															null,
+															new {onchange = "this.form.submit();"})
+			}
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<p>
+				@Html.ActionLink("Add Feed", "Index", new {id = 0, view = "Create"})
+			</p>
+			<div class="menuWidth">
+				@{ Html.RenderPartial("FeedsList", Model.Feeds); }
+			</div>
+		</td>
+		<td>
+			@{
+				if (Model.Feed.Id != 0 && Model.View != "Edit")
+				{
+					Html.RenderPartial("TagsList", Model.Tags);
+				}
+			}
+			@{
+				if (Model.Feed.Id != 0 && Model.View == "Edit")
+				{
+					Html.RenderPartial("EditTags", Model);
+				}
+			}
+			@{ Html.RenderPartial(Model.View, Model.Feed); }
+		</td>
+	</tr>
+</table>

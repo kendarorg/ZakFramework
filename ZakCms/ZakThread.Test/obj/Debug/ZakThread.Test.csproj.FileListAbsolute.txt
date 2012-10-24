@@ -1,0 +1,8 @@
+C:\ProjectsPersonal\ZakCms\ZakThread.Test\bin\Debug\ZakThread.Test.dll
+C:\ProjectsPersonal\ZakCms\ZakThread.Test\bin\Debug\ZakThread.Test.pdb
+C:\ProjectsPersonal\ZakCms\ZakThread.Test\obj\Debug\ResolveAssemblyReference.cache
+C:\ProjectsPersonal\ZakCms\ZakThread.Test\obj\Debug\ZakThread.Test.dll
+C:\ProjectsPersonal\ZakCms\ZakThread.Test\obj\Debug\ZakThread.Test.pdb
+D:\Development\ZakCms\ZakThread.Test\obj\Debug\ResolveAssemblyReference.cache
+D:\Development\ZakCms\ZakThread.Test\obj\Debug\ZakThread.Test.dll
+D:\Development\ZakCms\ZakThread.Test\obj\Debug\ZakThread.Test.pdb
