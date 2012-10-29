@@ -1,6 +1,0 @@
-﻿Notification Engine,
-The ultimate notification platform
-Go to [LNK=44 TXT=Contexts.Configurations.Create]  
-Go to [LNK=http://www.google.com TXT=Google]  
-
-[IMG=https://www.google.it/logos/2012/Googles_14th_Birthday-2012-2-hp.gif ALT=Google Birthday]

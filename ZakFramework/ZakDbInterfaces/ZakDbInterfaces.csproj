@@ -1,0 +1,76 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{B132FC86-7D79-42BE-9834-376453621D51}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ZakDb</RootNamespace>
+    <AssemblyName>ZakDbCoreInterfaces</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Exceptions\ZakException.cs" />
+    <Compile Include="Linq\ModelComparer.cs" />
+    <Compile Include="Models\ILovModel.cs" />
+    <Compile Include="Models\IModel.cs" />
+    <Compile Include="Models\ITreeModel.cs" />
+    <Compile Include="Models\IManyToManyModel.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\Exceptions\RepositoryDuplicateKeyException.cs" />
+    <Compile Include="Repositories\Exceptions\RepositoryValidationException.cs" />
+    <Compile Include="Plugins\IExternalParametersPlugin.cs" />
+    <Compile Include="Plugins\IJoinRepositoryPlugin.cs" />
+    <Compile Include="Repositories\IManyToManyRepository.cs" />
+    <Compile Include="Repositories\IRepository.cs" />
+    <Compile Include="Plugins\IRepositoryPlugin.cs" />
+    <Compile Include="Plugins\PluginOutcome.cs" />
+    <Compile Include="Repositories\Queries\QueryAction.cs" />
+    <Compile Include="Repositories\Queries\QueryObject.cs" />
+    <Compile Include="Repositories\Queries\QueryType.cs" />
+    <Compile Include="Repositories\Queries\AsIsParameter.cs" />
+    <Compile Include="Repositories\Utils\RepositoryEventArg.cs" />
+    <Compile Include="Repositories\Utils\ZakDbDataReader.cs" />
+    <Compile Include="Utils\DictionaryExternalParameters.cs" />
+    <Compile Include="Utils\IExternalParameters.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>mkdir  "$(SolutionDir)RunEnvironment"
+mkdir  "$(SolutionDir)RunEnvironment\$(OutDir)"
+Copy /y "$(TargetDir)$(TargetFileName)" "$(SolutionDir)RunEnvironment\$(OutDir)"</PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

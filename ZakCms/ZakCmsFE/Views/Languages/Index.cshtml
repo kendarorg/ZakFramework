@@ -1,5 +1,0 @@
-﻿@model IEnumerable<ZakCms.Models.Entitites.LanguageModel>
-@foreach (var item in Model)
-{
-	<li>@Html.ActionLink(item.Description, "ChangeLanguage", "Home", new {langId = item.Code}, null)</li>
-}

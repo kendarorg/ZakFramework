@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{61092AED-0224-4765-B2B7-43ADC882B123}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ZakCache</RootNamespace>
+    <AssemblyName>ZakCache</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CacheManager\CacheFacade.cs" />
+    <Compile Include="CacheManager\CacheInternals\CacheCallbacksExecutor.cs" />
+    <Compile Include="CacheManager\CacheInternals\CacheItem.cs" />
+    <Compile Include="CacheManager\CacheInternals\CacheLoadItemTask.cs" />
+    <Compile Include="CacheManager\CacheInternals\CacheMessageType.cs" />
+    <Compile Include="CacheManager\CacheInternals\CacheThreadMessage.cs" />
+    <Compile Include="CacheManager\CacheInternals\TaggedCacheItems.cs" />
+    <Compile Include="CacheManager\CacheInternals\WaitingCacheLoadItemTask.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ZakCoreUtilsInterfaces\ZakCoreUtilsInterfaces.csproj">
+      <Project>{45F980B7-498D-40AC-A34A-E5B8324979C0}</Project>
+      <Name>ZakCoreUtilsInterfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ZakThreadInterfaces\ZakThreadInterfaces.csproj">
+      <Project>{26B48B9A-B9F1-48DC-8D6E-E7F361E3BBF9}</Project>
+      <Name>ZakThreadInterfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ZakThread\ZakThread.csproj">
+      <Project>{9156A91E-5AFD-4D1D-A081-BE45BD4F9C37}</Project>
+      <Name>ZakThread</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>mkdir  "$(SolutionDir)RunEnvironment"
+mkdir  "$(SolutionDir)RunEnvironment\$(OutDir)"
+Copy /y "$(TargetDir)$(TargetFileName)" "$(SolutionDir)RunEnvironment\$(OutDir)"</PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
