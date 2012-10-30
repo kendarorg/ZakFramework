@@ -33,6 +33,15 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="ZakCoreUtilsInterfaces">
+      <HintPath>..\lib\ZakCoreUtilsInterfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="ZakThread">
+      <HintPath>..\lib\ZakThread.dll</HintPath>
+    </Reference>
+    <Reference Include="ZakThreadInterfaces">
+      <HintPath>..\lib\ZakThreadInterfaces.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CacheManager\CacheFacade.cs" />
@@ -45,25 +54,10 @@
     <Compile Include="CacheManager\CacheInternals\WaitingCacheLoadItemTask.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\ZakCoreUtilsInterfaces\ZakCoreUtilsInterfaces.csproj">
-      <Project>{45F980B7-498D-40AC-A34A-E5B8324979C0}</Project>
-      <Name>ZakCoreUtilsInterfaces</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ZakThreadInterfaces\ZakThreadInterfaces.csproj">
-      <Project>{26B48B9A-B9F1-48DC-8D6E-E7F361E3BBF9}</Project>
-      <Name>ZakThreadInterfaces</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ZakThread\ZakThread.csproj">
-      <Project>{9156A91E-5AFD-4D1D-A081-BE45BD4F9C37}</Project>
-      <Name>ZakThread</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>mkdir  "$(SolutionDir)RunEnvironment"
-mkdir  "$(SolutionDir)RunEnvironment\$(OutDir)"
-Copy /y "$(TargetDir)$(TargetFileName)" "$(SolutionDir)RunEnvironment\$(OutDir)"</PostBuildEvent>
+Copy /y "$(TargetDir)$(TargetFileName)" "$(SolutionDir)RunEnvironment"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

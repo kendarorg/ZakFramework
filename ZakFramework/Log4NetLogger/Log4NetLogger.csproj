@@ -55,8 +55,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>mkdir  "$(SolutionDir)RunEnvironment"
-mkdir  "$(SolutionDir)RunEnvironment\$(OutDir)"
-Copy /y "$(TargetDir)$(TargetFileName)" "$(SolutionDir)RunEnvironment\$(OutDir)"</PostBuildEvent>
+Copy /y "$(TargetDir)$(TargetFileName)" "$(SolutionDir)RunEnvironment"</PostBuildEvent>
   </PropertyGroup>
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
