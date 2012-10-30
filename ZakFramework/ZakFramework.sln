@@ -49,6 +49,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{42DC6B
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "001ASimpleThread", "001ASimpleThread\001ASimpleThread.csproj", "{3E91F875-23A7-41EF-8FBD-719695310DEF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "002AMessageDrivenThread", "002AMessageDrivenThread\002AMessageDrivenThread.csproj", "{AFF8F50F-553F-4E4B-9656-0DAF3DF82080}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = ZakCms1.vsmdi
@@ -172,6 +174,16 @@ Global
 		{3E91F875-23A7-41EF-8FBD-719695310DEF}.Release|Mixed Platforms.Build.0 = Release|x86
 		{3E91F875-23A7-41EF-8FBD-719695310DEF}.Release|x86.ActiveCfg = Release|x86
 		{3E91F875-23A7-41EF-8FBD-719695310DEF}.Release|x86.Build.0 = Release|x86
+		{AFF8F50F-553F-4E4B-9656-0DAF3DF82080}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{AFF8F50F-553F-4E4B-9656-0DAF3DF82080}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{AFF8F50F-553F-4E4B-9656-0DAF3DF82080}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{AFF8F50F-553F-4E4B-9656-0DAF3DF82080}.Debug|x86.ActiveCfg = Debug|x86
+		{AFF8F50F-553F-4E4B-9656-0DAF3DF82080}.Debug|x86.Build.0 = Debug|x86
+		{AFF8F50F-553F-4E4B-9656-0DAF3DF82080}.Release|Any CPU.ActiveCfg = Release|x86
+		{AFF8F50F-553F-4E4B-9656-0DAF3DF82080}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{AFF8F50F-553F-4E4B-9656-0DAF3DF82080}.Release|Mixed Platforms.Build.0 = Release|x86
+		{AFF8F50F-553F-4E4B-9656-0DAF3DF82080}.Release|x86.ActiveCfg = Release|x86
+		{AFF8F50F-553F-4E4B-9656-0DAF3DF82080}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -191,5 +203,6 @@ Global
 		{CC992484-CCBC-4F42-84AF-675FFE90DAC1} = {3E8C2F16-8FE5-431F-ABA0-1D83B78A86E1}
 		{0339AC8B-5D32-42F7-AF9D-ADDD13482D92} = {3E8C2F16-8FE5-431F-ABA0-1D83B78A86E1}
 		{3E91F875-23A7-41EF-8FBD-719695310DEF} = {A2397524-9965-4BAE-8BD1-546EB068A2C1}
+		{AFF8F50F-553F-4E4B-9656-0DAF3DF82080} = {A2397524-9965-4BAE-8BD1-546EB068A2C1}
 	EndGlobalSection
 EndGlobal
