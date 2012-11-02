@@ -7,7 +7,9 @@ namespace _001_A_simple_thread
 {
 	class Program
 	{
+// ReSharper disable UnusedParameter.Local
 		static void Main(string[] args)
+// ReSharper restore UnusedParameter.Local
 		{
 			var stopwatch = new Stopwatch();
 			var stopwatchExternal = new Stopwatch();

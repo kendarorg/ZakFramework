@@ -26,6 +26,11 @@ namespace ZakThread.Threading
 			return base.CyclicExecution();
 		}
 
+		internal virtual bool HandleMessageInternal(IMessage msg)
+		{
+			return HandleMessage(msg);
+		}
+
 		protected abstract bool HandleMessage(IMessage msg);
 
 		protected void SendMessage(IMessage msg)

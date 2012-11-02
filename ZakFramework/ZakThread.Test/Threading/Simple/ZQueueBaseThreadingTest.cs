@@ -3,7 +3,7 @@ using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ZakThread.Threading.Enums;
 
-namespace ZQueue.Test.Threading.Simple
+namespace ZakThread.Test.Threading.Simple
 {
 	[TestClass]
 	public class ZQueueBaseThreadingTest
@@ -148,9 +148,9 @@ namespace ZQueue.Test.Threading.Simple
 			Thread.Sleep(100);
 			th.Terminate();
 			Thread.Sleep(100);
-
-		  Assert.AreEqual(RunningStatus.Halted, th.Status);
 			Exception expectedEx = th.LastError;
+		  Assert.AreEqual(RunningStatus.Halted, th.Status);
+			
 			Assert.IsNotNull(expectedEx);
 			Assert.AreEqual(expectedEx.Message, th.ThrowExceptionOnCleanUp.Message);
 
@@ -164,8 +164,7 @@ namespace ZQueue.Test.Threading.Simple
 		{
 			const int sleepTime = 10;
 			const string testName = "TestThread";
-			const bool restartOnError = true;
-			var th = new SimpleThread(sleepTime, testName, restartOnError);
+			var th = new SimpleThread(sleepTime, testName);
 			var ex = new Exception("TEST");
 			th.ThrowExceptionOnCyclicExecution = ex;
 			th.ResetExceptionAfterThrow = true;

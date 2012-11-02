@@ -4,12 +4,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("002AMessageDrivenThread")]
+[assembly: AssemblyTitle("003AConcurrentTreeStructure")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Hewlett-Packard")]
-[assembly: AssemblyProduct("002AMessageDrivenThread")]
-[assembly: AssemblyCopyright("Copyright © Hewlett-Packard 2012")]
+[assembly: AssemblyCompany("Microsoft")]
+[assembly: AssemblyProduct("003AConcurrentTreeStructure")]
+[assembly: AssemblyCopyright("Copyright © Microsoft 2012")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -19,7 +19,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("b8c45917-21be-4222-8c14-ef25afc97372")]
+[assembly: Guid("233f708a-42cc-4400-8896-a046cfe9ceed")]
 
 // Version information for an assembly consists of the following four values:
 //

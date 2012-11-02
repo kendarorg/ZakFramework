@@ -240,7 +240,7 @@ namespace ZakThread.Threading
 					return;
 				}
 				Thread.Sleep(0);
-				Thread.Sleep(1);
+//TRIAL				Thread.Sleep(1);
 			}
 			if (tmp != RunningStatus.Running && tmp != RunningStatus.Halting)
 			{

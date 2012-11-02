@@ -29,7 +29,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		Local.testsettings = Local.testsettings
 		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
-		ZakCms1.vsmdi = ZakCms1.vsmdi
+		ZakFramework2.vsmdi = ZakFramework2.vsmdi
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZakDb.Test", "ZakDb.Test\ZakDb.Test.csproj", "{CC992484-CCBC-4F42-84AF-675FFE90DAC1}"
@@ -51,9 +51,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "001ASimpleThread", "001ASim
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "002AMessageDrivenThread", "002AMessageDrivenThread\002AMessageDrivenThread.csproj", "{AFF8F50F-553F-4E4B-9656-0DAF3DF82080}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "003AConcurrentTreeStructure", "003AConcurrentTreeStructure\003AConcurrentTreeStructure.csproj", "{A42DFDEE-152B-4E8E-93A5-77F1AD914916}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "003AConcurrentTreeStructure.Lib", "003AConcurrentTreeStructure.Lib\003AConcurrentTreeStructure.Lib.csproj", "{B5DD6658-3A33-4E4A-92A3-FB479E6E91C6}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
-		CategoryFile = ZakCms1.vsmdi
+		CategoryFile = ZakFramework2.vsmdi
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -184,6 +188,26 @@ Global
 		{AFF8F50F-553F-4E4B-9656-0DAF3DF82080}.Release|Mixed Platforms.Build.0 = Release|x86
 		{AFF8F50F-553F-4E4B-9656-0DAF3DF82080}.Release|x86.ActiveCfg = Release|x86
 		{AFF8F50F-553F-4E4B-9656-0DAF3DF82080}.Release|x86.Build.0 = Release|x86
+		{A42DFDEE-152B-4E8E-93A5-77F1AD914916}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{A42DFDEE-152B-4E8E-93A5-77F1AD914916}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{A42DFDEE-152B-4E8E-93A5-77F1AD914916}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{A42DFDEE-152B-4E8E-93A5-77F1AD914916}.Debug|x86.ActiveCfg = Debug|x86
+		{A42DFDEE-152B-4E8E-93A5-77F1AD914916}.Debug|x86.Build.0 = Debug|x86
+		{A42DFDEE-152B-4E8E-93A5-77F1AD914916}.Release|Any CPU.ActiveCfg = Release|x86
+		{A42DFDEE-152B-4E8E-93A5-77F1AD914916}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{A42DFDEE-152B-4E8E-93A5-77F1AD914916}.Release|Mixed Platforms.Build.0 = Release|x86
+		{A42DFDEE-152B-4E8E-93A5-77F1AD914916}.Release|x86.ActiveCfg = Release|x86
+		{A42DFDEE-152B-4E8E-93A5-77F1AD914916}.Release|x86.Build.0 = Release|x86
+		{B5DD6658-3A33-4E4A-92A3-FB479E6E91C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B5DD6658-3A33-4E4A-92A3-FB479E6E91C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B5DD6658-3A33-4E4A-92A3-FB479E6E91C6}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{B5DD6658-3A33-4E4A-92A3-FB479E6E91C6}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{B5DD6658-3A33-4E4A-92A3-FB479E6E91C6}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B5DD6658-3A33-4E4A-92A3-FB479E6E91C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B5DD6658-3A33-4E4A-92A3-FB479E6E91C6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B5DD6658-3A33-4E4A-92A3-FB479E6E91C6}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{B5DD6658-3A33-4E4A-92A3-FB479E6E91C6}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{B5DD6658-3A33-4E4A-92A3-FB479E6E91C6}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -204,5 +228,7 @@ Global
 		{0339AC8B-5D32-42F7-AF9D-ADDD13482D92} = {3E8C2F16-8FE5-431F-ABA0-1D83B78A86E1}
 		{3E91F875-23A7-41EF-8FBD-719695310DEF} = {A2397524-9965-4BAE-8BD1-546EB068A2C1}
 		{AFF8F50F-553F-4E4B-9656-0DAF3DF82080} = {A2397524-9965-4BAE-8BD1-546EB068A2C1}
+		{A42DFDEE-152B-4E8E-93A5-77F1AD914916} = {A2397524-9965-4BAE-8BD1-546EB068A2C1}
+		{B5DD6658-3A33-4E4A-92A3-FB479E6E91C6} = {A2397524-9965-4BAE-8BD1-546EB068A2C1}
 	EndGlobalSection
 EndGlobal

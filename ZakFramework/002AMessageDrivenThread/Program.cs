@@ -1,20 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Diagnostics;
 using System.Threading;
-using ZakThread.Threading.Enums;
 
 namespace _002AMessageDrivenThread
 {
 	class Program
 	{
+		// ReSharper disable UnusedParameter.Local
 		static void Main(string[] args)
+		// ReSharper restore UnusedParameter.Local
+
 		{
 			var stopwatch = new Stopwatch();
 			var stopwatchExternal = new Stopwatch();
-			var testThread = new TestMessageThread(stopwatch, "TestThread");
+			var testThread = new TestMessageThread("TestThread");
 			//How many blocks of 5 ms should run (and how many messages)
 			var runBlocks = 10;
 			var sendedMessages = 0;
@@ -23,9 +23,9 @@ namespace _002AMessageDrivenThread
 			stopwatchExternal.Start();
 
 			//The list of messages received
-			List<TestMessage> messagesReceived = new List<TestMessage>();
+			var messagesReceived = new List<TestMessage>();
 
-			TestMessage msg = null;
+			TestMessage msg;
 			while (runBlocks > 0)
 			{
 				//Send a new message

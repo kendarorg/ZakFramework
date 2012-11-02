@@ -100,7 +100,7 @@ namespace ZakThread.HighPower
 							}
 							task.CompleteTask();
 						}
-						_runningTasks[task.TaskId] = new AsyncTask(null,null,null,null);
+						_runningTasks[task.TaskId] = null;
 						_runningTasks.Remove(task.TaskId);
 						jobDone++;
 					}
@@ -155,7 +155,7 @@ namespace ZakThread.HighPower
 			else
 			{
 				Thread.Sleep(0);
-				Thread.Sleep(1);
+				//TRIAL				Thread.Sleep(1);
 			}
 			return true;
 		}

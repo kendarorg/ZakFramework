@@ -1,19 +1,15 @@
 ﻿
-using ZakThread.Threading;
-using System.Diagnostics;
 using ZakThread.Logging;
-using System;
+using ZakThread.Threading;
 
 namespace _002AMessageDrivenThread
 {
-	class TestMessageThread: BaseMessageThread
+	class TestMessageThread : BaseMessageThread
 	{
-		private Stopwatch _stopwatch;
 
-		public TestMessageThread(Stopwatch stopwatch, string threadName,bool restartOnError=true):
-		 base(NullLogger.Create(),threadName,restartOnError)
+		public TestMessageThread(string threadName, bool restartOnError = true) :
+			base(NullLogger.Create(), threadName, restartOnError)
 		{
-			_stopwatch = stopwatch;
 		}
 		protected override bool HandleMessage(IMessage msg)
 		{
@@ -23,7 +19,7 @@ namespace _002AMessageDrivenThread
 
 		public override void RegisterMessages()
 		{
-			
+
 		}
 
 		protected override bool RunSingleCycle()

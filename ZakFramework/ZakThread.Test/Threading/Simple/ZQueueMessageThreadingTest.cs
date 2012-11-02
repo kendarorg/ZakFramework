@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using ZakThread.Test.Threading.Simple;
 using ZakThread.Threading.Enums;
 
-namespace ZQueue.Test.Threading.Simple
+namespace ZakThread.Test.Threading.Simple
 {
 	[TestClass]
 	public class ZQueueMessageThreadingTest
@@ -118,9 +117,8 @@ namespace ZQueue.Test.Threading.Simple
 			const int sleepTime = 1;
 			const string testName = "TestThread";
 			const int messagesToSend = 100;
-			const bool restartOnError = true;
 			var expectedException = new Exception("TEST");
-			var th = new SimpleMessageThreadConsumer(sleepTime,testName, restartOnError);
+			var th = new SimpleMessageThreadConsumer(sleepTime,testName);
 
 			th.RunThread();
 			Thread.Sleep(100);

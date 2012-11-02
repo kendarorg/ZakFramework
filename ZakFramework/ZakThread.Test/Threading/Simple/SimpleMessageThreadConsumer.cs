@@ -3,7 +3,7 @@ using ZakThread.Threading;
 using ZakThread.Logging;
 using System.Threading;
 
-namespace ZQueue.Test.Threading.Simple
+namespace ZakThread.Test.Threading.Simple
 {
 	public class SimpleMessageThreadConsumer : BaseMessageThread
 	{
