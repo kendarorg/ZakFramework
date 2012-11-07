@@ -9,26 +9,47 @@ namespace _003AConcurrentTreeStructure
 {
 	internal class Program
 	{
+		const string STARTING_PATH = @"D:\Development";
+		/// <summary>
+		/// This will set the directory that will be scanned
+		/// </summary>
 		public class ThreadParameter
 		{
+			/// <summary>
+			/// The concurrent tree instance
+			/// </summary>
 			public ConcurrentTree<string> Tree;
+
+			/// <summary>
+			/// The starting path for this tree
+			/// </summary>
 			public string RootPath;
 
+			/// <summary>
+			/// The current directory info
+			/// </summary>
 			public DirectoryInfo Info;
 
 			public int Id;
 
+			/// <summary>
+			/// Shared list of threads
+			/// </summary>
 			public Thread[] Threads;
-			public long[] MsElapsed;
+
+			/// <summary>
+			/// The elapsed times
+			/// </summary>
+			public long[] TicksElapsed;
 		}
 
-// ReSharper disable UnusedParameter.Local
+		// ReSharper disable UnusedParameter.Local
 		private static void Main(string[] args)
-// ReSharper restore UnusedParameter.Local
+		// ReSharper restore UnusedParameter.Local
 		{
-			const string templatePath = @"C:\Tmp";
+			
 			SingleThreadAccess();
-			MultiThreadAccess(templatePath, 50);
+			MultiThreadAccess(STARTING_PATH, 50);
 		}
 
 		private static void SingleThreadAccess()
@@ -77,7 +98,7 @@ namespace _003AConcurrentTreeStructure
 			threadsCount = Math.Min(dirs.Length, threadsCount);
 
 			var threads = new Thread[Math.Min(dirs.Length, threadsCount)];
-			var msElapsed = new long[Math.Min(dirs.Length, threadsCount)];
+			var ticksElapsed = new long[Math.Min(dirs.Length, threadsCount)];
 
 			for (int i = 0; i < threadsCount; i++)
 			{
@@ -95,26 +116,26 @@ namespace _003AConcurrentTreeStructure
 						Tree = tree,
 						Id = i,
 						Threads = threads,
-						MsElapsed = msElapsed
+						TicksElapsed = ticksElapsed
 					});
 			}
 
-			long msTotal;
+			long ticksTotal;
 			long elements;
 			bool continueAll = true;
 			while (continueAll)
 			{
-				msTotal = 0;
+				ticksTotal = 0;
 				for (int i = 0; i < threadsCount; i++)
 				{
-					var elap = Interlocked.Read(ref msElapsed[i]);
-					msTotal += elap;
+					var elap = Interlocked.Read(ref ticksElapsed[i]);
+					ticksTotal += elap;
 				}
 				elements = Interlocked.Read(ref _counter);
-				Console.WriteLine("Elaborated {0} files/directories in {1} ms. Average latency: {2} ms.",
-				                  elements,
-				                  sw.ElapsedMilliseconds,
-				                  elements > 0 ? (int) (msTotal/elements) : 0);
+				Console.WriteLine("Elaborated {0} files/directories in {1} ms. Total latency: {2} ms.",
+													elements,
+													sw.ElapsedMilliseconds,
+													elements > 0 ? (int)( (ticksTotal / threadsCount)/TimeSpan.TicksPerMillisecond) : 0);
 
 				Thread.Sleep(1000);
 				continueAll = false;
@@ -125,29 +146,29 @@ namespace _003AConcurrentTreeStructure
 			}
 			sw.Stop();
 
-			msTotal = 0;
+			ticksTotal = 0;
 			elements = Interlocked.Read(ref _counter);
 			for (int i = 0; i < threadsCount; i++)
 			{
-				msTotal += Interlocked.Read(ref msElapsed[i]);
+				ticksTotal += Interlocked.Read(ref ticksElapsed[i]);
 			}
 			Console.WriteLine("Elaborated {0} files/directories in {1} ms. Average latency: {2} ms.",
-			                  elements,
-			                  sw.ElapsedMilliseconds,
-			                  elements > 0 ? (int) (msTotal/elements) : 0);
+												elements,
+												sw.ElapsedMilliseconds,
+												elements > 0 ? (int)((ticksTotal / threadsCount)/TimeSpan.TicksPerMillisecond) : 0);
 			Console.WriteLine("Done!");
 		}
 
 		private static void ReplicateDir(object obj)
 		{
-			var tp = (ThreadParameter) obj;
+			var tp = (ThreadParameter)obj;
 			var rootDir = tp.Info;
 			var stopWatch = new Stopwatch();
 
 			stopWatch.Start();
 			var nodeRoot = tp.Tree.FindByPath(tp.RootPath);
 			stopWatch.Stop();
-			Interlocked.Add(ref tp.MsElapsed[tp.Id], stopWatch.ElapsedMilliseconds);
+			Interlocked.Add(ref tp.TicksElapsed[tp.Id], stopWatch.ElapsedMilliseconds);
 
 			DirectoryInfo[] dirs = rootDir.GetDirectories("*", SearchOption.AllDirectories);
 
@@ -158,7 +179,7 @@ namespace _003AConcurrentTreeStructure
 						Info = dir,
 						RootPath = tp.RootPath + TreeNode.PathSeparator + dir.Name,
 						Tree = tp.Tree,
-						MsElapsed = tp.MsElapsed,
+						TicksElapsed = tp.TicksElapsed,
 						Id = tp.Id
 					};
 				stopWatch.Restart();
@@ -173,7 +194,7 @@ namespace _003AConcurrentTreeStructure
 					Interlocked.Increment(ref _counter);
 				}
 				stopWatch.Stop();
-				Interlocked.Add(ref tp.MsElapsed[tp.Id], stopWatch.ElapsedMilliseconds);
+				Interlocked.Add(ref tp.TicksElapsed[tp.Id], stopWatch.ElapsedTicks);
 				ReplicateDir(newTp);
 			}
 			if (tp.Threads != null)
