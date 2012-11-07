@@ -149,7 +149,7 @@ namespace ZakThread.Test.Threading.Simple
 			th.Terminate();
 			Thread.Sleep(100);
 			Exception expectedEx = th.LastError;
-		  Assert.AreEqual(RunningStatus.Halted, th.Status);
+		  Assert.AreEqual(RunningStatus.AbortedOnCleanup, th.Status);
 			
 			Assert.IsNotNull(expectedEx);
 			Assert.AreEqual(expectedEx.Message, th.ThrowExceptionOnCleanUp.Message);

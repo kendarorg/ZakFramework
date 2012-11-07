@@ -155,7 +155,7 @@ namespace ZakThread.HighPower
 			else
 			{
 				Thread.Sleep(0);
-				//TRIAL				Thread.Sleep(1);
+				if (WaitCycle > 0) Thread.Sleep(WaitCycle);
 			}
 			return true;
 		}

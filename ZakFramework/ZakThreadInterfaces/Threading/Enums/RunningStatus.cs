@@ -38,6 +38,7 @@
 		/// <summary>
 		/// Some exception had been thrown
 		/// </summary>
-		ExceptionThrown = 6
+		ExceptionThrown = 6,
+		AbortedOnCleanup
 	}
 }

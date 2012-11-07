@@ -20,7 +20,7 @@ namespace ZakThread.Logging
 		public FileLogger()
 			: base(NullLogger.Create(), "FileLogger", true)
 		{
-
+			WaitCycle = 10;
 		}
 
 		public void Initialize(IIniFile iniFile, string section = null)
@@ -68,7 +68,6 @@ namespace ZakThread.Logging
 				_logFile.WriteLine(el.ToString());
 			}
 			_logFile.Flush();
-			Thread.Sleep(10);
 			return true;
 		}
 	}

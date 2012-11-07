@@ -25,6 +25,12 @@ namespace ZakThread.Threading
 		}
 
 		/// <summary>
+		/// How much ms should wait between each cycle to avoid eating all
+		/// proccessor power, 0 means... no wait!
+		/// </summary>
+		public int WaitCycle { get; set; }
+
+		/// <summary>
 		/// Constructor that should not be implemented
 		/// </summary>
 		protected BaseThread()
@@ -45,6 +51,7 @@ namespace ZakThread.Threading
 			ThreadId = _threadCounter;
 			_logger = logger;
 			_restartOnError = restartOnError;
+			WaitCycle = 0;
 		}
 
 		public ILogger Logger { get { return _logger; } }
@@ -169,9 +176,18 @@ namespace ZakThread.Threading
 			}
 			else
 			{
-				b.CleanUp();
-				b.Status = RunningStatus.Halted;
-				b._exceptions = new LockFreeQueue<Exception>();
+				try
+				{
+					b.CleanUp();
+					b.Status = RunningStatus.Halted;
+					b._exceptions = new LockFreeQueue<Exception>();
+				}
+				catch (Exception tae)
+				{
+					b._exceptions.Enqueue(tae);
+					b.Status = RunningStatus.AbortedOnCleanup;
+					b.HandleException(tae);
+				}	
 			}
 		}
 
@@ -240,7 +256,7 @@ namespace ZakThread.Threading
 					return;
 				}
 				Thread.Sleep(0);
-//TRIAL				Thread.Sleep(1);
+				if (WaitCycle > 0) Thread.Sleep(WaitCycle);
 			}
 			if (tmp != RunningStatus.Running && tmp != RunningStatus.Halting)
 			{
