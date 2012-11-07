@@ -38,19 +38,19 @@ namespace ZakCoreUtils.Test.Collections
 		{
 			while (_toSendElements > Interlocked.Read(ref _sentElements))
 			{
-				if(Interlocked.Increment(ref _sentElements)<=_toSendElements)
+				if (Interlocked.Increment(ref _sentElements) <= _toSendElements)
 				{
-					_internalQueue.Enqueue(new CollectionElement(0));	
+					_internalQueue.Enqueue(new CollectionElement(0));
 				}
 			}
 		}
 
 		public static void ConsumerThread()
 		{
-			while(_toSendElements != Interlocked.Read(ref _collectedElements))
+			while (_toSendElements != Interlocked.Read(ref _collectedElements))
 			{
 #pragma warning disable 168
-				foreach(CollectionElement ce in _internalQueue.Dequeue())
+				foreach (CollectionElement ce in _internalQueue.Dequeue())
 #pragma warning restore 168
 				{
 					Interlocked.Increment(ref _collectedElements);

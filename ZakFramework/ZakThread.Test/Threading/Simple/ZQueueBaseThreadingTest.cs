@@ -18,8 +18,8 @@ namespace ZakThread.Test.Threading.Simple
 			var th = new SimpleThread(sleepTime, testName);
 
 			Assert.AreEqual(expectedTestName, th.ThreadName);
-			Assert.AreEqual(null,th.LastError);
-			Assert.AreEqual(RunningStatus.None,th.Status);
+			Assert.AreEqual(null, th.LastError);
+			Assert.AreEqual(RunningStatus.None, th.Status);
 		}
 
 		[TestMethod]
@@ -27,7 +27,7 @@ namespace ZakThread.Test.Threading.Simple
 		{
 			const int sleepTime = 100;
 			const string testName = "TestThread";
-			var th = new SimpleThread(sleepTime,testName);
+			var th = new SimpleThread(sleepTime, testName);
 
 			th.RunThread();
 			Thread.Sleep(100);
@@ -59,7 +59,7 @@ namespace ZakThread.Test.Threading.Simple
 
 			th.Terminate(true);
 			Thread.Sleep(100);
-			
+
 			Assert.AreEqual(RunningStatus.Aborted, th.Status);
 
 			Assert.IsTrue(th.IsInitialized);
@@ -96,7 +96,7 @@ namespace ZakThread.Test.Threading.Simple
 		{
 			const int sleepTime = 10;
 			const string testName = "TestThread";
-			var th = new SimpleThread(sleepTime, testName,false);
+			var th = new SimpleThread(sleepTime, testName, false);
 			var ex = new Exception("TEST");
 			th.ThrowExceptionOnInitialization = ex;
 
@@ -118,7 +118,7 @@ namespace ZakThread.Test.Threading.Simple
 		{
 			const int sleepTime = 10;
 			const string testName = "TestThread";
-			var th = new SimpleThread(sleepTime, testName,false);
+			var th = new SimpleThread(sleepTime, testName, false);
 			var ex = new Exception("TEST");
 			th.ThrowExceptionOnCyclicExecution = ex;
 
@@ -140,7 +140,7 @@ namespace ZakThread.Test.Threading.Simple
 		{
 			const int sleepTime = 10;
 			const string testName = "TestThread";
-			var th = new SimpleThread(sleepTime, testName,false);
+			var th = new SimpleThread(sleepTime, testName, false);
 			var ex = new Exception("TEST");
 			th.ThrowExceptionOnCleanUp = ex;
 
@@ -149,8 +149,8 @@ namespace ZakThread.Test.Threading.Simple
 			th.Terminate();
 			Thread.Sleep(100);
 			Exception expectedEx = th.LastError;
-		  Assert.AreEqual(RunningStatus.AbortedOnCleanup, th.Status);
-			
+			Assert.AreEqual(RunningStatus.AbortedOnCleanup, th.Status);
+
 			Assert.IsNotNull(expectedEx);
 			Assert.AreEqual(expectedEx.Message, th.ThrowExceptionOnCleanUp.Message);
 

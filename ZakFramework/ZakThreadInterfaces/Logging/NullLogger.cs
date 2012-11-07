@@ -1,14 +1,14 @@
 ﻿using ZakCore.Utils.Commons;
 using ZakCore.Utils.Logging;
+
 namespace ZakThread.Logging
 {
 	public class NullLogger : ILogger
 	{
-		private readonly  static NullLogger _nullLogger = new NullLogger();
+		private static readonly NullLogger _nullLogger = new NullLogger();
 
 		private NullLogger()
 		{
-			
 		}
 
 		public static ILogger Create()
@@ -23,7 +23,6 @@ namespace ZakThread.Logging
 
 		public void Log(LogEntity le)
 		{
-			
 		}
 
 		public ushort LoggingLevel { get; set; }

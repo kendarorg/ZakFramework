@@ -5,7 +5,7 @@
 		public bool ForceHalt { get; set; }
 		public string ThreadName { get; set; }
 
-		public RemoveThreadContent(IBaseMessageThread messageThread,bool forceHalt)
+		public RemoveThreadContent(IBaseMessageThread messageThread, bool forceHalt)
 		{
 			ForceHalt = forceHalt;
 			ThreadName = messageThread.ThreadName;

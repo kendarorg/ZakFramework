@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
-using _003AConcurrentTreeStructure.Lib.ConcurrentTreeInternals;
 using ZakThread.HighPower;
 using ZakThread.HighPower.Bases;
 using ZakThread.Logging;
+using _003AConcurrentTreeStructure.Lib.ConcurrentTreeInternals;
 
 namespace _003AConcurrentTreeStructure.Lib
 {
@@ -40,7 +40,7 @@ namespace _003AConcurrentTreeStructure.Lib
 		/// <returns></returns>
 		public TreeNode<TContent> NewTreeNode(string name, TContent content = default(TContent))
 		{
-			var treeNode = new TreeNode<TContent>(name, this) { Content = content };
+			var treeNode = new TreeNode<TContent>(name, this) {Content = content};
 			return treeNode;
 		}
 
@@ -59,7 +59,7 @@ namespace _003AConcurrentTreeStructure.Lib
 		/// <returns></returns>
 		public override bool ExecuteAsyncProcessing(AsyncTask asyncTask)
 		{
-			var msg = (ConcurrentTreeMessage)asyncTask.Tag;
+			var msg = (ConcurrentTreeMessage) asyncTask.Tag;
 			if (msg == null) return true;
 			asyncTask.Result = ExecuteOperation(msg);
 			return false;
@@ -71,7 +71,6 @@ namespace _003AConcurrentTreeStructure.Lib
 		/// <param name="atl"></param>
 		public override void FinalizeBatchElements(List<AsyncTask> atl)
 		{
-
 		}
 
 		#endregion
@@ -87,25 +86,25 @@ namespace _003AConcurrentTreeStructure.Lib
 			}
 
 			var msg = new ConcurrentTreeMessage(ConcurrentTreeMessageTypes.MsgFindByPath,
-				path);
+			                                    path);
 
 			var result = StartTask(msg);
-			return (TreeNode<TContent>)result.Result;
+			return (TreeNode<TContent>) result.Result;
 		}
 
 		internal List<TreeNode<TContent>> GetChildren(TreeNode<TContent> treeNode)
 		{
 			var msg = new ConcurrentTreeMessage(ConcurrentTreeMessageTypes.MsgGetChildren,
-				treeNode);
+			                                    treeNode);
 
 			var result = StartTask(msg);
-			return (List<TreeNode<TContent>>)result.Result;
+			return (List<TreeNode<TContent>>) result.Result;
 		}
 
 		internal bool Rename(TreeNode<TContent> treeNode, string newName)
 		{
 			var msg = new ConcurrentTreeMessage(ConcurrentTreeMessageTypes.MsgRename,
-				newName);
+			                                    newName);
 
 			var result = StartTask(msg);
 			return result.Success;
@@ -114,7 +113,7 @@ namespace _003AConcurrentTreeStructure.Lib
 		internal bool AddChild(TreeNode<TContent> treeNode, TreeNode<TContent> item)
 		{
 			var msg = new ConcurrentTreeMessage(ConcurrentTreeMessageTypes.MsgAddChild,
-				treeNode, item);
+			                                    treeNode, item);
 
 			var result = StartTask(msg);
 			return result.Success;
@@ -123,7 +122,7 @@ namespace _003AConcurrentTreeStructure.Lib
 		internal void RemoveChild(TreeNode<TContent> treeNode, TreeNode<TContent> item)
 		{
 			var msg = new ConcurrentTreeMessage(ConcurrentTreeMessageTypes.MsgRemoveChild,
-				treeNode, item);
+			                                    treeNode, item);
 
 			_executor.SendMessageToThread(msg);
 		}
@@ -131,7 +130,7 @@ namespace _003AConcurrentTreeStructure.Lib
 		internal void RemoveChild(TreeNode<TContent> treeNode, string itemName)
 		{
 			var msg = new ConcurrentTreeMessage(ConcurrentTreeMessageTypes.MsgRemoveChildByName,
-				treeNode, itemName);
+			                                    treeNode, itemName);
 
 			_executor.SendMessageToThread(msg);
 		}
@@ -144,14 +143,15 @@ namespace _003AConcurrentTreeStructure.Lib
 		private ConcurrentTreeMessageResult StartTask(ConcurrentTreeMessage msg)
 		{
 			// Create the task to execute, based on the message
-			var asop = (AsyncTask)RunAsyncOperation(null, msg, null);
+			var asop = (AsyncTask) RunAsyncOperation(null, msg, null);
 			// Enqueue it on the executor
 			_executor.EnqueTask(asop);
 			// Wait for completion
 			asop.AsyncWaitHandle.WaitOne(5000, true);
 
-			return (ConcurrentTreeMessageResult)asop.Result;
+			return (ConcurrentTreeMessageResult) asop.Result;
 		}
+
 		#endregion
 
 		#region Specific operations in single thread
@@ -169,36 +169,36 @@ namespace _003AConcurrentTreeStructure.Lib
 				case (ConcurrentTreeMessageTypes.MsgAddChild):
 					//internal void AddChildren(TreeNode<TContent> treeNode, TreeNode<TContent> item)
 					result = ExecuteAddChild(
-						(TreeNode<TContent>)msg.Parameters[0],
-						(TreeNode<TContent>)msg.Parameters[1]);
+						(TreeNode<TContent>) msg.Parameters[0],
+						(TreeNode<TContent>) msg.Parameters[1]);
 					break;
 				case (ConcurrentTreeMessageTypes.MsgFindByPath):
 					//internal TreeNode<TContent> FindByPath(string path)
 					result = ExecuteFindByPath(
-						(string)msg.Parameters[0]);
+						(string) msg.Parameters[0]);
 					break;
 				case (ConcurrentTreeMessageTypes.MsgGetChildren):
 					//internal List<TreeNode<TContent>> GetChildren(TreeNode<TContent> treeNode)
 					result = ExecuteGetChildren(
-						(TreeNode<TContent>)msg.Parameters[0]);
+						(TreeNode<TContent>) msg.Parameters[0]);
 					break;
 				case (ConcurrentTreeMessageTypes.MsgRemoveChild):
 					//internal void RemoveChild(TreeNode<TContent> treeNode, string itemName)
 					result = ExecuteRemoveChild(
-						(TreeNode<TContent>)msg.Parameters[0],
-						(string)msg.Parameters[1]);
+						(TreeNode<TContent>) msg.Parameters[0],
+						(string) msg.Parameters[1]);
 					break;
 				case (ConcurrentTreeMessageTypes.MsgRemoveChildByName):
 					//internal void RemoveChild(TreeNode<TContent> treeNode, TreeNode<TContent> item)
 					result = ExecuteRemoveChild(
-						(TreeNode<TContent>)msg.Parameters[0],
-						(TreeNode<TContent>)msg.Parameters[1]);
+						(TreeNode<TContent>) msg.Parameters[0],
+						(TreeNode<TContent>) msg.Parameters[1]);
 					break;
 				case (ConcurrentTreeMessageTypes.MsgRename):
 					//internal void Rename(TreeNode<TContent> treeNode, string newName)
 					result = ExecuteRename(
-						(TreeNode<TContent>)msg.Parameters[0],
-						(string)msg.Parameters[1]);
+						(TreeNode<TContent>) msg.Parameters[0],
+						(string) msg.Parameters[1]);
 					break;
 			}
 			return result;
@@ -266,8 +266,8 @@ namespace _003AConcurrentTreeStructure.Lib
 			var result = new ConcurrentTreeMessageResult();
 
 			var pathExploded = path.Split(TreeNode.PathSeparatorChar);
-			result.Result = FindByPathInternal(Root, pathExploded,1);
-			result.Success = result.Result!=null;
+			result.Result = FindByPathInternal(Root, pathExploded, 1);
+			result.Success = result.Result != null;
 			return result;
 		}
 

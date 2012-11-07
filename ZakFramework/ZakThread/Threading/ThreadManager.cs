@@ -16,7 +16,7 @@ namespace ZakThread.Threading
 			_runningThreads = new Dictionary<string, IBaseMessageThread>();
 		}
 
-		public ThreadManager(ILogger logger,string threadName) :
+		public ThreadManager(ILogger logger, string threadName) :
 			base(logger, threadName, true)
 		{
 			_runningThreads = new Dictionary<string, IBaseMessageThread>();
@@ -51,17 +51,19 @@ namespace ZakThread.Threading
 
 		public void AddThread(IBaseMessageThread messageThread)
 		{
-			SendMessageToThread(new InternalMessage(InternalMessageTypes.AddThread,messageThread));
+			SendMessageToThread(new InternalMessage(InternalMessageTypes.AddThread, messageThread));
 		}
 
-		public void RemoveThread(IBaseMessageThread messageThread,bool forceHalt = false)
+		public void RemoveThread(IBaseMessageThread messageThread, bool forceHalt = false)
 		{
-			SendMessageToThread(new InternalMessage(InternalMessageTypes.RemoveThread, new RemoveThreadContent(messageThread, forceHalt)));
+			SendMessageToThread(new InternalMessage(InternalMessageTypes.RemoveThread,
+			                                        new RemoveThreadContent(messageThread, forceHalt)));
 		}
 
 		public void RemoveThread(string messageThreadName, bool forceHalt = false)
 		{
-			SendMessageToThread(new InternalMessage(InternalMessageTypes.RemoveThread, new RemoveThreadContent(messageThreadName, forceHalt)));
+			SendMessageToThread(new InternalMessage(InternalMessageTypes.RemoveThread,
+			                                        new RemoveThreadContent(messageThreadName, forceHalt)));
 		}
 
 		public override void Terminate(bool force = false)
@@ -77,8 +79,8 @@ namespace ZakThread.Threading
 		protected override bool HandleMessage(IMessage msg)
 		{
 			var internalMessage = msg as InternalMessage;
-			if(internalMessage==null) return true;
-			switch(internalMessage.MessageType)
+			if (internalMessage == null) return true;
+			switch (internalMessage.MessageType)
 			{
 				case (InternalMessageTypes.AddThread):
 					HandleAddThread(internalMessage);
@@ -111,7 +113,7 @@ namespace ZakThread.Threading
 
 		private void HandleTerminate(InternalMessage internalMessage)
 		{
-			var force = (bool)internalMessage.Content;
+			var force = (bool) internalMessage.Content;
 			foreach (var thread in _runningThreads.Values)
 			{
 				_runningThreads[thread.ThreadName] = null;
@@ -176,7 +178,6 @@ namespace ZakThread.Threading
 
 		public override void RegisterMessages()
 		{
-			
 		}
 	}
 }

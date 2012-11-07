@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Threading;
 using ZakCore.Utils.Collections;
 using ZakCore.Utils.Commons;
 using ZakCore.Utils.Logging;
@@ -34,7 +33,6 @@ namespace ZakThread.Logging
 
 		public override void RunThread()
 		{
-			
 		}
 
 

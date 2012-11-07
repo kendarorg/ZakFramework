@@ -79,7 +79,7 @@ namespace ZakCore.Utils.Commons
 
 			if (value == null || !(value is string))
 			{
-				if (_replaceBuild && value!=null)
+				if (_replaceBuild && value != null)
 				{
 #if DEBUG
 					value = ((string) value).Replace("{build}", "Debug");
@@ -87,7 +87,7 @@ namespace ZakCore.Utils.Commons
 				value = value.Replace("{build}", "Release");
 #endif
 				}
-				if (_setupRoot != null && value!=null)
+				if (_setupRoot != null && value != null)
 				{
 					value = ((string) value).Replace("{root}", _setupRoot);
 				}

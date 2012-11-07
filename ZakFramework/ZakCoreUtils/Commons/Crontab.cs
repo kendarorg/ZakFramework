@@ -72,7 +72,8 @@ namespace ZakCore.Utils.Commons
 				throw new ArgumentNullException();
 			}
 
-			_configLine = commandLine.Replace("\t", " ").Replace("  ", " ").Replace("?", "*").Replace("*/", "0/").Trim().ToUpper();
+			_configLine =
+				commandLine.Replace("\t", " ").Replace("  ", " ").Replace("?", "*").Replace("*/", "0/").Trim().ToUpper();
 
 			if (_configLine.StartsWith("@"))
 			{
@@ -133,7 +134,7 @@ namespace ZakCore.Utils.Commons
 
 		private DateRange SetupElement(string p, int i)
 		{
-			var d = new DateRange { Position = (DateSection)i };
+			var d = new DateRange {Position = (DateSection) i};
 			if (d.Position == DateSection.Month)
 			{
 				p = ReplaceMonths(p);
@@ -187,8 +188,8 @@ namespace ZakCore.Utils.Commons
 		{
 			if (!_realCrontab)
 			{
-				Int64 msDelta = (dt.Ticks - _baseline.Ticks) / TimeSpan.TicksPerMillisecond;
-				return (msDelta % _mscron == 0);
+				Int64 msDelta = (dt.Ticks - _baseline.Ticks)/TimeSpan.TicksPerMillisecond;
+				return (msDelta%_mscron == 0);
 			}
 			int allOk = 0;
 			for (int i = 0; i < _ranges.Count; i++)
@@ -210,7 +211,7 @@ namespace ZakCore.Utils.Commons
 						allOk += CheckValue(dt.Year, d);
 						break;
 					case (DateSection.WeekDay):
-						allOk += CheckValue((int)dt.DayOfWeek, d);
+						allOk += CheckValue((int) dt.DayOfWeek, d);
 						break;
 					case (DateSection.Month):
 						allOk += CheckValue(dt.Month, d); ///////
@@ -239,7 +240,7 @@ namespace ZakCore.Utils.Commons
 			{
 				if (d.Values.ContainsKey(0) && d.Values[0] == 0)
 				{
-					if (p % d.Periodicity == 0) return 1;
+					if (p%d.Periodicity == 0) return 1;
 				}
 			}
 
@@ -257,7 +258,7 @@ namespace ZakCore.Utils.Commons
 					// 1-2
 					if (d.Periodicity == -1) return 1;
 					// 1-10/3
-					if ((p - e.Key) % d.Periodicity == 0) return 1;
+					if ((p - e.Key)%d.Periodicity == 0) return 1;
 				}
 			}
 			return 0;
@@ -276,14 +277,14 @@ namespace ZakCore.Utils.Commons
 			DateTime dt = srcTime != null ? srcTime.Value : DateTime.Now;
 			if (!_realCrontab)
 			{
-				Int64 msDelta = (dt.Ticks - _baseline.Ticks) / TimeSpan.TicksPerMillisecond;
-				if (msDelta % _mscron == 0) return dt;
-				dt = dt + TimeSpan.FromMilliseconds(_mscron - (msDelta % _mscron));
+				Int64 msDelta = (dt.Ticks - _baseline.Ticks)/TimeSpan.TicksPerMillisecond;
+				if (msDelta%_mscron == 0) return dt;
+				dt = dt + TimeSpan.FromMilliseconds(_mscron - (msDelta%_mscron));
 				return dt;
 			}
 			_error = false;
 
-			var vals = new[] { dt.Second, dt.Minute, dt.Hour, dt.Day, dt.Month + 1, (int)dt.DayOfWeek, dt.Year };
+			var vals = new[] {dt.Second, dt.Minute, dt.Hour, dt.Day, dt.Month + 1, (int) dt.DayOfWeek, dt.Year};
 			// ReSharper disable TooWideLocalVariableScope
 			// ReSharper disable RedundantAssignment
 			int prev = 0;
@@ -293,7 +294,7 @@ namespace ZakCore.Utils.Commons
 			bool doRestart = true;
 			while (doRestart)
 			{
-				vals = new[] { dt.Second, dt.Minute, dt.Hour, dt.Day, dt.Month + 1, (int)dt.DayOfWeek, dt.Year };
+				vals = new[] {dt.Second, dt.Minute, dt.Hour, dt.Day, dt.Month + 1, (int) dt.DayOfWeek, dt.Year};
 				doRestart = false;
 				//for (int i = 0; i < _ranges.Count && doRestart==false; i++)
 				for (int i = (_ranges.Count - 1); i >= 0 && doRestart == false; i--)
@@ -310,10 +311,10 @@ namespace ZakCore.Utils.Commons
 								if (delta > 0)
 								{
 									dt = new DateTime(vals[6], vals[4] - 1, vals[3], vals[2], vals[1], vals[0]);
-									vals = new[] { 0, 0, 0, 1, 1, (int)dt.DayOfWeek, dt.Year };
+									vals = new[] {0, 0, 0, 1, 1, (int) dt.DayOfWeek, dt.Year};
 									dt = new DateTime(vals[6], vals[4] - 1, vals[3], vals[2], vals[1], vals[0]);
 								}
-								vals = new[] { dt.Second, dt.Minute, dt.Hour, dt.Day, dt.Month + 1, (int)dt.DayOfWeek, dt.Year };
+								vals = new[] {dt.Second, dt.Minute, dt.Hour, dt.Day, dt.Month + 1, (int) dt.DayOfWeek, dt.Year};
 							}
 							break;
 						case (DateSection.WeekDay):
@@ -323,10 +324,10 @@ namespace ZakCore.Utils.Commons
 								if (delta > 0)
 								{
 									dt += TimeSpan.FromDays(delta);
-									vals = new[] { 0, 0, 0, dt.Day, dt.Month + 1, (int)dt.DayOfWeek, dt.Year };
+									vals = new[] {0, 0, 0, dt.Day, dt.Month + 1, (int) dt.DayOfWeek, dt.Year};
 									dt = new DateTime(vals[6], vals[4] - 1, vals[3], vals[2], vals[1], vals[0]);
 								}
-								vals = new[] { dt.Second, dt.Minute, dt.Hour, dt.Day, dt.Month + 1, (int)dt.DayOfWeek, dt.Year };
+								vals = new[] {dt.Second, dt.Minute, dt.Hour, dt.Day, dt.Month + 1, (int) dt.DayOfWeek, dt.Year};
 							}
 							break;
 						case (DateSection.Month):
@@ -335,17 +336,17 @@ namespace ZakCore.Utils.Commons
 
 								if (vals[i] > 12)
 								{
-									vals[6] += vals[i] / 12;
-									vals[i] = vals[i] % 12 + 1;
+									vals[6] += vals[i]/12;
+									vals[i] = vals[i]%12 + 1;
 									delta++;
 								}
 								dt = new DateTime(vals[6], vals[4] - 1, vals[3], vals[2], vals[1], vals[0]);
 								if (delta > 0)
 								{
-									vals = new[] { 0, 0, 0, 1, dt.Month + 1, (int)dt.DayOfWeek, dt.Year };
+									vals = new[] {0, 0, 0, 1, dt.Month + 1, (int) dt.DayOfWeek, dt.Year};
 									dt = new DateTime(vals[6], vals[4] - 1, vals[3], vals[2], vals[1], vals[0]);
 								}
-								vals = new[] { dt.Second, dt.Minute, dt.Hour, dt.Day, dt.Month + 1, (int)dt.DayOfWeek, dt.Year };
+								vals = new[] {dt.Second, dt.Minute, dt.Hour, dt.Day, dt.Month + 1, (int) dt.DayOfWeek, dt.Year};
 							}
 							break;
 						case (DateSection.MonthDay):
@@ -355,10 +356,10 @@ namespace ZakCore.Utils.Commons
 								if (delta > 0)
 								{
 									dt += TimeSpan.FromDays(delta);
-									vals = new[] { 0, 0, 0, dt.Day, dt.Month + 1, (int)dt.DayOfWeek, dt.Year };
+									vals = new[] {0, 0, 0, dt.Day, dt.Month + 1, (int) dt.DayOfWeek, dt.Year};
 									dt = new DateTime(vals[6], vals[4] - 1, vals[3], vals[2], vals[1], vals[0]);
 								}
-								vals = new[] { dt.Second, dt.Minute, dt.Hour, dt.Day, dt.Month + 1, (int)dt.DayOfWeek, dt.Year };
+								vals = new[] {dt.Second, dt.Minute, dt.Hour, dt.Day, dt.Month + 1, (int) dt.DayOfWeek, dt.Year};
 							}
 							break;
 						case (DateSection.Hour):
@@ -368,10 +369,10 @@ namespace ZakCore.Utils.Commons
 								if (delta > 0)
 								{
 									dt += TimeSpan.FromHours(delta);
-									vals = new[] { 0, 0, dt.Hour, dt.Day, dt.Month + 1, (int)dt.DayOfWeek, dt.Year };
+									vals = new[] {0, 0, dt.Hour, dt.Day, dt.Month + 1, (int) dt.DayOfWeek, dt.Year};
 									dt = new DateTime(vals[6], vals[4] - 1, vals[3], vals[2], vals[1], vals[0]);
 								}
-								vals = new[] { dt.Second, dt.Minute, dt.Hour, dt.Day, dt.Month + 1, (int)dt.DayOfWeek, dt.Year };
+								vals = new[] {dt.Second, dt.Minute, dt.Hour, dt.Day, dt.Month + 1, (int) dt.DayOfWeek, dt.Year};
 							}
 							break;
 						case (DateSection.Min):
@@ -382,7 +383,7 @@ namespace ZakCore.Utils.Commons
 								{
 									dt += TimeSpan.FromMinutes(delta);
 								}
-								vals = new[] { 0, dt.Minute, dt.Hour, dt.Day, dt.Month + 1, (int)dt.DayOfWeek, dt.Year };
+								vals = new[] {0, dt.Minute, dt.Hour, dt.Day, dt.Month + 1, (int) dt.DayOfWeek, dt.Year};
 							}
 							break;
 						case (DateSection.Sec):
@@ -394,7 +395,7 @@ namespace ZakCore.Utils.Commons
 								{
 									dt += TimeSpan.FromSeconds(delta);
 								}
-								vals = new[] { dt.Second, dt.Minute, dt.Hour, dt.Day, dt.Month + 1, (int)dt.DayOfWeek, dt.Year };
+								vals = new[] {dt.Second, dt.Minute, dt.Hour, dt.Day, dt.Month + 1, (int) dt.DayOfWeek, dt.Year};
 							}
 							break;
 					}

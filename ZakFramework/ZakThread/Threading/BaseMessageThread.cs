@@ -63,7 +63,7 @@ namespace ZakThread.Threading
 		public IThreadManager Manager
 		{
 			get { return _threadManager; }
-			set { if (_threadManager == null)_threadManager = value; }
+			set { if (_threadManager == null) _threadManager = value; }
 		}
 
 		public abstract void RegisterMessages();

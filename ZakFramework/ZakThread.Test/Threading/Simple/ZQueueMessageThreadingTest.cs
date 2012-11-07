@@ -15,7 +15,7 @@ namespace ZakThread.Test.Threading.Simple
 			const string testName = "TestThread";
 			string expectedTestName = testName.ToUpperInvariant();
 
-			var th = new SimpleMessageThreadConsumer(sleepTime,testName);
+			var th = new SimpleMessageThreadConsumer(sleepTime, testName);
 
 			Assert.AreEqual(expectedTestName, th.ThreadName);
 			Assert.AreEqual(null, th.LastError);
@@ -27,7 +27,7 @@ namespace ZakThread.Test.Threading.Simple
 		{
 			const int sleepTime = 100;
 			const string testName = "TestThread";
-			var th = new SimpleMessageThreadConsumer(sleepTime,testName);
+			var th = new SimpleMessageThreadConsumer(sleepTime, testName);
 
 			th.RunThread();
 			Thread.Sleep(100);
@@ -50,7 +50,7 @@ namespace ZakThread.Test.Threading.Simple
 			const int sleepTime = 1;
 			const string testName = "TestThread";
 			const int messagesToSend = 100;
-			var th = new SimpleMessageThreadConsumer(sleepTime,testName);
+			var th = new SimpleMessageThreadConsumer(sleepTime, testName);
 
 			th.RunThread();
 			Thread.Sleep(100);
@@ -71,7 +71,7 @@ namespace ZakThread.Test.Threading.Simple
 
 			Assert.IsTrue(th.IsInitialized);
 			Assert.IsTrue(th.IsCleanedUp);
-			Assert.AreEqual(messagesToSend,th.HandledMessages);
+			Assert.AreEqual(messagesToSend, th.HandledMessages);
 		}
 
 		[TestMethod]
@@ -81,7 +81,7 @@ namespace ZakThread.Test.Threading.Simple
 			const string testName = "TestThread";
 			const int messagesToSend = 100;
 			var expectedException = new Exception("TEST");
-			var th = new SimpleMessageThreadConsumer(sleepTime, testName,false);
+			var th = new SimpleMessageThreadConsumer(sleepTime, testName, false);
 
 			th.RunThread();
 			Thread.Sleep(100);
@@ -118,7 +118,7 @@ namespace ZakThread.Test.Threading.Simple
 			const string testName = "TestThread";
 			const int messagesToSend = 100;
 			var expectedException = new Exception("TEST");
-			var th = new SimpleMessageThreadConsumer(sleepTime,testName);
+			var th = new SimpleMessageThreadConsumer(sleepTime, testName);
 
 			th.RunThread();
 			Thread.Sleep(100);
@@ -140,7 +140,7 @@ namespace ZakThread.Test.Threading.Simple
 
 			Assert.AreEqual(RunningStatus.Halted, th.Status);
 			Assert.IsNull(th.LastError);
-			
+
 
 			Assert.IsTrue(th.IsInitialized);
 			Assert.IsTrue(th.IsCleanedUp);

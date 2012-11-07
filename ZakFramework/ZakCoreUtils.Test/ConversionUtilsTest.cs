@@ -5,8 +5,6 @@ using ZakCore.Utils.Commons;
 
 namespace ZakCoreUtils.Test
 {
-
-
 	/// <summary>
 	///This is a test class for ConversionUtilsTest and is intended
 	///to contain all ConversionUtilsTest Unit Tests
@@ -21,6 +19,7 @@ namespace ZakCoreUtils.Test
 		public TestContext TestContext { get; set; }
 
 		#region Additional test attributes
+
 		// 
 		//You can use the following additional attributes as you write your tests:
 		//
@@ -48,8 +47,8 @@ namespace ZakCoreUtils.Test
 		//{
 		//}
 		//
-		#endregion
 
+		#endregion
 
 		/// <summary>
 		///A test for String2Bytes
@@ -57,11 +56,11 @@ namespace ZakCoreUtils.Test
 		[TestMethod]
 		public void String2BytesTest()
 		{
-			const string val = "\\asdfl8-8-"; 
+			const string val = "\\asdfl8-8-";
 			Encoding enc = Encoding.ASCII;
 			int outv;
 			byte[] actual = ConversionUtils.String2Bytes(val, enc);
-			string expected = ConversionUtils.Bytes2String(out outv,actual, 0, enc);
+			string expected = ConversionUtils.Bytes2String(out outv, actual, 0, enc);
 			Assert.AreEqual(expected, val);
 		}
 
@@ -89,7 +88,7 @@ namespace ZakCoreUtils.Test
 		[TestMethod]
 		public void DateTime2UnixTimeTest()
 		{
-			var val = new DateTime(2000,1,1,12,30,30);
+			var val = new DateTime(2000, 1, 1, 12, 30, 30);
 			const int expected = 946729830;
 			int actual = ConversionUtils.DateTime2UnixTime(val);
 			Assert.AreEqual(expected, actual);

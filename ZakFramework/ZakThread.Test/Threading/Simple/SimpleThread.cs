@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
-using ZakThread.Threading;
 using ZakThread.Logging;
+using ZakThread.Threading;
 
 namespace ZakThread.Test.Threading.Simple
 {
@@ -23,7 +23,7 @@ namespace ZakThread.Test.Threading.Simple
 
 		public Exception ThrowExceptionOnCleanUp { set; get; }
 
-		public SimpleThread(int sleepTime, string threadName, bool restartOnError=true)
+		public SimpleThread(int sleepTime, string threadName, bool restartOnError = true)
 			: base(NullLogger.Create(), threadName, restartOnError)
 		{
 			ThrowExceptionOnInitialization = null;
@@ -39,7 +39,7 @@ namespace ZakThread.Test.Threading.Simple
 		protected override bool RunSingleCycle()
 		{
 			if (ThrowExceptionOnCyclicExecution != null)
-			{ 
+			{
 				Exception toThrow = ThrowExceptionOnCyclicExecution;
 				if (ResetExceptionAfterThrow) ThrowExceptionOnCyclicExecution = null;
 				if (toThrow != null) throw toThrow;

@@ -1,7 +1,7 @@
 ﻿using System;
-using ZakThread.Threading;
-using ZakThread.Logging;
 using System.Threading;
+using ZakThread.Logging;
+using ZakThread.Threading;
 
 namespace ZakThread.Test.Threading.Simple
 {
@@ -10,8 +10,8 @@ namespace ZakThread.Test.Threading.Simple
 		public Int64 HandledMessages;
 
 		public Exception ThrowExceptionOnMessageHandling { get; set; }
-		
-		public SimpleMessageThreadConsumer(int sleepTime,string threadName,bool restartOnError=true):
+
+		public SimpleMessageThreadConsumer(int sleepTime, string threadName, bool restartOnError = true) :
 			base(NullLogger.Create(), threadName, restartOnError)
 		{
 			ThrowExceptionOnInitialization = null;
@@ -33,7 +33,6 @@ namespace ZakThread.Test.Threading.Simple
 
 		public override void RegisterMessages()
 		{
-			
 		}
 
 		private readonly int _sleepTime;
@@ -52,12 +51,11 @@ namespace ZakThread.Test.Threading.Simple
 
 		public Exception ThrowExceptionOnCleanUp { set; get; }
 
-		
 
 		protected override bool RunSingleCycle()
 		{
 			if (ThrowExceptionOnCyclicExecution != null)
-			{ 
+			{
 				Exception toThrow = ThrowExceptionOnCyclicExecution;
 				if (ResetExceptionAfterThrow) ThrowExceptionOnCyclicExecution = null;
 				if (toThrow != null) throw toThrow;

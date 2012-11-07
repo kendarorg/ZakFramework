@@ -2,6 +2,6 @@
 {
 	public interface IQueuedExecutor
 	{
-		object EnqueTask(AsyncTask newTask,int msTimeout = 5000);
+		object EnqueTask(AsyncTask newTask, int msTimeout = 5000);
 	}
 }

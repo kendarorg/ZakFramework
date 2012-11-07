@@ -4,8 +4,6 @@ using ZakCore.Utils.Commons;
 
 namespace ZakCoreUtils.Test
 {
-
-
 	/// <summary>
 	///This is a test class for CrontabTest and is intended
 	///to contain all CrontabTest Unit Tests
@@ -20,6 +18,7 @@ namespace ZakCoreUtils.Test
 		public TestContext TestContext { get; set; }
 
 		#region Additional test attributes
+
 		// 
 		//You can use the following additional attributes as you write your tests:
 		//
@@ -47,8 +46,8 @@ namespace ZakCoreUtils.Test
 		//{
 		//}
 		//
-		#endregion
 
+		#endregion
 
 		/// <summary>
 		///A test for Crontab Constructor
@@ -64,7 +63,7 @@ namespace ZakCoreUtils.Test
 
 			target = new Crontab("* 2-59/3 1,9,22 11-26 1-6 ? 2003");
 			Assert.IsTrue(target.MayRunAt(new DateTime(2003, 1, 11, 9, 5, 0)));
-			Assert.IsFalse (target.MayRunAt(new DateTime(2000, 1, 11, 9, 5, 0)));
+			Assert.IsFalse(target.MayRunAt(new DateTime(2000, 1, 11, 9, 5, 0)));
 			Assert.IsFalse(target.MayRunAt(new DateTime(2000, 1, 11, 9, 6, 0)));
 
 			target = new Crontab("* 2-59/3 1,9,22 11-26 1-6 ? 2003-2012");

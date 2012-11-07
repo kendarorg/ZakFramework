@@ -54,7 +54,10 @@ namespace ZakThread.Threading
 			WaitCycle = 0;
 		}
 
-		public ILogger Logger { get { return _logger; } }
+		public ILogger Logger
+		{
+			get { return _logger; }
+		}
 
 		/// <summary>
 		/// String identifier of the thread
@@ -187,7 +190,7 @@ namespace ZakThread.Threading
 					b._exceptions.Enqueue(tae);
 					b.Status = RunningStatus.AbortedOnCleanup;
 					b.HandleException(tae);
-				}	
+				}
 			}
 		}
 

@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using ZakCore.Utils.Collections;
 using ZakCore.Utils.Logging;
 using ZakThread.HighPower.Interfaces;
 using ZakThread.Threading;
-using System;
 
 namespace ZakThread.HighPower
 {
@@ -15,11 +15,10 @@ namespace ZakThread.HighPower
 	/// </summary>
 	public abstract class AsyncQueuedExecutor : BaseMessageThread, IQueuedExecutor
 	{
-
 		protected AsyncQueuedExecutor(ILogger logger, string threadName)
 			: base(logger, threadName)
 		{
-			BatchTimeoutMs=0;
+			BatchTimeoutMs = 0;
 		}
 
 		/// <summary>
@@ -33,14 +32,14 @@ namespace ZakThread.HighPower
 		/// <summary>
 		/// When passed the batch timeout all still running task will be completed without success
 		/// </summary>
-		protected int BatchTimeoutMs { get;set; }
+		protected int BatchTimeoutMs { get; set; }
 
 		private readonly LockFreeQueue<AsyncTask> _tasksToExecute = new LockFreeQueue<AsyncTask>();
 
 		/// <summary>
 		/// Add a task to execute
 		/// </summary>
-		public object EnqueTask(AsyncTask newTask,int msTimeout = 5000)
+		public object EnqueTask(AsyncTask newTask, int msTimeout = 5000)
 		{
 			_tasksToExecute.Enqueue(newTask);
 			newTask.AsyncWaitHandle.WaitOne(msTimeout);
@@ -72,7 +71,7 @@ namespace ZakThread.HighPower
 					{
 						at.StartAsyncWork();
 					}
-					_runningTasks.Add(at.TaskId,at);
+					_runningTasks.Add(at.TaskId, at);
 					hseret = CheckIfShouldStop(at, sw.ElapsedMilliseconds, msgCount);
 					if (!hseret)
 					{
@@ -81,7 +80,7 @@ namespace ZakThread.HighPower
 					msgCount++;
 				}
 			}
-			
+
 			int jobDone = 0;
 			if (!IsBatch)
 			{
@@ -125,7 +124,7 @@ namespace ZakThread.HighPower
 						}
 					}
 				}
-				
+
 				HandleBatchCompleted(completedTasks);
 				foreach (var task in completedTasks)
 				{
@@ -145,7 +144,7 @@ namespace ZakThread.HighPower
 				}
 				_runningTasks.Clear();
 			}
-			
+
 			sw.Stop();
 			OnExecutionCompleted();
 			if (jobDone > 0)
@@ -162,12 +161,10 @@ namespace ZakThread.HighPower
 
 		protected virtual void OnExecutionCompleted()
 		{
-
 		}
 
 		protected virtual void HandleBatchCompleted(List<AsyncTask> completedTasks)
 		{
-			
 		}
 
 		/// <summary>

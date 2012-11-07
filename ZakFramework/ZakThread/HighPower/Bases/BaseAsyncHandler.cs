@@ -4,14 +4,14 @@ using ZakThread.HighPower.Interfaces;
 
 namespace ZakThread.HighPower.Bases
 {
-	public abstract class BaseAsyncHandler :  IAsyncHandler
+	public abstract class BaseAsyncHandler : IAsyncHandler
 	{
 		protected virtual AsyncTask GenerateTask(AsyncCallback callback, Object tag, Object state, BaseAsyncHandler ash)
 		{
 			return new AsyncTask(callback, tag, state, ash);
 		}
 
-		public IAsyncResult RunAsyncOperation(AsyncCallback callback, Object tag, Object state,int timeoutMillisec=0)
+		public IAsyncResult RunAsyncOperation(AsyncCallback callback, Object tag, Object state, int timeoutMillisec = 0)
 		{
 			AsyncTask asynch = GenerateTask(callback, tag, state, this);
 

@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
@@ -8,7 +7,7 @@ using _003AConcurrentTreeStructure.Lib.ConcurrentTreeInternals;
 
 namespace _003AConcurrentTreeStructure
 {
-	class Program
+	internal class Program
 	{
 		public class ThreadParameter
 		{
@@ -23,12 +22,13 @@ namespace _003AConcurrentTreeStructure
 			public long[] MsElapsed;
 		}
 
-		static void Main(string[] args)
+// ReSharper disable UnusedParameter.Local
+		private static void Main(string[] args)
+// ReSharper restore UnusedParameter.Local
 		{
 			const string templatePath = @"C:\Tmp";
 			SingleThreadAccess();
-			MultiThreadAccess(templatePath,50);
-			
+			MultiThreadAccess(templatePath, 50);
 		}
 
 		private static void SingleThreadAccess()
@@ -63,7 +63,7 @@ namespace _003AConcurrentTreeStructure
 
 		private static long _counter;
 
-		private static void MultiThreadAccess(string templatePath,int threadsCount)
+		private static void MultiThreadAccess(string templatePath, int threadsCount)
 		{
 			if (!Directory.Exists(templatePath))
 			{
@@ -99,8 +99,8 @@ namespace _003AConcurrentTreeStructure
 					});
 			}
 
-			long msTotal = 0;
-			long elements = 0;
+			long msTotal;
+			long elements;
 			bool continueAll = true;
 			while (continueAll)
 			{
@@ -110,11 +110,11 @@ namespace _003AConcurrentTreeStructure
 					var elap = Interlocked.Read(ref msElapsed[i]);
 					msTotal += elap;
 				}
-			 elements = Interlocked.Read(ref _counter);
+				elements = Interlocked.Read(ref _counter);
 				Console.WriteLine("Elaborated {0} files/directories in {1} ms. Average latency: {2} ms.",
-					elements,
-					sw.ElapsedMilliseconds,
-					elements>0? (int)(msTotal / elements):0);
+				                  elements,
+				                  sw.ElapsedMilliseconds,
+				                  elements > 0 ? (int) (msTotal/elements) : 0);
 
 				Thread.Sleep(1000);
 				continueAll = false;
@@ -132,15 +132,15 @@ namespace _003AConcurrentTreeStructure
 				msTotal += Interlocked.Read(ref msElapsed[i]);
 			}
 			Console.WriteLine("Elaborated {0} files/directories in {1} ms. Average latency: {2} ms.",
-				elements,
-				sw.ElapsedMilliseconds,
-				elements > 0 ? (int)(msTotal / elements) : 0);
+			                  elements,
+			                  sw.ElapsedMilliseconds,
+			                  elements > 0 ? (int) (msTotal/elements) : 0);
 			Console.WriteLine("Done!");
 		}
 
 		private static void ReplicateDir(object obj)
 		{
-			var tp = (ThreadParameter)obj;
+			var tp = (ThreadParameter) obj;
 			var rootDir = tp.Info;
 			var stopWatch = new Stopwatch();
 
@@ -169,7 +169,6 @@ namespace _003AConcurrentTreeStructure
 				stopWatch.Start();
 				foreach (var file in files)
 				{
-
 					nodeRoot.AddChild(tp.Tree.NewTreeNode(file.Name, "fileContent"));
 					Interlocked.Increment(ref _counter);
 				}

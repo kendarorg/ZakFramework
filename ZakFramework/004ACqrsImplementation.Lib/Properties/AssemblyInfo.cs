@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 
-[assembly: AssemblyTitle("003AConcurrentTreeStructure.Lib")]
+[assembly: AssemblyTitle("004ACqrsImplementation.Lib")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Microsoft")]
-[assembly: AssemblyProduct("003AConcurrentTreeStructure.Lib")]
+[assembly: AssemblyProduct("004ACqrsImplementation.Lib")]
 [assembly: AssemblyCopyright("Copyright © Microsoft 2012")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -22,7 +22,7 @@ using System.Runtime.InteropServices;
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 
-[assembly: Guid("cd327f47-dce3-4d5a-8850-857d5b26fa4b")]
+[assembly: Guid("1e782697-94e0-4d2b-94b3-cf07ff7fa489")]
 
 // Version information for an assembly consists of the following four values:
 //

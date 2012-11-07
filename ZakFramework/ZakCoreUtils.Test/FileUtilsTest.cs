@@ -2,8 +2,6 @@
 
 namespace ZakCoreUtils.Test
 {
-
-
 	/// <summary>
 	///This is a test class for FileUtilsTest and is intended
 	///to contain all FileUtilsTest Unit Tests
@@ -18,6 +16,7 @@ namespace ZakCoreUtils.Test
 		public TestContext TestContext { get; set; }
 
 		#region Additional test attributes
+
 		// 
 		//You can use the following additional attributes as you write your tests:
 		//
@@ -45,12 +44,13 @@ namespace ZakCoreUtils.Test
 		//{
 		//}
 		//
+
 		#endregion
 
-		#if NOPE
-		/// <summary>
-		///A test for InitializeRoot
-		///</summary>
+#if NOPE
+	/// <summary>
+	///A test for InitializeRoot
+	///</summary>
 		[TestMethod]
 		public void InitializeRootTest()
 		{

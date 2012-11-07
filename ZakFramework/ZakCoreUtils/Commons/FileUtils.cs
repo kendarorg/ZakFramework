@@ -50,7 +50,7 @@ namespace ZakCore.Utils.Commons
 				path = Path.GetFileName(path);
 			}
 			string npath = string.Empty;
-			if (Assembly.GetExecutingAssembly().GetName().CodeBase != null && path!=null)
+			if (Assembly.GetExecutingAssembly().GetName().CodeBase != null && path != null)
 			{
 				string pddn = Path.GetDirectoryName(Assembly.GetExecutingAssembly().GetName().CodeBase);
 				if (pddn == null) pddn = string.Empty;

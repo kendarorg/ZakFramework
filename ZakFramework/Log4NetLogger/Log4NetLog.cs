@@ -35,7 +35,6 @@ namespace ZakCore.Logger
 
 		public void Initialize(IIniFile iniFile, string section = null)
 		{
-
 		}
 	}
 }

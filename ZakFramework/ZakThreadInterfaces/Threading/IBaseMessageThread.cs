@@ -7,7 +7,7 @@ namespace ZakThread.Threading
 		void SendMessageToThread(IMessage msg);
 		IMessage PeekMessageFromThread();
 		IEnumerable<IMessage> PeekMessagesFromThread();
-		IThreadManager Manager {get; set;}
+		IThreadManager Manager { get; set; }
 		void RegisterMessages();
 	}
 }

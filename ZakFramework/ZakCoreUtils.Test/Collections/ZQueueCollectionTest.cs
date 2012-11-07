@@ -16,8 +16,8 @@ namespace ZakCoreUtils.Test.Collections
 			ZQueueCollectionTestUtils.Initialize(toSendElements);
 
 			var threadList = new List<Thread>();
-			
-			for (int i = 0; i < threadsCount / 2; i++)
+
+			for (int i = 0; i < threadsCount/2; i++)
 			{
 				threadList.Add(new Thread(ZQueueCollectionTestUtils.ProducerThread));
 				threadList.Add(new Thread(ZQueueCollectionTestUtils.ConsumerThread));
@@ -36,7 +36,7 @@ namespace ZakCoreUtils.Test.Collections
 				Thread.Sleep(10);
 			}
 
-			Assert.IsTrue(ZQueueCollectionTestUtils.IsSendCompleted,"Did not completed the send of data");
+			Assert.IsTrue(ZQueueCollectionTestUtils.IsSendCompleted, "Did not completed the send of data");
 		}
 	}
 }

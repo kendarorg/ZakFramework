@@ -5,10 +5,10 @@ using ZakThread.Threading.Enums;
 
 namespace _001_A_simple_thread
 {
-	class Program
+	internal class Program
 	{
 // ReSharper disable UnusedParameter.Local
-		static void Main(string[] args)
+		private static void Main(string[] args)
 // ReSharper restore UnusedParameter.Local
 		{
 			var stopwatch = new Stopwatch();

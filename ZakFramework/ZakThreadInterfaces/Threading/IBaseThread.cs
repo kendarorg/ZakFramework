@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using ZakCore.Utils.Logging;
 using ZakThread.Threading.Enums;
 
@@ -8,6 +7,7 @@ namespace ZakThread.Threading
 	public interface IBaseThread
 	{
 		ILogger Logger { get; }
+
 		/// <summary>
 		/// String identifier of the thread
 		/// </summary>

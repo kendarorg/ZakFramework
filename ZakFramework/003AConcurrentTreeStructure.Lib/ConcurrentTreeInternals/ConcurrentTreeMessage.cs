@@ -1,13 +1,14 @@
 ﻿using System;
 using ZakThread.Threading;
+
 namespace _003AConcurrentTreeStructure.Lib.ConcurrentTreeInternals
 {
 	/// <summary>
 	/// The message that will be used to communicate between the various threads
 	/// </summary>
-	internal class ConcurrentTreeMessage:IMessage
+	internal class ConcurrentTreeMessage : IMessage
 	{
-		public ConcurrentTreeMessage(ConcurrentTreeMessageTypes messageType,params object[] parameters)
+		public ConcurrentTreeMessage(ConcurrentTreeMessageTypes messageType, params object[] parameters)
 		{
 			Id = Guid.NewGuid();
 			TimeStamp = DateTime.Now;

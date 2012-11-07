@@ -5,11 +5,11 @@ using System.Threading;
 
 namespace _002AMessageDrivenThread
 {
-	class Program
+	internal class Program
 	{
 		// ReSharper disable UnusedParameter.Local
-		static void Main(string[] args)
-		// ReSharper restore UnusedParameter.Local
+		private static void Main(string[] args)
+			// ReSharper restore UnusedParameter.Local
 
 		{
 			var stopwatch = new Stopwatch();
@@ -34,7 +34,7 @@ namespace _002AMessageDrivenThread
 				testThread.SendMessageToThread(msg);
 				sendedMessages++;
 				//Peek the messages that the thread sent to us
-				while ((msg = (TestMessage)testThread.PeekMessageFromThread()) != null)
+				while ((msg = (TestMessage) testThread.PeekMessageFromThread()) != null)
 				{
 					messagesReceived.Add(msg);
 				}
@@ -42,7 +42,7 @@ namespace _002AMessageDrivenThread
 				runBlocks--;
 			}
 			//Receive the resulting messages
-			while ((msg = (TestMessage)testThread.PeekMessageFromThread()) != null)
+			while ((msg = (TestMessage) testThread.PeekMessageFromThread()) != null)
 			{
 				messagesReceived.Add(msg);
 			}

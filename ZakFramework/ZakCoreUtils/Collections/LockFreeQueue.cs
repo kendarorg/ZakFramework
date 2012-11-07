@@ -158,7 +158,7 @@ namespace ZakCore.Utils.Collections
 		public void Enqueue(T t)
 		{
 			// Allocate a new node from the free list
-			var node = new NodeT { _value = t };
+			var node = new NodeT {_value = t};
 
 			// copy enqueued value into node
 
@@ -203,7 +203,7 @@ namespace ZakCore.Utils.Collections
 		{
 			// ReSharper disable ExpressionIsAlwaysNull
 			Object ndo = null;
-			var nd = (T)ndo;
+			var nd = (T) ndo;
 			while (Dequeue(ref nd) && count > 0)
 			{
 				yield return nd;
@@ -216,8 +216,8 @@ namespace ZakCore.Utils.Collections
 		{
 			// ReSharper disable ExpressionIsAlwaysNull
 			Object ndo = null;
-			var nd = (T)ndo;
-			if(Dequeue(ref nd))
+			var nd = (T) ndo;
+			if (Dequeue(ref nd))
 			{
 				return nd;
 			}

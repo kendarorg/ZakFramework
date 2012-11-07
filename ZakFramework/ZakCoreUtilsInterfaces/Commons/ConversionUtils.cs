@@ -11,7 +11,7 @@ namespace ZakCore.Utils.Commons
 		}
 
 		public static DateTime MinDate = new DateTime(1800, 1, 1, 0, 0, 0);
-		public const int SIZEOFDATE = sizeof(Int64);
+		public const int SIZEOFDATE = sizeof (Int64);
 		public const int SIZEOFGUID = 16;
 
 		public static byte[] Date2Bytes(DateTime val)
@@ -50,12 +50,12 @@ namespace ZakCore.Utils.Commons
 			}
 			if (string.IsNullOrEmpty(val))
 			{
-				return BitConverter.GetBytes(IPAddress.HostToNetworkOrder((Int32)0));
+				return BitConverter.GetBytes(IPAddress.HostToNetworkOrder((Int32) 0));
 			}
 			int cnt = enc.GetByteCount(val);
-			var result = new byte[cnt + sizeof(Int32)];
-			Array.Copy(enc.GetBytes(val), 0, result, sizeof(Int32), cnt);
-			Array.Copy(BitConverter.GetBytes(IPAddress.HostToNetworkOrder((Int32)cnt)), 0, result, 0, sizeof(Int32));
+			var result = new byte[cnt + sizeof (Int32)];
+			Array.Copy(enc.GetBytes(val), 0, result, sizeof (Int32), cnt);
+			Array.Copy(BitConverter.GetBytes(IPAddress.HostToNetworkOrder((Int32) cnt)), 0, result, 0, sizeof (Int32));
 			return result;
 			// ReSharper restore RedundantCast
 		}
@@ -73,19 +73,19 @@ namespace ZakCore.Utils.Commons
 			{
 				return string.Empty;
 			}
-			len += sizeof(Int32);
+			len += sizeof (Int32);
 			/*if (len > (offset + val.Length + sizeof(Int32)))
 			{
 				len = val.Length - offset - sizeof(Int32);
 			}*/
-			return enc.GetString(val, offset + sizeof(Int32), len - sizeof(Int32));
+			return enc.GetString(val, offset + sizeof (Int32), len - sizeof (Int32));
 			// ReSharper restore RedundantAssignment
 		}
 
 		public static Int32 DateTime2UnixTime(DateTime val)
 		{
 			TimeSpan ts = (val - new DateTime(1970, 1, 1, 0, 0, 0));
-			return (Int32)ts.TotalSeconds;
+			return (Int32) ts.TotalSeconds;
 		}
 	}
 }

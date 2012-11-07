@@ -55,18 +55,22 @@ namespace ZakCore.Utils.Monitoring
 
 				// create new category with the counters above
 				PerformanceCounterCategory.Create("MyCategory",
-																					"Sample category for Codeproject", PerformanceCounterCategoryType.SingleInstance,
-																					counters);
+				                                  "Sample category for Codeproject", PerformanceCounterCategoryType.SingleInstance,
+				                                  counters);
 			}
 
 			// create counters to work with
-			_totalOperations = new PerformanceCounter { CategoryName = "MyCategory", CounterName = "# operations executed", MachineName = ".", ReadOnly = false };
+			_totalOperations = new PerformanceCounter
+				{CategoryName = "MyCategory", CounterName = "# operations executed", MachineName = ".", ReadOnly = false};
 
-			_operationsPerSecond = new PerformanceCounter { CategoryName = "MyCategory", CounterName = "# operations / sec", MachineName = ".", ReadOnly = false };
+			_operationsPerSecond = new PerformanceCounter
+				{CategoryName = "MyCategory", CounterName = "# operations / sec", MachineName = ".", ReadOnly = false};
 
-			_averageDuration = new PerformanceCounter { CategoryName = "MyCategory", CounterName = "average time per operation", MachineName = ".", ReadOnly = false };
+			_averageDuration = new PerformanceCounter
+				{CategoryName = "MyCategory", CounterName = "average time per operation", MachineName = ".", ReadOnly = false};
 
-			_averageDurationBase = new PerformanceCounter { CategoryName = "MyCategory", CounterName = "average time per operation base", MachineName = ".", ReadOnly = false };
+			_averageDurationBase = new PerformanceCounter
+				{CategoryName = "MyCategory", CounterName = "average time per operation base", MachineName = ".", ReadOnly = false};
 		}
 
 		[DllImport("Kernel32.dll")]

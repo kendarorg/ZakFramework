@@ -13,7 +13,7 @@ namespace _003AConcurrentTreeStructure.Lib.ConcurrentTreeInternals
 		private const long MAX_MS_SINCE_START = 100;
 		private const long MAX_MSGS_ELABORATED = 100;
 
-		public TreeCollectionExecutor(ILogger logger, string threadName,ConcurrentTree<TContent> container) 
+		public TreeCollectionExecutor(ILogger logger, string threadName, ConcurrentTree<TContent> container)
 			: base(logger, threadName)
 		{
 			_container = container;
@@ -37,7 +37,6 @@ namespace _003AConcurrentTreeStructure.Lib.ConcurrentTreeInternals
 
 		protected override void HandleTaskCompleted(AsyncTask asyncTask)
 		{
-			
 		}
 
 		/// <summary>
@@ -87,7 +86,6 @@ namespace _003AConcurrentTreeStructure.Lib.ConcurrentTreeInternals
 
 		public override void RegisterMessages()
 		{
-			
 		}
 	}
 }

@@ -12,7 +12,8 @@ namespace ZakThread.HighPower
 
 		public bool IsReallyAsync { get; set; }
 
-		public AsyncTask(AsyncCallback callback, object tag, object state, IAsyncHandler asyncHandler, bool isReallyAsync = true)
+		public AsyncTask(AsyncCallback callback, object tag, object state, IAsyncHandler asyncHandler,
+		                 bool isReallyAsync = true)
 		{
 			IsReallyAsync = isReallyAsync;
 			Callback = callback;
@@ -61,10 +62,7 @@ namespace ZakThread.HighPower
 
 		public bool IsCompleted
 		{
-			get
-			{
-				return _waitHandle.WaitOne(0, false);
-			}
+			get { return _waitHandle.WaitOne(0, false); }
 		}
 
 		public WaitHandle AsyncWaitHandle
@@ -74,10 +72,7 @@ namespace ZakThread.HighPower
 
 		WaitHandle IAsyncResult.AsyncWaitHandle
 		{
-			get
-			{
-				return AsyncWaitHandle;
-			}
+			get { return AsyncWaitHandle; }
 		}
 
 		internal volatile bool DoAbort = false;
@@ -126,10 +121,12 @@ namespace ZakThread.HighPower
 				}
 
 				ExecuteCleanup();
-				((ManualResetEvent)_waitHandle).Set();
+				((ManualResetEvent) _waitHandle).Set();
 			}
-			// ReSharper disable EmptyGeneralCatchClause
-			catch { }
+				// ReSharper disable EmptyGeneralCatchClause
+			catch
+			{
+			}
 			// ReSharper restore EmptyGeneralCatchClause
 		}
 

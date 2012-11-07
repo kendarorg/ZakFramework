@@ -17,7 +17,7 @@ namespace _003AConcurrentTreeStructure.Lib.ConcurrentTreeInternals
 		private readonly ConcurrentTree<TContent> _container;
 		internal List<TreeNode<TContent>> Children { get; private set; }
 
-		internal TreeNode(string name,ConcurrentTree<TContent> container)
+		internal TreeNode(string name, ConcurrentTree<TContent> container)
 		{
 			_container = container;
 			Name = name;
