@@ -50,6 +50,7 @@
     </CodeAnalysisDependentAssemblyPaths>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FileLoggerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Threading\Simple\SimpleMessageThreadConsumer.cs" />
     <Compile Include="Threading\Simple\SimpleThread.cs" />
@@ -64,6 +65,14 @@
     <ProjectReference Include="..\ZakCoreUtilsInterfaces\ZakCoreUtilsInterfaces.csproj">
       <Project>{45F980B7-498D-40AC-A34A-E5B8324979C0}</Project>
       <Name>ZakCoreUtilsInterfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ZakCoreUtils\ZakCoreUtils.csproj">
+      <Project>{3BA1ECC6-73E3-470B-AEA1-9B559ECB7AAE}</Project>
+      <Name>ZakCoreUtils</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ZakTestUtils\ZakTestUtils.csproj">
+      <Project>{3118B1C6-4101-42DC-9050-C9551673AE6E}</Project>
+      <Name>ZakTestUtils</Name>
     </ProjectReference>
     <ProjectReference Include="..\ZakThreadInterfaces\ZakThreadInterfaces.csproj">
       <Project>{26B48B9A-B9F1-48DC-8D6E-E7F361E3BBF9}</Project>

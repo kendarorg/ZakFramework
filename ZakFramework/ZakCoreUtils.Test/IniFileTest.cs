@@ -1,4 +1,6 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System.Collections.Generic;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using ZakCore.Utils.Commons;
 
 namespace ZakCoreUtils.Test
 {
@@ -47,7 +49,7 @@ namespace ZakCoreUtils.Test
 
 		#endregion
 
-#if NOPE
+		/*
 	/// <summary>
 	///A test for IniFile Constructor
 	///</summary>
@@ -92,7 +94,7 @@ namespace ZakCoreUtils.Test
 			string section = string.Empty; 
 			string expected = string.Empty; 
 			string actual;
-			actual = target.GetValue(id, section);
+			actual = (string)target.GetValue(id, section);
 			Assert.AreEqual(expected, actual);
 			Assert.Inconclusive("Verify the correctness of this test method.");
 		}
@@ -107,9 +109,9 @@ namespace ZakCoreUtils.Test
 			string setupRoot = string.Empty; 
 			bool replaceBuild = false; 
 			IniFile target = new IniFile(fileName, setupRoot, replaceBuild); 
-			string section = string.Empty; 
-			Dictionary<string, string> expected = null; 
-			Dictionary<string, string> actual;
+			string section = string.Empty;
+			Dictionary<string, object> expected = null;
+			Dictionary<string, object> actual;
 			actual = target.GetValues(section);
 			Assert.AreEqual(expected, actual);
 			Assert.Inconclusive("Verify the correctness of this test method.");
@@ -160,7 +162,7 @@ namespace ZakCoreUtils.Test
 			string setupRoot = string.Empty; 
 			bool replaceBuild = false; 
 			IniFile target = new IniFile(fileName, setupRoot, replaceBuild); 
-			Dictionary<string, string> vals = null; 
+			Dictionary<string, object> vals = null; 
 			string section = string.Empty; 
 			target.SetValues(vals, section);
 			Assert.Inconclusive("A method that does not return a value cannot be verified.");
@@ -180,6 +182,6 @@ namespace ZakCoreUtils.Test
 			actual = target.FileName;
 			Assert.Inconclusive("Verify the correctness of this test method.");
 		}
-#endif
+		*/
 	}
 }

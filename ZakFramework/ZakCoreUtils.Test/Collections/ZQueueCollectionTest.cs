@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using ZakCore.Utils.Collections;
 
 namespace ZakCoreUtils.Test.Collections
 {
@@ -38,5 +39,23 @@ namespace ZakCoreUtils.Test.Collections
 
 			Assert.IsTrue(ZQueueCollectionTestUtils.IsSendCompleted, "Did not completed the send of data");
 		}
+
+		[TestMethod]
+		public void ItShouldBePossibleToClearAQueueAndDequeueASingleItem()
+		{
+			var lfq = new LockFreeQueue<string>();
+			var lele = new List<string>();
+			for (int i = 0; i < ENQUEUED_DATA; i++)
+			{
+				lele.Add("TEST_" + i);
+			}
+			lfq.Enqueue(lele);
+			Assert.AreEqual("TEST_0", lfq.DequeueSingle());
+			lfq.Clear();
+			Assert.IsNull(lfq.DequeueSingle());	
+		}
+
+
+		protected const int ENQUEUED_DATA = 10;
 	}
 }

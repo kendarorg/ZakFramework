@@ -16,10 +16,13 @@ namespace ZakThread.Logging
 		private StreamWriter _logFile;
 		private string _loggingFile;
 
+		internal DateTime _startTime;
+
 		public FileLogger()
 			: base(NullLogger.Create(), "FileLogger", true)
 		{
 			WaitCycle = 10;
+			_startTime = DateTime.UtcNow;
 		}
 
 		public void Initialize(IIniFile iniFile, string section = null)
@@ -31,19 +34,12 @@ namespace ZakThread.Logging
 			_logFile = new StreamWriter(_loggingFile, true);
 		}
 
-		public override void RunThread()
-		{
-		}
-
-
 		private readonly LockFreeQueue<LogEntity> _writeLog = new LockFreeQueue<LogEntity>();
 
 		public void Log(LogEntity le)
 		{
 			_writeLog.Enqueue(le);
 		}
-
-		private DateTime _startTime = DateTime.UtcNow;
 
 		public override void Dispose()
 		{
