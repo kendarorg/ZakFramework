@@ -38,8 +38,10 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MultiThreadProgram.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SingleThreadProgram.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\003AConcurrentTreeStructure.Lib\003AConcurrentTreeStructure.Lib.csproj">
