@@ -225,8 +225,6 @@ namespace ZakCore.Utils.Commons
 					case (DateSection.Min):
 						allOk += CheckValue(dt.Minute, d);
 						break;
-					default:
-						return false;
 				}
 			}
 			return allOk == 7;
@@ -280,6 +278,7 @@ namespace ZakCore.Utils.Commons
 				Int64 msDelta = (dt.Ticks - _baseline.Ticks)/TimeSpan.TicksPerMillisecond;
 				if (msDelta%_mscron == 0) return dt;
 				dt = dt + TimeSpan.FromMilliseconds(_mscron - (msDelta%_mscron));
+				dt = new DateTime(dt.Year,dt.Month,dt.Day,dt.Hour,dt.Minute,dt.Second,0);
 				return dt;
 			}
 			_error = false;
@@ -312,7 +311,7 @@ namespace ZakCore.Utils.Commons
 								{
 									dt = new DateTime(vals[6], vals[4] - 1, vals[3], vals[2], vals[1], vals[0]);
 									vals = new[] {0, 0, 0, 1, 1, (int) dt.DayOfWeek, dt.Year};
-									dt = new DateTime(vals[6], vals[4] - 1, vals[3], vals[2], vals[1], vals[0]);
+									dt = new DateTime(vals[6], vals[4], vals[3], vals[2], vals[1], vals[0]);
 								}
 								vals = new[] {dt.Second, dt.Minute, dt.Hour, dt.Day, dt.Month + 1, (int) dt.DayOfWeek, dt.Year};
 							}
@@ -332,7 +331,7 @@ namespace ZakCore.Utils.Commons
 							break;
 						case (DateSection.Month):
 							{
-								vals[i] = GetNearest(vals[i], d, MONTHSPERYEAR);
+								vals[i] = GetNearest(vals[i], d, MONTHSPERYEAR)+1;
 
 								if (vals[i] > 12)
 								{
@@ -394,6 +393,7 @@ namespace ZakCore.Utils.Commons
 								if (delta > 0)
 								{
 									dt += TimeSpan.FromSeconds(delta);
+									delta = 0;
 								}
 								vals = new[] {dt.Second, dt.Minute, dt.Hour, dt.Day, dt.Month + 1, (int) dt.DayOfWeek, dt.Year};
 							}
@@ -408,7 +408,7 @@ namespace ZakCore.Utils.Commons
 				_error = false;
 				return DateTime.MaxValue;
 			}
-			return new DateTime(vals[6], vals[4] - 1, vals[3], vals[2], vals[1], vals[0]);
+			return new DateTime(vals[6], vals[4] - 1, vals[3], vals[2], vals[1], vals[0],0);
 		}
 
 		private int GetNearest(int p, DateRange d, int max)
