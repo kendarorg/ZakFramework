@@ -65,7 +65,6 @@ namespace ZakCore.Utils.Commons
 		/// </summary>
 		public Crontab(String commandLine, bool considerSeconds = false)
 		{
-			_error = false;
 			_considerSeconds = considerSeconds;
 			if (string.IsNullOrEmpty(commandLine))
 			{
@@ -109,7 +108,6 @@ namespace ZakCore.Utils.Commons
 			_baseline = baseLine;
 			_mscron = milliseconds;
 			_realCrontab = false;
-			_error = false;
 		}
 
 		private string SpecialCommands(string configLine)
@@ -262,7 +260,6 @@ namespace ZakCore.Utils.Commons
 			return 0;
 		}
 
-		private bool _error;
 		protected const int SECONDSPERMINUTE = 60;
 		protected const int MINUTESPERHOUR = 60;
 		protected const int HOURESPERDAY = 24;
@@ -281,137 +278,202 @@ namespace ZakCore.Utils.Commons
 				dt = new DateTime(dt.Year,dt.Month,dt.Day,dt.Hour,dt.Minute,dt.Second,0);
 				return dt;
 			}
-			_error = false;
-
+			
 			var vals = new[] {dt.Second, dt.Minute, dt.Hour, dt.Day, dt.Month + 1, (int) dt.DayOfWeek, dt.Year};
 			// ReSharper disable TooWideLocalVariableScope
 			// ReSharper disable RedundantAssignment
 			int prev = 0;
-			int delta = 0;
+			int differenceFromNextNearestPeriod = 0;
 			// ReSharper restore RedundantAssignment
 			// ReSharper restore TooWideLocalVariableScope
 			bool doRestart = true;
+			
 			while (doRestart)
 			{
-				vals = new[] {dt.Second, dt.Minute, dt.Hour, dt.Day, dt.Month + 1, (int) dt.DayOfWeek, dt.Year};
+				vals = new[] {dt.Second, dt.Minute, dt.Hour, dt.Day, dt.Month, (int) dt.DayOfWeek, dt.Year};
 				doRestart = false;
-				//for (int i = 0; i < _ranges.Count && doRestart==false; i++)
+				//For each of the available ranges
 				for (int i = (_ranges.Count - 1); i >= 0 && doRestart == false; i--)
 				{
 					DateRange d = _ranges[i];
 					prev = vals[i];
-					delta = 0;
+					differenceFromNextNearestPeriod = 0;
 					switch (d.Position)
 					{
 						case (DateSection.Year):
 							{
-								vals[i] = GetNearest(vals[i], d, 2100);
-								delta = vals[i] - prev;
-								if (delta > 0)
+								//Retrieve the nearest next year including itself
+								int nextYear = GetNextNearestItem(vals[i], d, 2100);
+								differenceFromNextNearestPeriod = nextYear - prev;
+								if (differenceFromNextNearestPeriod > 0)
 								{
-									dt = new DateTime(vals[6], vals[4] - 1, vals[3], vals[2], vals[1], vals[0]);
-									vals = new[] {0, 0, 0, 1, 1, (int) dt.DayOfWeek, dt.Year};
-									dt = new DateTime(vals[6], vals[4], vals[3], vals[2], vals[1], vals[0]);
+									dt = dt.AddYears(differenceFromNextNearestPeriod);
+									vals = new[] { 0, 0, 0, 1, 1, 0, dt.Year };
 								}
-								vals = new[] {dt.Second, dt.Minute, dt.Hour, dt.Day, dt.Month + 1, (int) dt.DayOfWeek, dt.Year};
 							}
 							break;
 						case (DateSection.WeekDay):
 							{
-								vals[i] = GetNearest(vals[i], d, DAYSPERWEEK);
-								delta = vals[i] - prev;
-								if (delta > 0)
+								int nextDay = GetNextNearestItem(vals[i], d, DAYSPERWEEK);
+								
+								differenceFromNextNearestPeriod = nextDay - prev;
+								// 1 - 6 means that it's part of the same week so add the abs of days
+								/*if (differenceFromNextNearestPeriod < 0)
 								{
-									dt += TimeSpan.FromDays(delta);
-									vals = new[] {0, 0, 0, dt.Day, dt.Month + 1, (int) dt.DayOfWeek, dt.Year};
-									dt = new DateTime(vals[6], vals[4] - 1, vals[3], vals[2], vals[1], vals[0]);
+									dt = dt.AddDays(DAYSPERWEEK);
+									vals = new[] { 0, 0, 0, dt.Day, dt.Month, (int)dt.DayOfWeek, dt.Year };
+									i--;
 								}
-								vals = new[] {dt.Second, dt.Minute, dt.Hour, dt.Day, dt.Month + 1, (int) dt.DayOfWeek, dt.Year};
+								else*/ if (differenceFromNextNearestPeriod > 0)
+								{
+									dt += TimeSpan.FromDays(differenceFromNextNearestPeriod);
+									vals = new[] { 0, 0, 0, dt.Day, dt.Month, (int)dt.DayOfWeek, dt.Year };
+								}
 							}
 							break;
 						case (DateSection.Month):
 							{
-								vals[i] = GetNearest(vals[i], d, MONTHSPERYEAR)+1;
+								/*vals[i] = GetNextNearestItem(vals[i], d, MONTHSPERYEAR)+1;
 
 								if (vals[i] > 12)
 								{
 									vals[6] += vals[i]/12;
 									vals[i] = vals[i]%12 + 1;
-									delta++;
+									differenceFromNextNearestPeriod++;
 								}
 								dt = new DateTime(vals[6], vals[4] - 1, vals[3], vals[2], vals[1], vals[0]);
-								if (delta > 0)
+								if (differenceFromNextNearestPeriod > 0)
 								{
 									vals = new[] {0, 0, 0, 1, dt.Month + 1, (int) dt.DayOfWeek, dt.Year};
 									dt = new DateTime(vals[6], vals[4] - 1, vals[3], vals[2], vals[1], vals[0]);
 								}
-								vals = new[] {dt.Second, dt.Minute, dt.Hour, dt.Day, dt.Month + 1, (int) dt.DayOfWeek, dt.Year};
+								vals = new[] {dt.Second, dt.Minute, dt.Hour, dt.Day, dt.Month + 1, (int) dt.DayOfWeek, dt.Year};*/
+								//1 based
+								int nextMonth = GetNextNearestItem(vals[i], d, MONTHSPERYEAR);
+
+								differenceFromNextNearestPeriod = nextMonth - prev;
+								// 1 - 6 means that it's part of the same week so add the abs of days
+								/*if (differenceFromNextNearestPeriod < 0)
+								{
+									dt = dt.AddYears(1);
+									vals = new[] { 0, 0, 0, 1, dt.Month, (int)dt.DayOfWeek, dt.Year };
+									i--;
+								}
+								else */if (differenceFromNextNearestPeriod > 0)
+								{
+									dt = dt.AddMonths(differenceFromNextNearestPeriod);
+									vals = new[] { 0, 0, 0, 1, dt.Month, (int)dt.DayOfWeek, dt.Year };
+								}
 							}
 							break;
 						case (DateSection.MonthDay):
 							{
-								vals[i] = GetNearest(vals[i], d, DAYSPERMONTH);
-								delta = vals[i] - prev;
-								if (delta > 0)
+								int nextMonthDay = GetNextNearestItem(vals[i], d, DAYSPERMONTH);
+								differenceFromNextNearestPeriod = nextMonthDay - prev;
+								/*if (differenceFromNextNearestPeriod > 0)
 								{
-									dt += TimeSpan.FromDays(delta);
+									dt += TimeSpan.FromDays(differenceFromNextNearestPeriod);
 									vals = new[] {0, 0, 0, dt.Day, dt.Month + 1, (int) dt.DayOfWeek, dt.Year};
 									dt = new DateTime(vals[6], vals[4] - 1, vals[3], vals[2], vals[1], vals[0]);
+								}*/
+								//vals = new[] {dt.Second, dt.Minute, dt.Hour, dt.Day, dt.Month + 1, (int) dt.DayOfWeek, dt.Year};
+								/*if (differenceFromNextNearestPeriod < 0)
+								{
+									dt = dt.AddMonths(1);
+									//dt += TimeSpan.FromDays(Math.Abs(differenceFromNextNearestPeriod));
+									vals = new[] { 0, 0, 0, dt.Day, dt.Month, (int)dt.DayOfWeek, dt.Year };
+									i--;
 								}
-								vals = new[] {dt.Second, dt.Minute, dt.Hour, dt.Day, dt.Month + 1, (int) dt.DayOfWeek, dt.Year};
+								else */if (differenceFromNextNearestPeriod > 0)
+								{
+									dt += TimeSpan.FromDays(differenceFromNextNearestPeriod);
+									vals = new[] { 0, 0, 0, dt.Day, dt.Month, (int)dt.DayOfWeek, dt.Year };
+								}
 							}
 							break;
 						case (DateSection.Hour):
 							{
-								vals[i] = GetNearest(vals[i], d, HOURESPERDAY);
-								delta = vals[i] - prev;
-								if (delta > 0)
+								int nextHour = GetNextNearestItem(vals[i], d, HOURESPERDAY);
+								differenceFromNextNearestPeriod = nextHour - prev;
+								/*if (differenceFromNextNearestPeriod > 0)
 								{
-									dt += TimeSpan.FromHours(delta);
+									dt += TimeSpan.FromHours(differenceFromNextNearestPeriod);
 									vals = new[] {0, 0, dt.Hour, dt.Day, dt.Month + 1, (int) dt.DayOfWeek, dt.Year};
 									dt = new DateTime(vals[6], vals[4] - 1, vals[3], vals[2], vals[1], vals[0]);
 								}
-								vals = new[] {dt.Second, dt.Minute, dt.Hour, dt.Day, dt.Month + 1, (int) dt.DayOfWeek, dt.Year};
+								vals = new[] {dt.Second, dt.Minute, dt.Hour, dt.Day, dt.Month + 1, (int) dt.DayOfWeek, dt.Year};*/
+								/*if (differenceFromNextNearestPeriod < 0)
+								{
+									dt = dt.AddDays(1);
+									//dt += TimeSpan.FromDays(Math.Abs(differenceFromNextNearestPeriod));
+									vals = new[] { 0, 0, dt.Hour, dt.Day, dt.Month, (int)dt.DayOfWeek, dt.Year };
+									i--;
+								}
+								else */if (differenceFromNextNearestPeriod > 0)
+								{
+									dt = dt.AddHours(differenceFromNextNearestPeriod);
+									vals = new[] { 0, 0, dt.Hour, dt.Day, dt.Month, (int)dt.DayOfWeek, dt.Year };
+								}
 							}
 							break;
 						case (DateSection.Min):
 							{
-								vals[i] = GetNearest(vals[i], d, MINUTESPERHOUR);
-								delta = vals[i] - prev;
-								if (delta > 0)
+								int nextMinute = GetNextNearestItem(vals[i], d, MINUTESPERHOUR);
+								differenceFromNextNearestPeriod = nextMinute - prev;
+								/*if (differenceFromNextNearestPeriod > 0)
 								{
-									dt += TimeSpan.FromMinutes(delta);
+									dt += TimeSpan.FromMinutes(differenceFromNextNearestPeriod);
 								}
-								vals = new[] {0, dt.Minute, dt.Hour, dt.Day, dt.Month + 1, (int) dt.DayOfWeek, dt.Year};
+								vals = new[] {0, dt.Minute, dt.Hour, dt.Day, dt.Month + 1, (int) dt.DayOfWeek, dt.Year};*/
+								/*if (differenceFromNextNearestPeriod < 0)
+								{
+									dt = dt.AddHours(1);
+									//dt += TimeSpan.FromDays(Math.Abs(differenceFromNextNearestPeriod));
+									vals = new[] { 0, dt.Minute, dt.Hour, dt.Day, dt.Month, (int)dt.DayOfWeek, dt.Year };
+									i--;
+								}
+								else*/ if (differenceFromNextNearestPeriod > 0)
+								{
+									dt = dt.AddMinutes(differenceFromNextNearestPeriod);
+									vals = new[] { 0, dt.Minute, dt.Hour, dt.Day, dt.Month, (int)dt.DayOfWeek, dt.Year };
+								}
 							}
 							break;
 						case (DateSection.Sec):
 							if (_considerSeconds)
 							{
-								vals[i] = GetNearest(vals[i], d, SECONDSPERMINUTE);
-								delta = vals[i] - prev;
-								if (delta > 0)
+								int nextSecond = GetNextNearestItem(vals[i], d, SECONDSPERMINUTE);
+								differenceFromNextNearestPeriod = nextSecond - prev;
+								/*if (differenceFromNextNearestPeriod > 0)
 								{
-									dt += TimeSpan.FromSeconds(delta);
-									delta = 0;
+									dt += TimeSpan.FromSeconds(differenceFromNextNearestPeriod);
+									differenceFromNextNearestPeriod = 0;
 								}
-								vals = new[] {dt.Second, dt.Minute, dt.Hour, dt.Day, dt.Month + 1, (int) dt.DayOfWeek, dt.Year};
+								vals = new[] {dt.Second, dt.Minute, dt.Hour, dt.Day, dt.Month + 1, (int) dt.DayOfWeek, dt.Year};*/
+								/*if (differenceFromNextNearestPeriod < 0)
+								{
+									dt = dt.AddMinutes(1);
+									//dt += TimeSpan.FromDays(Math.Abs(differenceFromNextNearestPeriod));
+									vals = new[] { dt.Second, dt.Minute, dt.Hour, dt.Day, dt.Month, (int)dt.DayOfWeek, dt.Year };
+									i--;
+								}
+								else */if (differenceFromNextNearestPeriod > 0)
+								{
+									dt = dt.AddSeconds(differenceFromNextNearestPeriod);
+									vals = new[] { dt.Second, dt.Minute, dt.Hour, dt.Day, dt.Month, (int)dt.DayOfWeek, dt.Year };
+								}
 							}
 							break;
 					}
-					doRestart = (delta > 0);
+					dt = new DateTime(vals[6], vals[4], vals[3], vals[2], vals[1], vals[0]);
+					if (differenceFromNextNearestPeriod > 0) doRestart = true;
 				}
 			}
 
-			if (_error)
-			{
-				_error = false;
-				return DateTime.MaxValue;
-			}
-			return new DateTime(vals[6], vals[4] - 1, vals[3], vals[2], vals[1], vals[0],0);
+			return dt;// new DateTime(vals[6], vals[4] - 1, vals[3], vals[2], vals[1], vals[0], 0);
 		}
 
-		private int GetNearest(int p, DateRange d, int max)
+		private int GetNextNearestItem(int p, DateRange d, int max)
 		{
 			while (p < max)
 			{
@@ -424,8 +486,7 @@ namespace ZakCore.Utils.Commons
 				if (CheckValue(p, d) == 1) return p + max;
 				p++;
 			}
-			_error = true;
-			return -1;
+			return 0;
 		}
 	}
 }

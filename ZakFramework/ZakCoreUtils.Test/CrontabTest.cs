@@ -54,8 +54,8 @@ namespace ZakCoreUtils.Test
 		public void CrontabWithDateInput()
 		{
 			var now = DateTime.Now;
-			var target = new Crontab(now,1000);
-			var good = new DateTime(now.Ticks + 1000* TimeSpan.TicksPerMillisecond);
+			var target = new Crontab(now,5000);
+			var good = new DateTime(now.Ticks + 5000* TimeSpan.TicksPerMillisecond);
 			var bad = new DateTime(now.Ticks + 1040 * TimeSpan.TicksPerMillisecond);
 			var next1 = target.Next();
 			Thread.Sleep(100);
@@ -72,11 +72,11 @@ namespace ZakCoreUtils.Test
 			Assert.AreEqual(next.DayOfYear, good.DayOfYear);
 			Assert.AreEqual(next.Hour, good.Hour);
 			Assert.AreEqual(next.Minute, good.Minute);
-			Assert.IsTrue(Math.Abs(next.Ticks / TimeSpan.TicksPerMillisecond - good.Ticks / TimeSpan.TicksPerMillisecond) <= 1);
+			Assert.IsTrue(Math.Abs(next.Second - good.Second) <= 1);
 
-			DateTime? newNext = new DateTime(next.Ticks + 100*TimeSpan.TicksPerMillisecond);
+			DateTime? newNext = new DateTime(next.Ticks + 2600*TimeSpan.TicksPerMillisecond);
 			var wrongNext = target.Next(newNext);
-			Assert.IsFalse(Math.Abs(newNext.Value.Ticks / TimeSpan.TicksPerMillisecond - wrongNext.Ticks / TimeSpan.TicksPerMillisecond) <= 1);
+			Assert.IsFalse(Math.Abs(newNext.Value.Second - wrongNext.Second) <= 1);
 		}
 
 		[TestMethod]
@@ -205,8 +205,17 @@ namespace ZakCoreUtils.Test
 			target = new Crontab("* * * * 2 * 2008");
 			Assert.AreEqual(target.Next(new DateTime(2008, 1, 31, 23, 59, 59)), new DateTime(2008, 2, 1, 0, 0, 0));
 
-			target = new Crontab("* * * 1 * * 2008");
+			target = new Crontab("* * * 2 * * 2008");
 			Assert.AreEqual(target.Next(new DateTime(2008, 1, 1, 23, 59, 59)), new DateTime(2008, 1, 2, 0, 0, 0));
+
+			target = new Crontab("* * * * * 3 *");
+			Assert.AreEqual(target.Next(new DateTime(2012, 11, 27, 23, 59, 59)), new DateTime(2012, 11, 28, 0, 0, 0));
+
+			target = new Crontab("* * * * * 1 *");
+			Assert.AreEqual(target.Next(new DateTime(2012, 11, 27, 23, 59, 59)), new DateTime(2012, 12, 3, 0, 0, 0));
+
+			target = new Crontab("* * * * * 1 *");
+			Assert.AreEqual(target.Next(new DateTime(2012, 11, 27, 23, 59, 59)), new DateTime(2012, 12, 3, 0, 0, 0));
 
 			target = new Crontab("* 2-59/3 1,9,22 11-26 1-6 ? 2003");
 			Assert.AreEqual(target.Next(new DateTime(2003, 1, 11, 9, 5, 0)), new DateTime(2003, 1, 11, 9, 5, 0));
