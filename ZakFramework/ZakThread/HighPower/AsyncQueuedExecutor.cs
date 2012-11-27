@@ -19,7 +19,15 @@ namespace ZakThread.HighPower
 			: base(logger, threadName)
 		{
 			BatchTimeoutMs = 0;
+			WaitCycle = 0;
 		}
+
+
+		/// <summary>
+		/// How much ms should wait between each cycle to avoid eating all
+		/// proccessor power, 0 means... no wait!
+		/// </summary>
+		public int WaitCycle { get; set; }
 
 		/// <summary>
 		/// If true means that all tasks will be considered completed only when ALL tasks have been processed

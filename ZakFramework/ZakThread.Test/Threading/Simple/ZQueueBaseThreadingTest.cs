@@ -44,6 +44,52 @@ namespace ZakThread.Test.Threading.Simple
 			Assert.IsTrue(th.IsCleanedUp);
 		}
 
+
+		[TestMethod]
+		public void ItShouldBePossibleToStartAndStopAThreadWithTheDefaultTerminationTime()
+		{
+			const int sleepTime = 100;
+			const string testName = "TestThread";
+			var th = new SimpleThread(sleepTime, testName);
+
+			th.RunThread();
+			Thread.Sleep(100);
+
+			Assert.AreEqual(RunningStatus.Running, th.Status);
+
+			th.Terminate();
+			th.WaitTermination(90);
+			Thread.Sleep(100);
+
+			Assert.AreEqual(RunningStatus.Halted, th.Status);
+			Assert.IsNull(th.LastError);
+
+			Assert.IsTrue(th.IsInitialized);
+			Assert.IsTrue(th.IsCleanedUp);
+		}
+
+
+		[TestMethod]
+		public void ItShouldBePossibleToInterruptAThreadDuringTheCyclicExecution()
+		{
+			const int sleepTime = 100;
+			const string testName = "TestThread";
+			var th = new SimpleThread(sleepTime, testName) {ExitAfterFirstCycle = true};
+
+			th.RunThread();
+			Thread.Sleep(100);
+
+			Assert.AreEqual(RunningStatus.Halted, th.Status);
+
+			th.Terminate();
+			Thread.Sleep(200);
+
+			Assert.IsNull(th.LastError);
+
+			Assert.IsTrue(th.IsInitialized);
+			Assert.IsTrue(th.IsCleanedUp);
+		}
+
 		[TestMethod]
 		public void ItShouldBePossibleToStartAndAbortAThreadWithoutCleanUp()
 		{
@@ -79,16 +125,123 @@ namespace ZakThread.Test.Threading.Simple
 			Assert.AreEqual(RunningStatus.Running, th.Status);
 
 			th.Terminate();
-			Thread.Sleep(100);
-
-			Assert.AreEqual(RunningStatus.Halting, th.Status);
-			Thread.Sleep(1000);
+			th.WaitTermination(1000);
 
 			Assert.AreEqual(RunningStatus.Halted, th.Status);
 			Assert.IsNull(th.LastError);
 
 			Assert.IsTrue(th.IsInitialized);
 			Assert.IsTrue(th.IsCleanedUp);
+		}
+
+		[TestMethod]
+		public void ItShouldBePossibleToInterceptThreadAbortExceptions()
+		{
+			const int sleepTime = 500;
+			const string testName = "TestThread";
+			var th = new SimpleThread(sleepTime, testName) {ThrowThreadAbortException = true};
+
+			th.RunThread();
+			Thread.Sleep(100);
+			th.Terminate(true);
+
+			Assert.AreEqual(RunningStatus.Aborted, th.Status);
+
+			var exceptionThrown = th.LastError;
+			Assert.IsNotNull(exceptionThrown);
+			Assert.IsTrue(exceptionThrown is ThreadAbortException);
+
+			Assert.IsTrue(th.IsInitialized);
+			Assert.IsFalse(th.IsCleanedUp);
+		}
+
+
+
+		[TestMethod]
+		public void ItShouldBePossibleToTerminateAnAlreadyTerminatedThread()
+		{
+			const int sleepTime = 100;
+			const string testName = "TestThread";
+			var th = new SimpleThread(sleepTime, testName);
+
+			th.RunThread();
+			Thread.Sleep(100);
+			th.Terminate();
+			th.WaitTermination(1000);
+
+			Assert.AreEqual(RunningStatus.Halted, th.Status);
+
+			Assert.IsNull(th.LastError);
+			
+			Assert.IsTrue(th.IsInitialized);
+			Assert.IsTrue(th.IsCleanedUp);
+
+			th.Terminate();
+			th.WaitTermination(1000);
+
+			Assert.AreEqual(RunningStatus.Halted, th.Status);
+
+			Assert.IsNull(th.LastError);
+
+			Assert.IsTrue(th.IsInitialized);
+			Assert.IsTrue(th.IsCleanedUp);
+		}
+
+
+		[TestMethod]
+		public void ItShouldBePossibleToBlockAThreadWaitingForASpecificTimeout()
+		{
+			const int sleepTime = 500;
+			const string testName = "TestThread";
+			var th = new SimpleThread(sleepTime, testName) { ThrowThreadAbortException = true };
+
+			th.RunThread();
+			Thread.Sleep(100);
+			th.Terminate();
+			TimeoutException exceptionThrown = null;
+			try
+			{
+				th.Terminate();
+				th.WaitTermination(100);
+			}
+			catch (TimeoutException ex)
+			{
+				exceptionThrown = ex;
+			}
+			Assert.AreEqual(RunningStatus.Halting, th.Status);
+			
+			Assert.IsNotNull(exceptionThrown);
+			
+			Assert.IsTrue(th.IsInitialized);
+			Assert.IsFalse(th.IsCleanedUp);
+			th.Terminate(true);
+
+			Thread.Sleep(100);
+			Assert.AreEqual(RunningStatus.Aborted, th.Status);
+			Thread.Sleep(1000);
+		}
+
+		[TestMethod]
+		public void ItShouldBePossibleToStartAndDisposeIt()
+		{
+			const int sleepTime = 500;
+			const string testName = "TestThread";
+			var th = new SimpleThread(sleepTime, testName);
+
+			th.RunThread();
+			Thread.Sleep(100);
+
+			Assert.AreEqual(RunningStatus.Running, th.Status);
+
+			th.Dispose();
+			Thread.Sleep(100);
+
+			Assert.AreEqual(RunningStatus.Aborted, th.Status);
+			Thread.Sleep(1000);
+
+			Assert.IsNull(th.LastError);
+
+			Assert.IsTrue(th.IsInitialized);
 		}
 
 		[TestMethod]
@@ -180,6 +333,31 @@ namespace ZakThread.Test.Threading.Simple
 
 			Exception expectedEx = th.LastError;
 			Assert.IsNull(expectedEx);
+		}
+
+
+
+		[TestMethod]
+		public void ItShouldBePossibleToRestartAThreadThatFailedWithStrangeBehaviour()
+		{
+			const int sleepTime = 10;
+			const string testName = "TestThread";
+			var th = new SimpleThread(sleepTime, testName,false);
+			var ex = new Exception("TEST");
+			th.ThrowExceptionOnCyclicExecution = ex;
+			th.ResetExceptionAfterThrow = true;
+
+			th.RunThread();
+			Thread.Sleep(1000);
+			th.Terminate();
+			Thread.Sleep(1000);
+			Assert.IsTrue(th.IsInitialized);
+			Assert.IsTrue(th.IsInitialized);
+			Assert.IsTrue(th.IsExceptionHandled);
+			Assert.IsFalse(th.IsCleanedUp);
+
+			Exception expectedEx = th.LastError;
+			Assert.IsNotNull(expectedEx);
 		}
 	}
 }

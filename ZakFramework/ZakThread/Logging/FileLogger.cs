@@ -21,7 +21,6 @@ namespace ZakThread.Logging
 		public FileLogger()
 			: base(NullLogger.Create(), "FileLogger", true)
 		{
-			WaitCycle = 10;
 			_startTime = DateTime.UtcNow;
 		}
 

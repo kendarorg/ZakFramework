@@ -24,19 +24,6 @@ namespace ZakThread.Threading
 			get { return _threadCounter; }
 		}
 
-		/// <summary>
-		/// How much ms should wait between each cycle to avoid eating all
-		/// proccessor power, 0 means... no wait!
-		/// </summary>
-		public int WaitCycle { get; set; }
-
-		/// <summary>
-		/// Constructor that should not be implemented
-		/// </summary>
-		protected BaseThread()
-		{
-			throw new NotSupportedException();
-		}
 
 		protected BaseThread(ILogger logger, String threadName, bool restartOnError = true)
 		{
@@ -51,7 +38,6 @@ namespace ZakThread.Threading
 			ThreadId = _threadCounter;
 			_logger = logger;
 			_restartOnError = restartOnError;
-			WaitCycle = 0;
 		}
 
 		public ILogger Logger
@@ -220,10 +206,10 @@ namespace ZakThread.Threading
 		{
 			if (_thread == null)
 			{
-				return;
+				throw new NullReferenceException("Thread not started");
 			}
 
-			if (Status != RunningStatus.Running)
+			if (Status != RunningStatus.Running && Status != RunningStatus.Halting)
 			{
 				return;
 			}
@@ -245,10 +231,18 @@ namespace ZakThread.Threading
 		/// <param name="timeoutMs">ms to wait for the thread termination.</param>
 		public void WaitTermination(Int64 timeoutMs)
 		{
+			var tmp = Status;
+			if (tmp != RunningStatus.Running && tmp != RunningStatus.Halting)
+			{
+				return;
+			}
 			DateTime timeoutTime = DateTime.UtcNow;
 			timeoutTime = timeoutTime.AddMilliseconds(timeoutMs);
+			
+			int waitCycle = (int)timeoutMs/100;
+			if (waitCycle < 1) waitCycle = 1;
 
-			var tmp = RunningStatus.None;
+			tmp = RunningStatus.None;
 			while (timeoutTime > DateTime.UtcNow)
 			{
 				tmp = Status;
@@ -259,7 +253,7 @@ namespace ZakThread.Threading
 					return;
 				}
 				Thread.Sleep(0);
-				if (WaitCycle > 0) Thread.Sleep(WaitCycle);
+				Thread.Sleep(waitCycle);
 			}
 			if (tmp != RunningStatus.Running && tmp != RunningStatus.Halting)
 			{
