@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Threading;
 using ZakCore.Utils.Collections;
 using ZakCore.Utils.Logging;
@@ -30,10 +31,6 @@ namespace ZakThread.Threading
 			_threadCounter = 0;
 			_continueRunning = 0;
 			ThreadName = threadName.ToUpper();
-			if (_threadCounter >= UInt16.MaxValue)
-			{
-				throw new IndexOutOfRangeException("Too much threads");
-			}
 			_threadCounter++;
 			ThreadId = _threadCounter;
 			_logger = logger;
@@ -113,7 +110,7 @@ namespace ZakThread.Threading
 		public virtual void RunThread()
 		{
 			_thread = new Thread(StaticRunThread);
-			_thread.Start(this);
+			IntThread.Start(this);
 		}
 
 		/// <summary>
@@ -134,7 +131,8 @@ namespace ZakThread.Threading
 			}
 			catch (ThreadAbortException tae)
 			{
-				b._exceptions.Enqueue(tae);
+				Thread.ResetAbort();
+				b._exceptions.Enqueue(new Exception("Thread was being aborted"));
 				b.Status = RunningStatus.Aborted;
 				threadAborted = true;
 			}
@@ -142,11 +140,11 @@ namespace ZakThread.Threading
 			{
 				Boolean continueRunning = b.HandleException(ex);
 				b._exceptions.Enqueue(ex);
-				if (continueRunning && b._restartOnError)
+				if (continueRunning && b._restartOnError)	//TODO Partial coverage??
 				{
 					Interlocked.Exchange(ref b._continueRunning, 0);
 					b._thread = new Thread(StaticRunThread);
-					b._thread.Start(b);
+					b.IntThread.Start(b);
 					return;
 				}
 				exceptionThrown = true;
@@ -155,7 +153,7 @@ namespace ZakThread.Threading
 
 			Interlocked.Exchange(ref b._continueRunning, 0);
 
-			if (threadAborted)
+			if (threadAborted) 
 			{
 				return;
 			}
@@ -204,18 +202,19 @@ namespace ZakThread.Threading
 		/// <param name="force">If true, abort!!!</param>
 		public virtual void Terminate(Boolean force = false)
 		{
-			if (_thread == null)
+			if (IntThread == null)
 			{
-				throw new NullReferenceException("Thread not started");
+				Status = RunningStatus.Halted;
+				return;
 			}
 
 			if (Status != RunningStatus.Running && Status != RunningStatus.Halting)
 			{
 				return;
 			}
-			if (force && _thread != null)
+			if (force && IntThread != null)
 			{
-				_thread.Abort();
+				IntThread.Abort();
 				Status = RunningStatus.Aborted;
 			}
 			else
@@ -232,7 +231,11 @@ namespace ZakThread.Threading
 		public void WaitTermination(Int64 timeoutMs)
 		{
 			var tmp = Status;
-			if (tmp != RunningStatus.Running && tmp != RunningStatus.Halting)
+			if (tmp == RunningStatus.Running)
+			{
+				throw new InvalidAsynchronousStateException("Thread not halting");
+			}
+			if (tmp != RunningStatus.Halting)
 			{
 				return;
 			}
@@ -246,16 +249,18 @@ namespace ZakThread.Threading
 			while (timeoutTime > DateTime.UtcNow)
 			{
 				tmp = Status;
-				if (tmp != RunningStatus.Running && tmp != RunningStatus.Halting)
+				if (tmp != RunningStatus.Running &&
+					tmp != RunningStatus.Halting) //TODO Partial coverage??
 				{
 					Thread.Sleep(0);
 					Thread.Sleep(1);
-					return;
+					break;
 				}
 				Thread.Sleep(0);
 				Thread.Sleep(waitCycle);
 			}
-			if (tmp != RunningStatus.Running && tmp != RunningStatus.Halting)
+			if (tmp != RunningStatus.Running &&
+				tmp != RunningStatus.Halting)	//TODO Partial coverage??
 			{
 				return;
 			}

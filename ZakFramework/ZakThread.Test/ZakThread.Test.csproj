@@ -55,8 +55,8 @@
     <Compile Include="Threading\Simple\SimpleMessageThreadConsumer.cs" />
     <Compile Include="Threading\Simple\SimpleThread.cs" />
     <Compile Include="Threading\Simple\TestMessage.cs" />
-    <Compile Include="Threading\Simple\ZQueueBaseThreadingTest.cs" />
-    <Compile Include="Threading\Simple\ZQueueMessageThreadingTest.cs" />
+    <Compile Include="Threading\ZQueueBaseThreadingTest.cs" />
+    <Compile Include="Threading\ZQueueMessageThreadingTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

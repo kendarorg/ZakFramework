@@ -14,6 +14,8 @@ namespace ZakThread.Test.Threading.Simple
 		public SimpleMessageThreadConsumer(int sleepTime, string threadName, bool restartOnError = true) :
 			base(NullLogger.Create(), threadName, restartOnError)
 		{
+			ReceiveAStopMessage = false;
+			ForwardMessages = false;
 			ThrowExceptionOnInitialization = null;
 			ThrowExceptionOnCyclicExecution = null;
 			ThrowExceptionOnCleanUp = null;
@@ -27,6 +29,11 @@ namespace ZakThread.Test.Threading.Simple
 		protected override bool HandleMessage(IMessage msg)
 		{
 			HandledMessages++;
+			if (ForwardMessages)
+			{
+				SendMessage(msg);
+			}
+			if (ReceiveAStopMessage) return false;
 			if (ThrowExceptionOnMessageHandling != null) throw ThrowExceptionOnMessageHandling;
 			return true;
 		}
@@ -42,6 +49,8 @@ namespace ZakThread.Test.Threading.Simple
 		public bool IsCleanedUp { get; private set; }
 
 		public bool IsExceptionHandled { get; private set; }
+		public bool ForwardMessages { set; private get; }
+		public bool ReceiveAStopMessage { set; private get; }
 
 		public bool ResetExceptionAfterThrow { get; set; }
 

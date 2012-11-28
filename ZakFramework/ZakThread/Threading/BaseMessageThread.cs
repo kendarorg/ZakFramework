@@ -19,9 +19,10 @@ namespace ZakThread.Threading
 
 		protected override bool CyclicExecution()
 		{
-			foreach (var msg in _incomingMessages.Dequeue())
+			IMessage msg;
+			while ((msg = PeekMessage())!=null)
 			{
-				if (!HandleMessage(msg)) return false;
+				if (!HandleMessageInternal(msg)) return false;
 			}
 			return base.CyclicExecution();
 		}

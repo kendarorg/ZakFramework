@@ -1,9 +1,11 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using ZakThread.Test.Threading.Simple;
 using ZakThread.Threading.Enums;
 
-namespace ZakThread.Test.Threading.Simple
+namespace ZakThread.Test.Threading
 {
 	[TestClass]
 	public class ZQueueBaseThreadingTest
@@ -44,11 +46,90 @@ namespace ZakThread.Test.Threading.Simple
 			Assert.IsTrue(th.IsCleanedUp);
 		}
 
+		[TestMethod]
+		public void ItShouldBePOssibleToTerminateANonStartedThread()
+		{
+			const int sleepTime = 50;
+			const string testName = "TestThread";
+			var th = new SimpleThread(sleepTime, testName);
+			th.Terminate();
+			th.WaitTermination(1000);
+			Assert.AreEqual(RunningStatus.Halted, th.Status);
+			Assert.IsNull(th.LastError);
+
+			Assert.IsFalse(th.IsInitialized);
+			Assert.IsFalse(th.IsCleanedUp);
+		}
+
+
+		[TestMethod]
+		public void ItShouldBePOssibleToTerminateAnHaltingThread()
+		{
+			const int sleepTime = 1000;
+			const string testName = "TestThread";
+			var th = new SimpleThread(sleepTime, testName);
+			th.RunThread();
+			Thread.Sleep(100);
+			th.Terminate();
+			th.Terminate();
+			Assert.AreEqual(RunningStatus.Halting, th.Status);
+			Assert.IsNull(th.LastError);
+			th.WaitTermination(1000);
+
+			Assert.IsTrue(th.IsInitialized);
+			Assert.IsTrue(th.IsCleanedUp);
+		}
+
+
+		[TestMethod]
+		public void ItShouldBePOssibleToTerminateANotInitializedThread()
+		{
+			const int sleepTime = 1000;
+			const string testName = "TestThread";
+			var th = new SimpleThread(sleepTime, testName);
+			th.Terminate();
+			Assert.AreEqual(RunningStatus.Halted, th.Status);
+			Assert.IsNull(th.LastError);
+			th.WaitTermination(1000);
+
+			Assert.IsFalse(th.IsInitialized);
+			Assert.IsFalse(th.IsCleanedUp);
+		}
+
+
+
+
+		[TestMethod]
+		public void ItShouldNotBePossibleToWaitForTerminationOfANotHaltingThread()
+		{
+			const int sleepTime = 1000;
+			const string testName = "TestThread";
+			var th = new SimpleThread(sleepTime, testName);
+			th.RunThread();
+			Thread.Sleep(100);
+			InvalidAsynchronousStateException resex = null;
+			try
+			{
+				th.WaitTermination(1000);
+			}
+			catch (InvalidAsynchronousStateException ex)
+			{
+				resex = ex;
+			}
+
+
+			Assert.IsNotNull(resex);
+			Assert.IsTrue(th.IsInitialized);
+			Assert.IsFalse(th.IsCleanedUp);
+
+			th.Terminate(true);
+		}
+
 
 		[TestMethod]
 		public void ItShouldBePossibleToStartAndStopAThreadWithTheDefaultTerminationTime()
 		{
-			const int sleepTime = 100;
+			const int sleepTime = 50;
 			const string testName = "TestThread";
 			var th = new SimpleThread(sleepTime, testName);
 
@@ -149,7 +230,7 @@ namespace ZakThread.Test.Threading.Simple
 
 			var exceptionThrown = th.LastError;
 			Assert.IsNotNull(exceptionThrown);
-			Assert.IsTrue(exceptionThrown is ThreadAbortException);
+			Assert.AreEqual("Thread was being aborted",exceptionThrown.Message);
 
 			Assert.IsTrue(th.IsInitialized);
 			Assert.IsFalse(th.IsCleanedUp);
