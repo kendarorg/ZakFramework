@@ -41,6 +41,7 @@
     <Compile Include="Commons\FileUtils.cs" />
     <Compile Include="Commons\GuidBuilder.cs" />
     <Compile Include="Commons\IniFile.cs" />
+    <Compile Include="Logging\BaseLogger.cs" />
     <Compile Include="Logging\Logger.cs" />
     <Compile Include="Monitoring\Class1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

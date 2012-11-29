@@ -51,6 +51,10 @@
       <Project>{45F980B7-498D-40AC-A34A-E5B8324979C0}</Project>
       <Name>ZakCoreUtilsInterfaces</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ZakCoreUtils\ZakCoreUtils.csproj">
+      <Project>{3BA1ECC6-73E3-470B-AEA1-9B559ECB7AAE}</Project>
+      <Name>ZakCoreUtils</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

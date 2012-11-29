@@ -128,7 +128,7 @@ namespace ZakCore.Utils.Commons
 			}
 			catch (Exception ex)
 			{
-				Logger.Log("FileUtils", ex);
+				//Logger.Log("FileUtils", ex);
 			}
 			return null;
 		}

@@ -41,7 +41,8 @@
     <Compile Include="Commons\IIniFile.cs" />
     <Compile Include="Commons\Int128Value.cs" />
     <Compile Include="Logging\ILogger.cs" />
-    <Compile Include="Logging\LogEntity.cs" />
+    <Compile Include="Logging\LoggerFormatter.cs" />
+    <Compile Include="Logging\LogLevels.cs" />
     <Compile Include="Logging\NullLogger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

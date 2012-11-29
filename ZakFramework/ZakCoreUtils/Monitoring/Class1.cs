@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿#if THINGS_YET_TO_TEST
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 namespace ZakCore.Utils.Monitoring
@@ -119,3 +120,4 @@ namespace ZakCore.Utils.Monitoring
 		public PerformanceCounter _averageDurationBase;
 	}
 }
+#endif

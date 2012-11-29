@@ -36,7 +36,7 @@ namespace ZakThread.Test
 			fileLogger.Initialize(iniFile,"root");
 			fileLogger.RunThread();
 			Thread.Sleep(500);
-			fileLogger.Log(new LogEntity());
+			fileLogger.Debug("Some error");
 			Thread.Sleep(1000);
 			Assert.IsTrue(File.Exists(logFilePathReal));
 			fileLogger.Terminate(true);
@@ -62,14 +62,7 @@ namespace ZakThread.Test
 			fileLogger.Initialize(iniFile, "root");
 			fileLogger.RunThread();
 			Thread.Sleep(500);
-			fileLogger.Log(new LogEntity
-				{
-					CallerId = "1",
-					FormatParameter = "{0}",
-					Level= 0x01,
-					Parameters =new string[] { "test"},
-					Timestamp = DateTime.Now
-				});
+			fileLogger.DebugFormat("{0}","test");
 			Thread.Sleep(1000);
 			Assert.IsTrue(File.Exists(logFilePathReal));
 			Assert.IsTrue(File.Exists(logFilePathRealYesterday));

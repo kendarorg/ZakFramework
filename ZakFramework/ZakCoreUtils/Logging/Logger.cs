@@ -1,18 +1,18 @@
 ﻿using System;
+using ZakCore.Utils.Commons;
 
 namespace ZakCore.Utils.Logging
 {
 	/// <summary>
 	/// TODO: Update summary.
 	/// </summary>
-	public class Logger
+	public class Logger:BaseLogger
 	{
 		public const string LOGGER_LEVEL = "LoggerLevel";
 
 		public static ILogger LoggerObject { get; set; }
 
-
-		public static ushort LoggingLevel
+		/*public static LogLevels LoggingLevel
 		{
 			get
 			{
@@ -20,37 +20,16 @@ namespace ZakCore.Utils.Logging
 				return 0;
 			}
 			set { if (LoggerObject != null) LoggerObject.LoggingLevel = value; }
+		}*/
+
+		public override void Initialize(IIniFile iniFile, string section = null)
+		{
+			throw new NotImplementedException();
 		}
 
-		public static void Log(string callerId, Exception ex)
+		protected override void WriteStringToLog(string toWriteExpanded, string toWrite, LogLevels level)
 		{
-#if !DEBUG
-			if (LoggingLevel <= 2)
-			{
-				Log(LoggingLevel, callerId, "Exception {0}", ex.Message);
-			}
-			else
-#endif
-			{
-				Log(5, callerId, "Exception {0}.\nStackTrace:{1}", ex.Message, ex.ToString());
-			}
-		}
-
-		public static void Log(ushort level, string callerId, string formatParameter, params string[] parameters)
-		{
-			if (LoggerObject != null)
-			{
-				if (level > LoggingLevel) return;
-				var le = new LogEntity
-					{
-						Level = level,
-						CallerId = callerId,
-						FormatParameter = formatParameter,
-						Parameters = parameters,
-						Timestamp = DateTime.UtcNow
-					};
-				LoggerObject.Log(le);
-			}
+			throw new NotImplementedException();
 		}
 	}
 }

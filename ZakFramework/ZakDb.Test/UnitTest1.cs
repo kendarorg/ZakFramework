@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿/*
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ZakDb.Test
 {
@@ -10,4 +11,4 @@ namespace ZakDb.Test
 		{
 		}
 	}
-}
+}*/

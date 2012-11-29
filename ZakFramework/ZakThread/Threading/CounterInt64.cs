@@ -1,8 +1,10 @@
-﻿using System;
+﻿#if THINGS_YET_TO_TEST
+using System;
 using System.Threading;
 
 namespace ZakThread.Threading
 {
+
 	public class CounterInt64
 	{
 		private Int64 _value;
@@ -52,3 +54,4 @@ namespace ZakThread.Threading
 		}
 	}
 }
+#endif

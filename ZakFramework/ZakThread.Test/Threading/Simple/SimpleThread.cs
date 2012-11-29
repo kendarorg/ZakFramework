@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading;
 using ZakCore.Utils.Logging;
-using ZakThread.Logging;
 using ZakThread.Threading;
 
 namespace ZakThread.Test.Threading.Simple
@@ -44,8 +43,7 @@ namespace ZakThread.Test.Threading.Simple
 
 		protected override bool RunSingleCycle()
 		{
-			Logger.Log(new LogEntity { CallerId = ThreadName, FormatParameter = "Thread number: {0}", Level = 0, 
-				Timestamp = DateTime.UtcNow, Parameters = new [] { ThreadCounter.ToString()} });
+			Logger.DebugFormat("Starting thread {0}",ThreadName);
 			if (ExitAfterFirstCycle) return false;
 			if (ThrowExceptionOnCyclicExecution != null)
 			{
@@ -70,6 +68,7 @@ namespace ZakThread.Test.Threading.Simple
 
 		protected override bool HandleException(Exception ex)
 		{
+			base.HandleException(ex);
 			IsExceptionHandled = true;
 			return true;
 		}

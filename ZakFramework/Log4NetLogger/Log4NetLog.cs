@@ -1,40 +1,37 @@
-﻿using ZakCore.Utils.Commons;
-using ZakCore.Utils.Logging;
+﻿using ZakCore.Utils.Logging;
 using log4net;
 
 namespace ZakCore.Logger
 {
-	public class Log4NetLog : ILogger
+	public class Log4NetLog : BaseLogger
 	{
 		private static readonly ILog _log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-		public ushort LoggingLevel { get; set; }
-
-		public void Log(LogEntity le)
+		protected override void WriteStringToLog(string toWriteExpanded,string toWrite, LogLevels level)
 		{
-			switch (le.Level)
+			switch (level)
 			{
-				case (0):
-					_log.Fatal(le.ToString());
+				case (LogLevels.LogFatal):
+					_log.Fatal(toWrite);
 					break;
-				case (1):
-					_log.Error(le.ToString());
+				case (LogLevels.LogError):
+					_log.Error(toWrite);
 					break;
-				case (2):
-					_log.Warn(le.ToString());
+				case (LogLevels.LogWarn):
+					_log.Warn(toWrite);
 					break;
-				case (3):
-					_log.Info(le.ToString());
+				case (LogLevels.LogInfo):
+					_log.Info(toWrite);
 					break;
-				default:
-					//case (4):
-					_log.Debug(le.ToString());
+				case (LogLevels.LogDebug):
+					_log.Debug(toWrite);
 					break;
 			}
 		}
 
-		public void Initialize(IIniFile iniFile, string section = null)
+		public override void Initialize(Utils.Commons.IIniFile iniFile, string section = null)
 		{
+			
 		}
 	}
 }

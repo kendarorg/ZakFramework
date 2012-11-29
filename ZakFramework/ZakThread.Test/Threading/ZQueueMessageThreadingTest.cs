@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using ZakCore.Utils.Logging;
 using ZakThread.Logging;
 using ZakThread.Test.Threading.Simple;
 using ZakThread.Threading;

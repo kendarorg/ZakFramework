@@ -1,6 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ZakCore.Utils.Logging;
-using ZakThread.Logging;
 
 namespace ZakCoreUtils.Test
 {
@@ -12,7 +11,7 @@ namespace ZakCoreUtils.Test
 		{
 			var nullLogger = NullLogger.Create();
 			nullLogger.Initialize(null);
-			nullLogger.Log(new LogEntity());
+			nullLogger.Debug("Message");
 		}
 	}
 }

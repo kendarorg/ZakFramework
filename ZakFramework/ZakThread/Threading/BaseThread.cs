@@ -129,10 +129,10 @@ namespace ZakThread.Threading
 				b.Status = RunningStatus.Initialized;
 				b.RunInternal();
 			}
-			catch (ThreadAbortException tae)
+			catch (ThreadAbortException)
 			{
 				Thread.ResetAbort();
-				b._exceptions.Enqueue(new Exception("Thread was being aborted"));
+				b._exceptions.Enqueue(new Exception("ThreadAbortException"));
 				b.Status = RunningStatus.Aborted;
 				threadAborted = true;
 			}

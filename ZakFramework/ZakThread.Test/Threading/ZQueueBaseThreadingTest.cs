@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ZakThread.Test.Threading.Simple;
+using ZakThread.Threading;
 using ZakThread.Threading.Enums;
 
 namespace ZakThread.Test.Threading
@@ -33,6 +34,8 @@ namespace ZakThread.Test.Threading
 
 			th.RunThread();
 			Thread.Sleep(100);
+
+			Assert.AreEqual(1, BaseThread.ThreadCounter);
 
 			Assert.AreEqual(RunningStatus.Running, th.Status);
 
@@ -220,7 +223,7 @@ namespace ZakThread.Test.Threading
 		{
 			const int sleepTime = 500;
 			const string testName = "TestThread";
-			var th = new SimpleThread(sleepTime, testName) {ThrowThreadAbortException = true};
+			var th = new SimpleThread(sleepTime, testName) { ThrowThreadAbortException = true };
 
 			th.RunThread();
 			Thread.Sleep(100);
@@ -230,7 +233,7 @@ namespace ZakThread.Test.Threading
 
 			var exceptionThrown = th.LastError;
 			Assert.IsNotNull(exceptionThrown);
-			Assert.AreEqual("Thread was being aborted",exceptionThrown.Message);
+			Assert.AreEqual("ThreadAbortException", exceptionThrown.Message);
 
 			Assert.IsTrue(th.IsInitialized);
 			Assert.IsFalse(th.IsCleanedUp);

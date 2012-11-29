@@ -1,80 +1,26 @@
 ﻿using System;
 using System.Globalization;
-using System.IO;
-using ZakCore.Utils.Collections;
 using ZakCore.Utils.Commons;
-using ZakCore.Utils.Logging;
-using ZakThread.Threading;
 
-namespace ZakThread.Logging
+namespace ZakCore.Utils.Logging
 {
-	public class FileLogger : BaseThread, ILogger
+	public abstract class BaseLogger : ILogger
 	{
-		public const string LOGGER_FILE = "LoggerFile";
-		public const string LOGGER_LEVEL = "LoggerLevel";
-		public string LoggingFile { get; set; }
 		public LogLevels LoggingLevel { get; set; }
-		private StreamWriter _logFile;
-		private string _loggingFile;
 
-		internal DateTime _startTime;
-
-		public FileLogger()
-			: base(NullLogger.Create(), "FileLogger", true)
-		{
-			_startTime = DateTime.UtcNow;
-		}
-
-		public void Initialize(IIniFile iniFile, string section = null)
-		{
-			LoggingLevel = (LogLevels) ushort.Parse(iniFile.GetValueString(LOGGER_LEVEL, section));
-			LoggingFile = iniFile.GetValueString(LOGGER_FILE, section);
-			_loggingFile = string.Format("{0}.{1:0000}{2:00}{3:00}.log", LoggingFile, _startTime.Year, _startTime.Month,
-			                             _startTime.Day);
-			_logFile = new StreamWriter(_loggingFile, true);
-		}
-
-		private readonly LockFreeQueue<string> _writeLog = new LockFreeQueue<string>();
-
-		public override void Dispose()
-		{
-			_logFile.Close();
-			base.Dispose();
-		}
-
-		protected override bool RunSingleCycle()
-		{
-			if (_startTime.Day != DateTime.UtcNow.Day)
-			{
-				_logFile.Close();
-				_startTime = DateTime.UtcNow;
-				_loggingFile = string.Format("{0}.{1:0000}{2:00}{3:00}.log", LoggingFile, _startTime.Year, _startTime.Month,
-				                             _startTime.Day);
-				_logFile = new StreamWriter(_loggingFile, true);
-			}
-			foreach (var el in _writeLog.Dequeue())
-			{
-				_logFile.WriteLine(el);
-			}
-			_logFile.Flush();
-			return true;
-		}
-
-		private void WriteStringToLog(string toWriteExpanded, string toWrite, LogLevels level)
-		{
-			_writeLog.Enqueue(toWriteExpanded);
-		}
+		public abstract void Initialize(IIniFile iniFile, string section = null);
+		protected abstract void WriteStringToLog(string toWriteExpanded, string toWrite, LogLevels level);
 
 		protected void WriteStringToLogInternal(string toWrite, LogLevels level)
 		{
 			var toWriteExpanded = LoggerFormatter.Format(DateTime.Now, level, toWrite);
-			WriteStringToLog(toWriteExpanded, toWrite, level);
+			WriteStringToLog(toWriteExpanded,toWrite, level);
 		}
 
 		public void Debug(object message)
 		{
 			if (!IsDebugEnabled) return;
-			WriteStringToLogInternal(message.ToString(), LogLevels.LogDebug);
+			WriteStringToLogInternal(message.ToString(),LogLevels.LogDebug);
 		}
 
 		public void Debug(object message, Exception exception)
@@ -86,13 +32,13 @@ namespace ZakThread.Logging
 		public void DebugFormat(string format, params object[] args)
 		{
 			if (!IsDebugEnabled) return;
-			WriteStringToLogInternal(string.Format(format, args), LogLevels.LogDebug);
+			WriteStringToLogInternal(string.Format(format,args), LogLevels.LogDebug);
 		}
 
 		public void DebugFormat(IFormatProvider provider, string format, params object[] args)
 		{
 			if (!IsDebugEnabled) return;
-			WriteStringToLogInternal(string.Format(provider, format, args), LogLevels.LogDebug);
+			WriteStringToLogInternal(string.Format(provider,format, args), LogLevels.LogDebug);
 		}
 
 		public void Info(object message)
@@ -134,7 +80,7 @@ namespace ZakThread.Logging
 		public void WarnFormat(string format, params object[] args)
 		{
 			if (!IsWarnEnabled) return;
-			WriteStringToLogInternal(string.Format(format, args), LogLevels.LogWarn);
+			WriteStringToLogInternal(string.Format( format, args), LogLevels.LogWarn);
 		}
 
 		public void WarnFormat(IFormatProvider provider, string format, params object[] args)

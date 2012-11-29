@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if THINGS_YET_TO_TEST
+using System;
 using System.ComponentModel;
 using System.Globalization;
 using System.IO;
@@ -2218,3 +2219,4 @@ namespace ZakCore.Utils.Commons
 		}
 	}
 }
+#endif
