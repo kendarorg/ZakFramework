@@ -21,20 +21,23 @@ namespace _004_Crontab
 	/// </summary>
 	class Program
 	{
-		static void Main(string[] args)
-		{
-			if (args.Length == 0 || (args.Length==1 && args[0]=="-h"))
-			{
-				Console.WriteLine("Usage:");
-				Console.WriteLine("\tCrontab commandfile.ctb");
-				Console.WriteLine("\tCrontab -h");
-				Console.WriteLine("File format:");
-				Console.WriteLine("* * * * * * *\t[Command]");
-				Console.WriteLine("\tThe command is separated by the time with a TAB.");
-				Console.WriteLine("\tThe parts of the time are separated between each other by single spaces.");
-				Console.WriteLine("\tThe crontab format is considered with seconds included.");
-				Console.WriteLine(
-@"Crontab time specification:
+		private const string HELP_MESSAGE =
+	@"Usage:
+  Crontab -cronfile commandfile.ctb
+  Crontab -h
+File format:
+The command is separated by the time with a TAB.
+The parts of the time are separated between each other by single spaces.
+The crontab format is considered with seconds included.
+Comment lines start with #
+
+ #This is a comment
+ 
+Executable lines start immediatly
+
+ * * * * * * *  [Command]
+
+Crontab time specification:
  Format string with spaces between the entries
    *     *     *    *     *     *    * command to be executed
    -     -     -    -     -     -    -
@@ -44,36 +47,43 @@ namespace _004_Crontab
    |     |     |    +--------- day of month (1 - 31)
    |     |     +----------- hour (0 - 23)
    |     +------------- min (0 - 59)
-   +------------- sec (0 - 59)
-");
-				Environment.Exit(0);
-			}
-			if (!File.Exists(args[0]))
-			{
-				Console.WriteLine("File {0} not existing.",args[0]);
-			}
+   +------------- sec (0 - 59)";
 
-			Console.WriteLine("Reading crontab config {0}.", args[0]);
-			var readLines = File.ReadAllLines(args[0]);
-			var corntabEntries = ParseCrontabEntries(readLines);
-			var crontabThread = new CrontabThread(corntabEntries);
-			crontabThread.RunThread();
-			Console.WriteLine("Crontab started.");
-			Console.WriteLine("Press a key to terminate.");
-			Console.ReadKey();
-			Console.WriteLine("Crontab terminating.");
-			crontabThread.Terminate();
-			try
-			{
-				crontabThread.WaitTermination(1000);
-			}
-			catch (TimeoutException)
-			{
-				Console.WriteLine("Unable to terminate crontab. Proceeding with abort.");
-				crontabThread.Terminate(true);
-			}
 
-			crontabThread.Dispose();
+		static void Main(string[] args)
+		{
+			var commandParser = new CommandLineParser(args, HELP_MESSAGE);
+			if (commandParser.Has("cronfile"))
+			{
+				var crontabFile = commandParser["cronfile"];
+				if (File.Exists(crontabFile))
+				{
+					Console.WriteLine("Reading crontab config {0}.", crontabFile);
+				}
+				var readLines = File.ReadAllLines(args[0]);
+				var corntabEntries = ParseCrontabEntries(readLines);
+				var crontabThread = new CrontabThread(corntabEntries);
+				crontabThread.RunThread();
+				Console.WriteLine("Crontab started.");
+				Console.WriteLine("Press a key to terminate.");
+				Console.ReadKey();
+				Console.WriteLine("Crontab terminating.");
+				crontabThread.Terminate();
+				try
+				{
+					crontabThread.WaitTermination(1000);
+				}
+				catch (TimeoutException)
+				{
+					Console.WriteLine("Unable to terminate crontab. Proceeding with abort.");
+					crontabThread.Terminate(true);
+				}
+				crontabThread.Dispose();
+			}
+			else
+			{
+				commandParser.ShowHelp();
+			}
 		}
 
 		private static List<CrontabTask> ParseCrontabEntries(string[] readLines)
@@ -85,12 +95,12 @@ namespace _004_Crontab
 				if (string.IsNullOrWhiteSpace(trimmedLine)) continue;
 				if (trimmedLine.StartsWith("#")) continue;
 				string[] command = trimmedLine.Split('\t');
-				if (command.Length!=2) continue;
+				if (command.Length != 2) continue;
 
 				crontabTasks.Add(new CrontabTask
 					{
 						CommandLine = command[1],
-						CrontabEntry = new Crontab(command[0],true)
+						CrontabEntry = new Crontab(command[0], true)
 					});
 			}
 			return crontabTasks;
