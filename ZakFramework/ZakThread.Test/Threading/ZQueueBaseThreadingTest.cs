@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using ZakCore.Utils.Logging;
 using ZakThread.Test.Threading.Simple;
 using ZakThread.Threading;
 using ZakThread.Threading.Enums;
@@ -19,6 +20,8 @@ namespace ZakThread.Test.Threading
 			string expectedTestName = testName.ToUpperInvariant();
 
 			var th = new SimpleThread(sleepTime, testName);
+			Assert.IsNotNull(th.Logger);
+			Assert.IsTrue(th.Logger is NullLogger);
 
 			Assert.AreEqual(expectedTestName, th.ThreadName);
 			Assert.AreEqual(null, th.LastError);

@@ -43,7 +43,6 @@ namespace ZakThread.Test.Threading.Simple
 
 		protected override bool RunSingleCycle()
 		{
-			Logger.DebugFormat("Starting thread {0}",ThreadName);
 			if (ExitAfterFirstCycle) return false;
 			if (ThrowExceptionOnCyclicExecution != null)
 			{

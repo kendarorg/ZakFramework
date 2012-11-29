@@ -6,6 +6,7 @@
 		LogInfo,
 		LogWarn,
 		LogError,
-		LogFatal
+		LogFatal,
+		LogNone
 	}
 }

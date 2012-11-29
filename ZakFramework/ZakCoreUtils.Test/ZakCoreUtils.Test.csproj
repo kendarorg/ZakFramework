@@ -51,6 +51,7 @@
     </CodeAnalysisDependentAssemblyPaths>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BaseLoggerTest.cs" />
     <Compile Include="BitUtilsTest.cs" />
     <Compile Include="Collections\ZQueueCollectionTest.cs" />
     <Compile Include="Collections\ZQueueCollectionTestUtils.cs" />
@@ -58,6 +59,7 @@
     <Compile Include="CrontabTest.cs" />
     <Compile Include="FileUtilsTest.cs" />
     <Compile Include="IniFileTest.cs" />
+    <Compile Include="Logger\BaseLoggerMock.cs" />
     <Compile Include="NullLoggerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
