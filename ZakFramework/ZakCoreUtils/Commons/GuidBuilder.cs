@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if THINGS_YET_TO_TEST
+using System;
 using System.Runtime.InteropServices;
 
 namespace ZakCore.Utils.Commons
@@ -90,3 +91,4 @@ namespace ZakCore.Utils.Commons
 		}
 	}
 }
+#endif
