@@ -14,13 +14,51 @@ namespace ZakCore.Utils.Commons
 
 		public string Help {get { return _helpMessage; }}
 
+		private static object _lockObject = new object();
+
 		public static string GetEnv(string envVar)
 		{
+			if (_kvps == null)
+			{
+				lock (_lockObject)
+				{
+					IDictionary environmentVariables = Environment.GetEnvironmentVariables();
+					_kvps = new Dictionary<string, string>();
+					foreach (DictionaryEntry de in environmentVariables)
+					{
+						_kvps.Add((string)de.Key, (string)de.Value);
+					}
+				}
+			}
 			if (_kvps.ContainsKey(envVar))
 			{
 				return _kvps[envVar];
 			}
 			return null;
+		}
+
+		public static void SetEnv(string envVar,string val)
+		{
+			if (_kvps == null)
+			{
+				lock (_lockObject)
+				{
+					IDictionary environmentVariables = Environment.GetEnvironmentVariables();
+					_kvps = new Dictionary<string, string>();
+					foreach (DictionaryEntry de in environmentVariables)
+					{
+						_kvps.Add((string)de.Key, (string)de.Value);
+					}
+				}
+			}
+			if (_kvps.ContainsKey(envVar))
+			{
+				_kvps[envVar] = val;
+			}
+			else
+			{
+				_kvps.Add(envVar, val);
+			}
 		}
 
 		public CommandLineParser(string[] args, string helpMessage,ICommandLineParserExitBehaviour exitBehaviour=null)

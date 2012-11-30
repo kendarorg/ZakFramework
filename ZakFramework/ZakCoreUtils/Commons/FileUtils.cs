@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using ZakCore.Utils.Logging;
 
 namespace ZakCore.Utils.Commons
 {
@@ -20,10 +18,6 @@ namespace ZakCore.Utils.Commons
 			string[] current = path.Split(Path.DirectorySeparatorChar);
 
 			string pathToCheck = current[0];
-			if (!Directory.Exists(pathToCheck))
-			{
-				Directory.CreateDirectory(pathToCheck);
-			}
 			if (pathToCheck.IndexOf(':') == 1)
 			{
 				pathToCheck += Path.DirectorySeparatorChar;
@@ -45,16 +39,12 @@ namespace ZakCore.Utils.Commons
 			if (path == null) return string.Empty;
 			if (string.IsNullOrEmpty(path)) return path;
 			if (Path.IsPathRooted(path) && File.Exists(path)) return path;
-			if (Path.IsPathRooted(path))
-			{
-				path = Path.GetFileName(path);
-			}
+
 			string npath = string.Empty;
-			if (Assembly.GetExecutingAssembly().GetName().CodeBase != null && path != null)
+			if (Assembly.GetExecutingAssembly().GetName().CodeBase != null)
 			{
 				string pddn = Path.GetDirectoryName(Assembly.GetExecutingAssembly().GetName().CodeBase);
-				if (pddn == null) pddn = string.Empty;
-				npath = Path.Combine(pddn, path);
+				if(pddn!=null) npath = Path.Combine(pddn, path);
 			}
 			if (npath.IndexOf("file:", StringComparison.Ordinal) == 0)
 			{
@@ -62,23 +52,21 @@ namespace ZakCore.Utils.Commons
 			}
 			if (File.Exists(npath)) return npath;
 
-			if (path != null)
+			if (!string.IsNullOrEmpty(availableRoot))
 			{
-				if (!string.IsNullOrEmpty(availableRoot))
-				{
-					npath = Path.Combine(availableRoot, path);
-					if (File.Exists(npath)) return npath;
-				}
-				if (!string.IsNullOrEmpty(BaseRoot))
-				{
-					npath = Path.Combine(BaseRoot, path);
-					if (File.Exists(npath)) return npath;
-				}
-				npath = Path.Combine(Environment.CurrentDirectory, path);
-				if (File.Exists(npath)) return npath;
-				npath = Path.Combine(Environment.SystemDirectory, path);
+				npath = Path.Combine(availableRoot, path);
 				if (File.Exists(npath)) return npath;
 			}
+			if (!string.IsNullOrEmpty(BaseRoot))
+			{
+				npath = Path.Combine(BaseRoot, path);
+				if (File.Exists(npath)) return npath;
+			}
+			npath = Path.Combine(Environment.CurrentDirectory, path);
+			if (File.Exists(npath)) return npath;
+			npath = Path.Combine(Environment.SystemDirectory, path);
+			if (File.Exists(npath)) return npath;
+
 
 			return null;
 		}
@@ -126,47 +114,31 @@ namespace ZakCore.Utils.Commons
 				AppDomain.CurrentDomain.Load(asmToLoad);*/
 				return Assembly.LoadFrom(path);
 			}
-			catch (Exception ex)
+			catch (Exception)
 			{
 				//Logger.Log("FileUtils", ex);
 			}
 			return null;
 		}
 
-		public static void InitializeRoot()
+		public static void InitializeRoot(CommandLineParser commandLineParser = null)
 		{
-			string[] args = Environment.GetCommandLineArgs();
-			for (int i = 0; i < args.Length; i++)
+			//Nothing set
+			if (CommandLineParser.GetEnv("ROOT") != null)
 			{
-				if (String.Compare(args[i], "-root", StringComparison.Ordinal) == 0)
-				{
-					BaseRoot = args[i + 1];
-					break;
-				}
+				BaseRoot = CommandLineParser.GetEnv("ROOT");
 			}
-			if (string.IsNullOrEmpty(BaseRoot)) return;
+			else if (commandLineParser == null || !commandLineParser.IsSet("root"))
+			{
+				BaseRoot = Environment.CurrentDirectory;
+			}
+			else
+			{
+				BaseRoot = commandLineParser["root"] == null ? CommandLineParser.GetEnv("ROOT") : commandLineParser["root"];
+			}
+
 			BaseRoot = BaseRoot.Replace('\\', Path.DirectorySeparatorChar);
 			BaseRoot = BaseRoot.Replace('/', Path.DirectorySeparatorChar);
-			string[] splAsk = BaseRoot.Split(Path.DirectorySeparatorChar);
-			var splReal = new List<string>(Environment.CurrentDirectory.Split(Path.DirectorySeparatorChar));
-			var noback = new List<string>();
-			for (int i = 0; i < splAsk.Length; i++)
-			{
-				if (String.Compare(splAsk[i], "..", StringComparison.Ordinal) == 0)
-				{
-					splReal.RemoveAt(splReal.Count - 1);
-				}
-				else
-				{
-					noback.Add(splAsk[i]);
-				}
-			}
-			splReal.AddRange(noback);
-			if (splReal[0].Length == 2)
-			{
-				splReal[0] = splReal[0] + Path.DirectorySeparatorChar;
-			}
-			BaseRoot = Path.Combine(splReal.ToArray());
 		}
 	}
 }

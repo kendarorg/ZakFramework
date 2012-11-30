@@ -36,7 +36,7 @@ namespace ZakTestUtils
 
 		private static void RemoveDirAndContent(DirectoryInfo rootDirInfo)
 		{
-			DirectoryInfo[] dirs = rootDirInfo.GetDirectories("*", SearchOption.AllDirectories);
+			DirectoryInfo[] dirs = rootDirInfo.GetDirectories("*", SearchOption.TopDirectoryOnly);
 			foreach (FileInfo file in rootDirInfo.GetFiles())
 			{
 				file.Delete();
@@ -76,29 +76,25 @@ namespace ZakTestUtils
 				Replace("/", Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture));
 		}
 
-		public static string GetSolutionRootWhileTesting()
+		public static string GetSolutionRoot()
 		{
 			var codeBase = Assembly.GetExecutingAssembly().CodeBase;
 			codeBase = Path.GetDirectoryName((new Uri(codeBase)).LocalPath);
 			codeBase = SanitizePath(codeBase);
 
 			var exploded = codeBase.Split(Path.DirectorySeparatorChar);
-			var testResultIndex = codeBase.IndexOf(string.Format("{0}TestResults{0}", Path.DirectorySeparatorChar),
-																						 StringComparison.InvariantCultureIgnoreCase);
-			if (testResultIndex > 0)
-			{
-				//If it's a test result dir
-				codeBase = codeBase.Substring(0, testResultIndex).TrimEnd(Path.DirectorySeparatorChar);
-				exploded = codeBase.Split(Path.DirectorySeparatorChar);
-			}
-			else if (exploded[exploded.Length - 1] == "Debug" || exploded[exploded.Length - 1] == "Release")
-			{
-				//If it is inside the project
-				// Remove the [projectName]/bin/[Debug|Release]
-				exploded = exploded.Take(exploded.Length - 3).ToArray();
-			}
 
-			return string.Join(Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture), exploded);
+			for (int i = (exploded.Length - 1); i > 0; i--)
+			{
+				var explodedNew = exploded.Take(i).Skip(1).ToArray();
+				string implodedPath = exploded[0] + Path.DirectorySeparatorChar + string.Join(Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture), explodedNew);
+				var result = Directory.GetFiles(implodedPath, "*.sln", SearchOption.TopDirectoryOnly);
+				if (result.Length >= 1)
+				{
+					return implodedPath;
+				}
+			}
+			return null;
 		}
 
 		public static string CreateDir(string testDir)

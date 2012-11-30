@@ -1,4 +1,10 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using ZakCore.Utils.Commons;
+using ZakTestUtils;
 
 namespace ZakCoreUtils.Test
 {
@@ -47,71 +53,157 @@ namespace ZakCoreUtils.Test
 
 		#endregion
 
-#if NOPE
-	/// <summary>
-	///A test for InitializeRoot
-	///</summary>
 		[TestMethod]
-		public void InitializeRootTest()
+		public void InitializeFileUtilsWithCommandLinePArser()
 		{
+			CommandLineParser.SetEnv("ROOT", null);
+			var root = TestFileUtils.GetSolutionRoot();
+			var commandLineParser = new CommandLineParser(new[] {"-root", root},string.Empty);
+			FileUtils.InitializeRoot(commandLineParser);
+			Assert.AreEqual(root,FileUtils.BaseRoot);
+		}
+
+		[TestMethod]
+		public void InitializeFileUtilsWithEnvironmentVariables()
+		{
+			CommandLineParser.SetEnv("ROOT", null);
+			var root = TestFileUtils.GetSolutionRoot();
+			CommandLineParser.SetEnv("ROOT", root);
 			FileUtils.InitializeRoot();
-			Assert.Inconclusive("A method that does not return a value cannot be verified.");
+			Assert.AreEqual(root, FileUtils.BaseRoot);
 		}
 
-		/// <summary>
-		///A test for FindFile
-		///</summary>
 		[TestMethod]
-		public void FindFileTest()
+		public void InitializeFileUtilsAsTheExecutablePath()
 		{
-			string path = string.Empty; 
-			string availableRoot = string.Empty; 
-			string expected = string.Empty; 
-			string actual;
-			actual = FileUtils.FindFile(path, availableRoot);
-			Assert.AreEqual(expected, actual);
-			Assert.Inconclusive("Verify the correctness of this test method.");
+			CommandLineParser.SetEnv("ROOT", null);
+			var root = Environment.CurrentDirectory;
+			FileUtils.InitializeRoot();
+			Assert.AreEqual(root, FileUtils.BaseRoot);
 		}
 
-		/// <summary>
-		///A test for FileUtils Constructor
-		///</summary>
 		[TestMethod]
-		public void FileUtilsConstructorTest()
+		public void ItShouldBePossibleToCreateADirectoryRecursively()
 		{
-			FileUtils target = new FileUtils();
-			Assert.Inconclusive("TODO: Implement code to verify target");
+			CommandLineParser.SetEnv("ROOT", null);
+			var root = Environment.CurrentDirectory;
+			var createdPath = Path.Combine(root, "a", "b", "c");
+			FileUtils.CreateFolderRecursive(createdPath);
+			FileUtils.CreateFolderRecursive(createdPath);
+			Assert.IsTrue(Directory.Exists(createdPath));
+			TestFileUtils.RemoveDir(Path.Combine(root,"a"));
 		}
 
-		/// <summary>
-		///A test for LoadAssembly
-		///</summary>
 		[TestMethod]
-		public void LoadAssemblyTest()
+		public void ItShouldBePossibleToLoadAnAssmbly()
 		{
-			string path = string.Empty; 
-			string availableRoot = string.Empty; 
-			Assembly expected = null; 
-			Assembly actual;
-			actual = FileUtils.LoadAssembly(path, availableRoot);
-			Assert.AreEqual(expected, actual);
-			Assert.Inconclusive("Verify the correctness of this test method.");
+			var root = TestFileUtils.GetSolutionRoot();
+			var dll = Directory.GetFiles(root, "*.dll",SearchOption.AllDirectories).First();
+			var path = Path.GetDirectoryName(dll);
+			dll = Path.GetFileName(dll);
+
+			var ass = FileUtils.LoadAssembly("Test.dll");
+			Assert.IsNull(ass);
+			ass = FileUtils.LoadAssembly(dll, path);
+			Assert.IsNotNull(ass);
 		}
 
-		/// <summary>
-		///A test for LoadClassFromAssemblies
-		///</summary>
 		[TestMethod]
-		public void LoadClassFromAssembliesTest()
+		public void ItShouldBePossibleToLoadAnAssmblyClassFromASpecifiedAssembly()
 		{
-			string className = string.Empty; 
-			Assembly asm = null; 
-			Type expected = null; 
-			Type actual;
-			actual = FileUtils.LoadClassFromAssemblies(className, asm);
-			Assert.AreEqual(expected, actual);
-			Assert.Inconclusive("Verify the correctness of this test method.");
+			var root = TestFileUtils.GetSolutionRoot();
+			var dll = Directory.GetFiles(root, "Crontab.exe",SearchOption.AllDirectories).First();
+			var path = Path.GetDirectoryName(dll);
+			dll = Path.GetFileName(dll);
+
+			var ass =  FileUtils.LoadAssembly(dll, path);
+			var cla = FileUtils.LoadClassFromAssemblies("_004_Crontab.ExitBehaviour", ass);
+			Assert.IsNotNull(ass);
+			Assert.IsNotNull(cla);
 		}
-#endif
+
+
+		[TestMethod]
+		public void ItShouldNotBePossibleToLoadNonExistingClassFromASpecifiedAssembly()
+		{
+			var root = TestFileUtils.GetSolutionRoot();
+			var dll = Directory.GetFiles(root, "Crontab.exe", SearchOption.AllDirectories).First();
+			var path = Path.GetDirectoryName(dll);
+			dll = Path.GetFileName(dll);
+
+			var ass = FileUtils.LoadAssembly(dll, path);
+			var cla = FileUtils.LoadClassFromAssemblies("_004_Crontab.NonExistingClass", ass);
+			Assert.IsNotNull(ass);
+			Assert.IsNull(cla);
+		}
+
+		[TestMethod]
+		public void ItShouldNotBePossibleToLoadNullAssembly()
+		{
+			var root = TestFileUtils.GetSolutionRoot();
+			
+			var ass = FileUtils.LoadAssembly(null, root);
+			Assert.IsNull(ass);
+		}
+
+
+		[TestMethod]
+		public void ItShouldBePossibleToLoadAnAssmblyClassFromANotSpecifiedAssembly()
+		{
+			var cla = FileUtils.LoadClassFromAssemblies("ZakCore.Utils.Logging.NullLogger");
+			Assert.IsNotNull(cla);
+		}
+
+		[TestMethod]
+		public void ItShouldBePossibleToFindAFileOnADir()
+		{
+			CommandLineParser.SetEnv("ROOT", null);
+			var root = TestFileUtils.GetSolutionRoot();
+			CommandLineParser.SetEnv("ROOT", root);
+			FileUtils.InitializeRoot();
+			var testRoot = Environment.CurrentDirectory;
+			File.WriteAllText(Path.Combine(testRoot,"tester.ltx"),"empty");
+
+			var foundedPath = FileUtils.FindFile("ZakFramework.sln");
+			Assert.IsTrue(File.Exists(foundedPath));
+
+			foundedPath = FileUtils.FindFile("tester.ltx");
+			Assert.IsTrue(File.Exists(foundedPath));
+
+			var newFoundedPath = FileUtils.FindFile(foundedPath);
+			Assert.AreEqual(foundedPath, newFoundedPath);
+
+			foundedPath = FileUtils.FindFile(string.Empty);
+			Assert.AreEqual(string.Empty,foundedPath);
+
+			var createdPath = Path.Combine(root, "d", "e", "e");
+			
+			FileUtils.CreateFolderRecursive(createdPath);
+			File.WriteAllText(Path.Combine(createdPath,"tester1.ltx"),"aaaa");
+
+			foundedPath = FileUtils.FindFile("tester1.ltx", createdPath);
+			Assert.IsTrue(File.Exists(foundedPath));
+
+			foundedPath = FileUtils.FindFile("taskmgr.exe", createdPath);
+			Assert.IsTrue(File.Exists(foundedPath));
+
+			var orginalEnvironment = Environment.CurrentDirectory;
+			try
+			{
+				Environment.CurrentDirectory = createdPath;
+				var secroot = Environment.CurrentDirectory;
+				File.WriteAllText(Path.Combine(secroot, "tester2.ltx"), "aaaa");
+				foundedPath = FileUtils.FindFile("tester2.ltx");
+				Assert.IsTrue(File.Exists(foundedPath));
+			}
+			finally
+			{
+				Environment.CurrentDirectory = orginalEnvironment;
+			}
+
+			foundedPath = FileUtils.FindFile("doesNotExists");
+			Assert.IsNull(foundedPath);
+			TestFileUtils.RemoveDir(Path.Combine(root, "d"));
+		}
 	}
 }
