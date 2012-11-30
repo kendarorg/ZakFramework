@@ -55,6 +55,7 @@
     <Compile Include="BitUtilsTest.cs" />
     <Compile Include="Collections\ZQueueCollectionTest.cs" />
     <Compile Include="Collections\ZQueueCollectionTestUtils.cs" />
+    <Compile Include="CommandLineParserTest.cs" />
     <Compile Include="ConversionUtilsTest.cs" />
     <Compile Include="CrontabTest.cs" />
     <Compile Include="FileUtilsTest.cs" />

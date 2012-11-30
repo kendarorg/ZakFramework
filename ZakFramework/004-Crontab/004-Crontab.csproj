@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="CrontabTask.cs" />
     <Compile Include="CrontabThread.cs" />
+    <Compile Include="ExitBehaviour.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

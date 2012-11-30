@@ -40,6 +40,7 @@
     <Compile Include="Commons\Crontab.cs" />
     <Compile Include="Commons\FileUtils.cs" />
     <Compile Include="Commons\GuidBuilder.cs" />
+    <Compile Include="Commons\ICommandLineParserExitBehaviour.cs" />
     <Compile Include="Commons\Impersonator.cs" />
     <Compile Include="Commons\IniFile.cs" />
     <Compile Include="Commons\ServiceInstaller.cs" />

@@ -5,12 +5,14 @@ using System.Collections.Generic;
 namespace ZakCore.Utils.Commons
 {
 
-	public sealed class CommandLineParser
+	public class CommandLineParser
 	{
 		private readonly string _helpMessage;
+		private readonly ICommandLineParserExitBehaviour _exitBehaviour;
 		private readonly Dictionary<string, string> _commandLineValues;
 		private static Dictionary<string, string> _kvps;
 
+		public string Help {get { return _helpMessage; }}
 
 		public static string GetEnv(string envVar)
 		{
@@ -21,7 +23,7 @@ namespace ZakCore.Utils.Commons
 			return null;
 		}
 
-		public CommandLineParser(string[] args, string helpMessage)
+		public CommandLineParser(string[] args, string helpMessage,ICommandLineParserExitBehaviour exitBehaviour=null)
 		{
 			//_kvps = kvps == null ? new Dictionary<string, string>() : kvps;
 			IDictionary environmentVariables = Environment.GetEnvironmentVariables();
@@ -31,13 +33,14 @@ namespace ZakCore.Utils.Commons
 				_kvps.Add((string)de.Key, (string)de.Value);
 			}
 			_helpMessage = helpMessage;
+			_exitBehaviour = exitBehaviour;
 			_commandLineValues = new Dictionary<string, string>();
 			for (int index = 0; index < args.Length; index++)
 			{
 				var item = args[index];
 				if (item.StartsWith("-"))
 				{
-					_commandLineValues.Add(item.Substring(1), string.Empty);
+					_commandLineValues.Add(item.Substring(1).ToLower(), string.Empty);
 				}
 				if (index < (args.Length - 1))
 				{
@@ -58,12 +61,14 @@ namespace ZakCore.Utils.Commons
 		{
 			get
 			{
+				index = index.ToLower();
 				if (IsSet(index))
 					return _commandLineValues[index];
 				return null;
 			}
 			set
 			{
+				index = index.ToLower();
 				if (IsSet(index))
 					_commandLineValues[index] = value;
 				else
@@ -73,6 +78,7 @@ namespace ZakCore.Utils.Commons
 
 		public bool IsSet(string index)
 		{
+			index = index.ToLower();
 			return _commandLineValues.ContainsKey(index);
 		}
 
@@ -80,7 +86,8 @@ namespace ZakCore.Utils.Commons
 		{
 			foreach (var item in vals)
 			{
-				if (!IsSet(item)) return false;
+				var index = item.ToLower();
+				if (!IsSet(index)) return false;
 			}
 			return true;
 		}
@@ -116,8 +123,7 @@ namespace ZakCore.Utils.Commons
 		public void ShowHelp()
 		{
 			Console.WriteLine(_helpMessage);
-			Console.ReadKey();
-			Environment.Exit(0);
+			if(_exitBehaviour!=null) _exitBehaviour.HandleApplicationExit();
 		}
 	}
 }

@@ -52,7 +52,7 @@ Crontab time specification:
 
 		static void Main(string[] args)
 		{
-			var commandParser = new CommandLineParser(args, HELP_MESSAGE);
+			var commandParser = new CommandLineParser(args, HELP_MESSAGE, new ExitBehaviour());
 			if (commandParser.Has("cronfile"))
 			{
 				var crontabFile = commandParser["cronfile"];
