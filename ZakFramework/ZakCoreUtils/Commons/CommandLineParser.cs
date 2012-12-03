@@ -18,6 +18,7 @@ namespace ZakCore.Utils.Commons
 
 		public static string GetEnv(string envVar)
 		{
+			envVar = envVar.ToLower();
 			if (_kvps == null)
 			{
 				lock (_lockObject)
@@ -39,6 +40,7 @@ namespace ZakCore.Utils.Commons
 
 		public static void SetEnv(string envVar,string val)
 		{
+			envVar = envVar.ToLower();
 			if (_kvps == null)
 			{
 				lock (_lockObject)
@@ -47,7 +49,7 @@ namespace ZakCore.Utils.Commons
 					_kvps = new Dictionary<string, string>();
 					foreach (DictionaryEntry de in environmentVariables)
 					{
-						_kvps.Add((string)de.Key, (string)de.Value);
+						_kvps.Add((string)de.Key, ((string)de.Value).ToLower());
 					}
 				}
 			}
@@ -89,7 +91,7 @@ namespace ZakCore.Utils.Commons
 					}
 				}
 			}
-			if (IsSet("help"))
+			if (IsSet("help") || IsSet("h"))
 			{
 				ShowHelp();
 			}

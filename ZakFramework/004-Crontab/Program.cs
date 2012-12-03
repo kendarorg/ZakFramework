@@ -22,14 +22,20 @@ namespace _004_Crontab
 	class Program
 	{
 		private const string HELP_MESSAGE =
-	@"Usage:
+	@"
+Usage:
+ Parse and execute the command specified
   Crontab -cronfile commandfile.ctb
+ Get the next execution time in yyyy/MM/dd-HH:mm:ss and write it in the [varname] file or
+ write it to stdout if no var specified
+  Crontab -next ""10 * * * * * *"" (-var [varname])
+ Print this help
   Crontab -h
 File format:
-The command is separated by the time with a TAB.
-The parts of the time are separated between each other by single spaces.
-The crontab format is considered with seconds included.
-Comment lines start with #
+ The command is separated by the time with a TAB.
+ The parts of the time are separated between each other by single spaces.
+ The crontab format is considered with seconds included.
+ Comment lines start with #
 
  #This is a comment
  
@@ -53,14 +59,30 @@ Crontab time specification:
 		static void Main(string[] args)
 		{
 			var commandParser = new CommandLineParser(args, HELP_MESSAGE, new ExitBehaviour());
-			if (commandParser.Has("cronfile"))
+			if (!commandParser.HasOneAndOnlyOne("next", "cronfile"))
+			{
+				commandParser.ShowHelp();
+			}
+			else if (commandParser.Has("next"))
+			{
+				var crontabEntry = commandParser["next"];
+				const string format = "yyyy/MM/dd-HH:mm:ss";
+				var crontab = new Crontab(crontabEntry, true);
+				var next = crontab.Next();
+				Console.WriteLine(next.ToString(format));
+				if (commandParser.Has("var") && !string.IsNullOrWhiteSpace(commandParser["var"]))
+				{
+					File.WriteAllText(commandParser["var"], next.ToString(format) + "\n");
+				}
+			}
+			else if (commandParser.Has("cronfile"))
 			{
 				var crontabFile = commandParser["cronfile"];
 				if (File.Exists(crontabFile))
 				{
 					Console.WriteLine("Reading crontab config {0}.", crontabFile);
 				}
-				var readLines = File.ReadAllLines(args[0]);
+				var readLines = File.ReadAllLines(crontabFile);
 				var corntabEntries = ParseCrontabEntries(readLines);
 				var crontabThread = new CrontabThread(corntabEntries);
 				crontabThread.RunThread();
