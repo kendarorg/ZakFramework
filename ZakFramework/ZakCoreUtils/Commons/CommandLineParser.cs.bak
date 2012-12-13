@@ -160,7 +160,7 @@ namespace ZakCore.Utils.Commons
 			foreach (var item in vals)
 			{
 				var index = item.ToLowerInvariant();
-				if (IsSet(index))
+				if (IsSet(item))
 				{
 					if (setted)
 					{

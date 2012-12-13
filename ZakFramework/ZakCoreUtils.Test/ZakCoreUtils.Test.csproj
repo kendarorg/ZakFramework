@@ -51,6 +51,7 @@
     </CodeAnalysisDependentAssemblyPaths>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AssembliesManagerTest.cs" />
     <Compile Include="BaseLoggerTest.cs" />
     <Compile Include="BitUtilsTest.cs" />
     <Compile Include="Collections\ZQueueCollectionTest.cs" />

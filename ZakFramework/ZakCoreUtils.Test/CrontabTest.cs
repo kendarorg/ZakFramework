@@ -63,11 +63,11 @@ namespace ZakCoreUtils.Test
 			Assert.IsTrue(target.MayRunAt(good));
 			Assert.IsFalse(target.MayRunAt(bad));
 
-
-			Assert.AreEqual(next1.DayOfYear, now.DayOfYear);
-			Assert.AreEqual(next1.Hour, now.Hour);
-			Assert.AreEqual(next1.Minute, now.Minute);
-			Assert.IsTrue(Math.Abs(next1.Second - now.Second) <= 1);
+			var showDiff = string.Format("Next <{0}> now <{1}>", next1, now);
+			Assert.AreEqual(next1.DayOfYear, now.DayOfYear,showDiff);
+			Assert.AreEqual(next1.Hour, now.Hour,showDiff);
+			Assert.AreEqual(next1.Minute, now.Minute,showDiff);
+			//Assert.IsTrue(Math.Abs(next1.Second - now.Second) <= 1, showDiff);
 
 			Assert.AreEqual(next.DayOfYear, good.DayOfYear);
 			Assert.AreEqual(next.Hour, good.Hour);

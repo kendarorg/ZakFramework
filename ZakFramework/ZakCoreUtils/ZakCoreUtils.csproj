@@ -36,6 +36,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Collections\LockFreeQueue.cs" />
+    <Compile Include="Commons\AssembliesManager.cs" />
     <Compile Include="Commons\CommandLineParser.cs" />
     <Compile Include="Commons\Crontab.cs" />
     <Compile Include="Commons\FileUtils.cs" />
