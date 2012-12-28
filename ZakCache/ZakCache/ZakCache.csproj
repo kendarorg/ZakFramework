@@ -12,6 +12,8 @@
     <AssemblyName>ZakCache</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -33,14 +35,17 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="ZakCoreUtils">
+      <HintPath>..\packages\ZakCoreUtils.1.0.0.0\lib\net40\ZakCoreUtils.dll</HintPath>
+    </Reference>
     <Reference Include="ZakCoreUtilsInterfaces">
-      <HintPath>..\lib\ZakCoreUtilsInterfaces.dll</HintPath>
+      <HintPath>..\packages\ZakCoreUtilsInterfaces.1.0.0.0\lib\net40\ZakCoreUtilsInterfaces.dll</HintPath>
     </Reference>
     <Reference Include="ZakThread">
-      <HintPath>..\lib\ZakThread.dll</HintPath>
+      <HintPath>..\packages\ZakThread.1.0.0.0\lib\net40\ZakThread.dll</HintPath>
     </Reference>
     <Reference Include="ZakThreadInterfaces">
-      <HintPath>..\lib\ZakThreadInterfaces.dll</HintPath>
+      <HintPath>..\packages\ZakThreadInterfaces.1.0.0.0\lib\net40\ZakThreadInterfaces.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -54,11 +59,15 @@
     <Compile Include="CacheManager\CacheInternals\WaitingCacheLoadItemTask.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>mkdir  "$(SolutionDir)RunEnvironment"
 Copy /y "$(TargetDir)$(TargetFileName)" "$(SolutionDir)RunEnvironment"</PostBuildEvent>
   </PropertyGroup>
+  <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

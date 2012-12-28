@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{3E91F875-23A7-41EF-8FBD-719695310DEF}</ProjectGuid>
+    <ProjectGuid>{AFF8F50F-553F-4E4B-9656-0DAF3DF82080}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>_001_A_simple_thread</RootNamespace>
-    <AssemblyName>001ASimpleThread</AssemblyName>
+    <RootNamespace>_002AMessageDrivenThread</RootNamespace>
+    <AssemblyName>002AMessageDrivenThread</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -36,31 +36,29 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="ZakCoreUtils">
+      <HintPath>..\packages\ZakCoreUtils.1.0.0.0\lib\net40\ZakCoreUtils.dll</HintPath>
+    </Reference>
+    <Reference Include="ZakCoreUtilsInterfaces">
+      <HintPath>..\packages\ZakCoreUtilsInterfaces.1.0.0.0\lib\net40\ZakCoreUtilsInterfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="ZakThread">
+      <HintPath>..\packages\ZakThread.1.0.0.0\lib\net40\ZakThread.dll</HintPath>
+    </Reference>
+    <Reference Include="ZakThreadInterfaces">
+      <HintPath>..\packages\ZakThreadInterfaces.1.0.0.0\lib\net40\ZakThreadInterfaces.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TestThread.cs" />
+    <Compile Include="TestMessage.cs" />
+    <Compile Include="TestMessageThread.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ZakCoreUtilsInterfaces\ZakCoreUtilsInterfaces.csproj">
-      <Project>{45F980B7-498D-40AC-A34A-E5B8324979C0}</Project>
-      <Name>ZakCoreUtilsInterfaces</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ZakThreadInterfaces\ZakThreadInterfaces.csproj">
-      <Project>{26B48B9A-B9F1-48DC-8D6E-E7F361E3BBF9}</Project>
-      <Name>ZakThreadInterfaces</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ZakThread\ZakThread.csproj">
-      <Project>{9156A91E-5AFD-4D1D-A081-BE45BD4F9C37}</Project>
-      <Name>ZakThread</Name>
-    </ProjectReference>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>mkdir  "$(SolutionDir)RunEnvironment"
-Copy /y "$(TargetDir)$(TargetFileName)" "$(SolutionDir)RunEnvironment"</PostBuildEvent>
-  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
