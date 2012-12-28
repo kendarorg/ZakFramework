@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ZakDb</RootNamespace>
-    <AssemblyName>ZakDbCore</AssemblyName>
+    <AssemblyName>ZakDb</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -53,11 +53,16 @@
       <Name>ZakDbInterfaces</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="ZakDb.nuspec" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>mkdir  "$(SolutionDir)RunEnvironment"
-Copy /y "$(TargetDir)$(TargetFileName)" "$(SolutionDir)RunEnvironment"</PostBuildEvent>
+Copy /y "$(TargetDir)$(TargetFileName)" "$(SolutionDir)RunEnvironment"
+
+mkdir  "$(SolutionDir)NugetPackages"
+$(SolutionDir).nuget\nuget pack "$(ProjectPath)" -OutputDirectory "$(SolutionDir)NugetPackages" -Prop Configuration=$(ConfigurationName)</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -1,0 +1,17 @@
+﻿<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title />
+    <authors>$author$</authors>
+    <owners>$author$</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>$description$</description>
+		<projectUrl>http://www.kendar.org</projectUrl>
+    <dependencies/>
+  </metadata>
+	<files>
+		<file src="bin\$configuration$\ZakDbInterfaces.dll" target="lib\net40\ZakDbInterfaces.dll" />
+	</files>
+</package>

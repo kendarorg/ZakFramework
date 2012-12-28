@@ -44,6 +44,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Log4NetLogger.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -59,7 +60,10 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>mkdir  "$(SolutionDir)RunEnvironment"
-Copy /y "$(TargetDir)$(TargetFileName)" "$(SolutionDir)RunEnvironment"</PostBuildEvent>
+Copy /y "$(TargetDir)$(TargetFileName)" "$(SolutionDir)RunEnvironment"
+
+mkdir  "$(SolutionDir)NugetPackages"
+$(SolutionDir).nuget\nuget pack "$(ProjectPath)" -OutputDirectory "$(SolutionDir)NugetPackages" -Prop Configuration=$(ConfigurationName)</PostBuildEvent>
   </PropertyGroup>
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

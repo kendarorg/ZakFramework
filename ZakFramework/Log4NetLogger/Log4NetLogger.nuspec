@@ -1,0 +1,23 @@
+﻿<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+	<metadata>
+		<id>$id$</id>
+		<version>$version$</version>
+		<title />
+		<authors>$author$</authors>
+		<owners>$author$</owners>
+		<requireLicenseAcceptance>false</requireLicenseAcceptance>
+		<description>$description$</description>
+		<dependencies>
+			<group targetFramework=".NETFramework4.0">
+				<dependency id="ZakCoreUtilsInterfaces" version="$version$" />
+				<dependency id="ZakCoreUtils" version="$version$" />
+			</group>
+		</dependencies>
+	</metadata>
+	<!--
+	May be a bug with nuget packager, cant'add files while adding packages.config
+	<files>
+		<file src="bin\$configuration$\Log4NetLogger.dll" target="lib\net40\Log4NetLogger.dll" />
+	</files>-->
+</package>

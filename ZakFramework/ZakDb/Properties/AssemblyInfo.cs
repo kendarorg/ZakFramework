@@ -6,12 +6,12 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 
-[assembly: AssemblyTitle("ZakCmsCore")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("ZakDb")]
+[assembly: AssemblyDescription("ZakDb")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Microsoft")]
-[assembly: AssemblyProduct("ZakCmsCore")]
-[assembly: AssemblyCopyright("Copyright © Microsoft 2012")]
+[assembly: AssemblyCompany("Enrico Da Ros")]
+[assembly: AssemblyProduct("ZakDb")]
+[assembly: AssemblyCopyright("Copyright © Enrico Da Ros 2012-2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
