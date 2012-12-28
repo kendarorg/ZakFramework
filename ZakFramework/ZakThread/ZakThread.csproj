@@ -73,7 +73,7 @@
 Copy /y "$(TargetDir)$(TargetFileName)" "$(SolutionDir)RunEnvironment"
 
 mkdir  "$(SolutionDir)NugetPackages"
-$(SolutionDir).nuget\nuget pack "$(ProjectPath)" -OutputDirectory "$(SolutionDir)NugetPackages" -Prop Configuration=$(ConfigurationName)</PostBuildEvent>
+"$(SolutionDir).nuget\nuget" pack "$(ProjectPath)" -OutputDirectory "$(SolutionDir)NugetPackages" -Prop "Configuration=$(ConfigurationName);Platform=$(PlatformName)"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

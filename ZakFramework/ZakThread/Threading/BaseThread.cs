@@ -302,12 +302,12 @@ namespace ZakThread.Threading
 		/// <returns></returns>
 		protected abstract Boolean RunSingleCycle();
 
-#if DEBUG
+//#if DEBUG
 		internal Thread IntThread
 		{
 			get { return _thread; }
 		}
-#endif
+//#endif
 
 		public virtual void Dispose()
 		{
