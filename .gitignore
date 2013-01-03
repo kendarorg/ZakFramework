@@ -110,5 +110,5 @@ Backup*/
 UpgradeLog*.XML
 
 # Output
-RunEnvironment/*
-NugetPackages/*
+*/RunEnvironment/*
+*/NugetPackages/*
