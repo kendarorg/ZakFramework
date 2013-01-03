@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using ZakCore.Utils.Logging;
 using ZakThread.Logging;
 using ZakThread.Test.Threading.Simple;
@@ -10,10 +10,10 @@ using ZakThread.Threading.Enums;
 
 namespace ZakThread.Test.Threading
 {
-	[TestClass]
+	[TestFixture]
 	public class ZQueueMessageThreadingTest
 	{
-		[TestMethod]
+		[Test]
 		public void ItShouldBePossibleToInitializeAMessageingThread()
 		{
 			const int sleepTime = 100;
@@ -27,7 +27,7 @@ namespace ZakThread.Test.Threading
 			Assert.AreEqual(RunningStatus.None, th.Status);
 		}
 
-		[TestMethod]
+		[Test]
 		public void ItShouldBePossibleToStartAndStopAMessagingThread()
 		{
 			const int sleepTime = 100;
@@ -49,7 +49,7 @@ namespace ZakThread.Test.Threading
 			Assert.IsTrue(th.IsCleanedUp);
 		}
 
-		[TestMethod]
+		[Test]
 		public void ItShouldBePossibleToReceiveMessagesForAMessagingThread()
 		{
 			const int sleepTime = 1;
@@ -79,7 +79,7 @@ namespace ZakThread.Test.Threading
 			Assert.AreEqual(messagesToSend, th.HandledMessages);
 		}
 
-		[TestMethod]
+		[Test]
 		public void ItShouldBePossibleToInterceptExceptionsOnAMessagingThreadDuringTheMessageHandling()
 		{
 			const int sleepTime = 1;
@@ -116,7 +116,7 @@ namespace ZakThread.Test.Threading
 		}
 
 
-		[TestMethod]
+		[Test]
 		public void ItShouldBePossibleToRestartAutomaticallyAMessageThreadOnErrorInMessageHandling()
 		{
 			const int sleepTime = 1;
@@ -152,7 +152,7 @@ namespace ZakThread.Test.Threading
 			Assert.AreEqual(messagesToSend*2, th.HandledMessages);
 		}
 
-		[TestMethod]
+		[Test]
 		public void ItShouldBePossibleToPeekMessagesForAMessagingThread()
 		{
 			const int sleepTime = 1;
@@ -200,7 +200,7 @@ namespace ZakThread.Test.Threading
 		}
 
 
-		[TestMethod]
+		[Test]
 		public void ItShouldBePossibleToGetAndSetAThreadManager()
 		{
 			const int sleepTime = 1;
@@ -215,7 +215,7 @@ namespace ZakThread.Test.Threading
 
 		}
 
-		[TestMethod]
+		[Test]
 		public void ItShouldBePossibleToTerminateTheThreadUponReceivingAMessage()
 		{
 			const int sleepTime = 1;

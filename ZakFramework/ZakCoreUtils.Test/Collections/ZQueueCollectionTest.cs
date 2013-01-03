@@ -1,15 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using ZakCore.Utils.Collections;
 
 namespace ZakCoreUtils.Test.Collections
 {
-	[TestClass]
+	[TestFixture]
 	public class ZQueueCollectionTest
 	{
-		[TestMethod]
+		[Test]
 		public void ItShouldBePossibleToReceiveAllStuffPuttedOnTheQueue()
 		{
 			const int threadsCount = 100;
@@ -40,7 +40,7 @@ namespace ZakCoreUtils.Test.Collections
 			Assert.IsTrue(ZQueueCollectionTestUtils.IsSendCompleted, "Did not completed the send of data");
 		}
 
-		[TestMethod]
+		[Test]
 		public void ItShouldBePossibleToClearAQueueAndDequeueASingleItem()
 		{
 			var lfq = new LockFreeQueue<string>();

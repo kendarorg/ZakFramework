@@ -2,14 +2,14 @@
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace ZakCoreUtils.Test
 {
-	[TestClass]
+	[TestFixture]
 	public class AssembliesManagerTest
 	{
-		[TestMethod]
+		[Test]
 		public void TestMethod1()
 		{
 		}

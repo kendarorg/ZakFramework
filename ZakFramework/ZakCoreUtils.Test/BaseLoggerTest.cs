@@ -1,19 +1,19 @@
 ﻿using System;
 using System.Globalization;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using ZakCore.Utils.Logging;
 using ZakCoreUtils.Test.Logger;
 
 namespace ZakCoreUtils.Test
 {
 	// ReSharper disable StringIndexOfIsCultureSpecific.1
-	[TestClass]
+	[TestFixture]
 	public class BaseLoggerTest
 	{
 		private const int START_OF_DATA_INDEX = 20;
 
 		#region Log level tests
-		[TestMethod]
+		[Test]
 		public void TheLoggerShouldConsiderLoggerLevelDebug()
 		{
 			var logger = new BaseLoggerMock {LoggingLevel = LogLevels.LogDebug};
@@ -44,7 +44,7 @@ namespace ZakCoreUtils.Test
 		}
 
 
-		[TestMethod]
+		[Test]
 		public void TheLoggerShouldConsiderLoggerLevelInfo()
 		{
 			var logger = new BaseLoggerMock { LoggingLevel = LogLevels.LogInfo };
@@ -74,7 +74,7 @@ namespace ZakCoreUtils.Test
 			Assert.AreEqual(LogLevels.LogFatal, logger.ToWriteLevel);
 		}
 
-		[TestMethod]
+		[Test]
 		public void TheLoggerShouldConsiderLoggerLevelWarn()
 		{
 			var logger = new BaseLoggerMock { LoggingLevel = LogLevels.LogWarn };
@@ -104,7 +104,7 @@ namespace ZakCoreUtils.Test
 			Assert.AreEqual(LogLevels.LogFatal, logger.ToWriteLevel);
 		}
 
-		[TestMethod]
+		[Test]
 		public void TheLoggerShouldConsiderLoggerLevelError()
 		{
 			var logger = new BaseLoggerMock { LoggingLevel = LogLevels.LogError };
@@ -134,7 +134,7 @@ namespace ZakCoreUtils.Test
 			Assert.AreEqual(LogLevels.LogFatal, logger.ToWriteLevel);
 		}
 
-		[TestMethod]
+		[Test]
 		public void TheLoggerShouldConsiderLoggerLevelFatal()
 		{
 			var logger = new BaseLoggerMock { LoggingLevel = LogLevels.LogFatal };
@@ -165,7 +165,7 @@ namespace ZakCoreUtils.Test
 		}
 
 
-		[TestMethod]
+		[Test]
 		public void TheLoggerShouldConsiderLoggerLevelNone()
 		{
 			var logger = new BaseLoggerMock { LoggingLevel = LogLevels.LogNone };
@@ -197,7 +197,7 @@ namespace ZakCoreUtils.Test
 		#endregion
 
 
-		[TestMethod]
+		[Test]
 		public void TheLoggerShouldLogWithDebug()
 		{
 			var logger = new BaseLoggerMock {LoggingLevel = LogLevels.LogDebug};
@@ -247,7 +247,7 @@ namespace ZakCoreUtils.Test
 		}
 
 
-		[TestMethod]
+		[Test]
 		public void TheLoggerShouldLogWithInfo()
 		{
 			var logger = new BaseLoggerMock { LoggingLevel = LogLevels.LogInfo };
@@ -295,7 +295,7 @@ namespace ZakCoreUtils.Test
 		}
 
 
-		[TestMethod]
+		[Test]
 		public void TheLoggerShouldLogWithWarn()
 		{
 			var logger = new BaseLoggerMock { LoggingLevel = LogLevels.LogWarn };
@@ -343,7 +343,7 @@ namespace ZakCoreUtils.Test
 		}
 
 
-		[TestMethod]
+		[Test]
 		public void TheLoggerShouldLogWithError()
 		{
 			var logger = new BaseLoggerMock { LoggingLevel = LogLevels.LogError };
@@ -390,7 +390,7 @@ namespace ZakCoreUtils.Test
 			Assert.IsNull(logger.ToWriteLevel);
 		}
 
-		[TestMethod]
+		[Test]
 		public void TheLoggerShouldLogWithFatal()
 		{
 			var logger = new BaseLoggerMock { LoggingLevel = LogLevels.LogFatal };
@@ -437,7 +437,7 @@ namespace ZakCoreUtils.Test
 		}
 
 
-		[TestMethod]
+		[Test]
 		public void TheLoggerShouldNotLogWithNone()
 		{
 			var logger = new BaseLoggerMock { LoggingLevel = LogLevels.LogNone };

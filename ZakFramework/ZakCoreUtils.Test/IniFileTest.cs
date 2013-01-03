@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using ZakCore.Utils.Commons;
 
 namespace ZakCoreUtils.Test
@@ -8,7 +8,7 @@ namespace ZakCoreUtils.Test
 	///This is a test class for IniFileTest and is intended
 	///to contain all IniFileTest Unit Tests
 	///</summary>
-	[TestClass]
+	[TestFixture]
 	public class IniFileTest
 	{
 		/// <summary>
@@ -53,7 +53,7 @@ namespace ZakCoreUtils.Test
 	/// <summary>
 	///A test for IniFile Constructor
 	///</summary>
-		[TestMethod]
+		[Test]
 		public void IniFileConstructorTest()
 		{
 			string fileName = string.Empty; 
@@ -66,7 +66,7 @@ namespace ZakCoreUtils.Test
 		/// <summary>
 		///A test for GetSections
 		///</summary>
-		[TestMethod]
+		[Test]
 		public void GetSectionsTest()
 		{
 			string fileName = string.Empty; 
@@ -83,7 +83,7 @@ namespace ZakCoreUtils.Test
 		/// <summary>
 		///A test for GetValue
 		///</summary>
-		[TestMethod]
+		[Test]
 		public void GetValueTest()
 		{
 			string fileName = string.Empty; 
@@ -102,7 +102,7 @@ namespace ZakCoreUtils.Test
 		/// <summary>
 		///A test for GetValues
 		///</summary>
-		[TestMethod]
+		[Test]
 		public void GetValuesTest()
 		{
 			string fileName = string.Empty; 
@@ -120,7 +120,7 @@ namespace ZakCoreUtils.Test
 		/// <summary>
 		///A test for Save
 		///</summary>
-		[TestMethod]
+		[Test]
 		public void SaveTest()
 		{
 			string fileName = string.Empty; 
@@ -138,7 +138,7 @@ namespace ZakCoreUtils.Test
 		/// <summary>
 		///A test for SetValue
 		///</summary>
-		[TestMethod]
+		[Test]
 		public void SetValueTest()
 		{
 			string fileName = string.Empty; 
@@ -155,7 +155,7 @@ namespace ZakCoreUtils.Test
 		/// <summary>
 		///A test for SetValues
 		///</summary>
-		[TestMethod]
+		[Test]
 		public void SetValuesTest()
 		{
 			string fileName = string.Empty; 
@@ -171,7 +171,7 @@ namespace ZakCoreUtils.Test
 		/// <summary>
 		///A test for FileName
 		///</summary>
-		[TestMethod]
+		[Test]
 		public void FileNameTest()
 		{
 			string fileName = string.Empty; 

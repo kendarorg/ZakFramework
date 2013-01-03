@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using NUnit.Framework;
 using ZakCore.Utils.Commons;
 
 namespace ZakCoreUtils.Test
@@ -7,7 +7,7 @@ namespace ZakCoreUtils.Test
 	///This is a test class for BitUtilsTest and is intended
 	///to contain all BitUtilsTest Unit Tests
 	///</summary>
-	[TestClass]
+	[TestFixture]
 	public class BitUtilsTest
 	{
 		/// <summary>
@@ -51,7 +51,7 @@ namespace ZakCoreUtils.Test
 		/// <summary>
 		///A test for Set
 		///</summary>
-		[TestMethod]
+		[Test]
 		public void SetTest()
 		{
 			int value = 1;
@@ -64,7 +64,7 @@ namespace ZakCoreUtils.Test
 		/// <summary>
 		///A test for IsSet
 		///</summary>
-		[TestMethod]
+		[Test]
 		public void IsSetTest()
 		{
 			const int value = 2;

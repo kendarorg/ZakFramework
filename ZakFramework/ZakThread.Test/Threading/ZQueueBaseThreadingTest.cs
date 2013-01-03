@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using ZakCore.Utils.Logging;
 using ZakThread.Test.Threading.Simple;
 using ZakThread.Threading;
@@ -9,10 +9,10 @@ using ZakThread.Threading.Enums;
 
 namespace ZakThread.Test.Threading
 {
-	[TestClass]
+	[TestFixture]
 	public class ZQueueBaseThreadingTest
 	{
-		[TestMethod]
+		[Test]
 		public void ItShouldBePossibleToInitializeAThread()
 		{
 			const int sleepTime = 100;
@@ -28,7 +28,7 @@ namespace ZakThread.Test.Threading
 			Assert.AreEqual(RunningStatus.None, th.Status);
 		}
 
-		[TestMethod]
+		[Test]
 		public void ItShouldBePossibleToStartAndStopAThread()
 		{
 			const int sleepTime = 100;
@@ -52,7 +52,7 @@ namespace ZakThread.Test.Threading
 			Assert.IsTrue(th.IsCleanedUp);
 		}
 
-		[TestMethod]
+		[Test]
 		public void ItShouldBePOssibleToTerminateANonStartedThread()
 		{
 			const int sleepTime = 50;
@@ -68,7 +68,7 @@ namespace ZakThread.Test.Threading
 		}
 
 
-		[TestMethod]
+		[Test]
 		public void ItShouldBePOssibleToTerminateAnHaltingThread()
 		{
 			const int sleepTime = 1000;
@@ -87,7 +87,7 @@ namespace ZakThread.Test.Threading
 		}
 
 
-		[TestMethod]
+		[Test]
 		public void ItShouldBePOssibleToTerminateANotInitializedThread()
 		{
 			const int sleepTime = 1000;
@@ -105,7 +105,7 @@ namespace ZakThread.Test.Threading
 
 
 
-		[TestMethod]
+		[Test]
 		public void ItShouldNotBePossibleToWaitForTerminationOfANotHaltingThread()
 		{
 			const int sleepTime = 1000;
@@ -132,7 +132,7 @@ namespace ZakThread.Test.Threading
 		}
 
 
-		[TestMethod]
+		[Test]
 		public void ItShouldBePossibleToStartAndStopAThreadWithTheDefaultTerminationTime()
 		{
 			const int sleepTime = 50;
@@ -156,7 +156,7 @@ namespace ZakThread.Test.Threading
 		}
 
 
-		[TestMethod]
+		[Test]
 		public void ItShouldBePossibleToInterruptAThreadDuringTheCyclicExecution()
 		{
 			const int sleepTime = 100;
@@ -177,7 +177,7 @@ namespace ZakThread.Test.Threading
 			Assert.IsTrue(th.IsCleanedUp);
 		}
 
-		[TestMethod]
+		[Test]
 		public void ItShouldBePossibleToStartAndAbortAThreadWithoutCleanUp()
 		{
 			const int sleepTime = 100;
@@ -199,7 +199,7 @@ namespace ZakThread.Test.Threading
 			Assert.IsFalse(th.IsCleanedUp);
 		}
 
-		[TestMethod]
+		[Test]
 		public void ItShouldBePossibleToStartAndStopAThreadDetectingItSHalting()
 		{
 			const int sleepTime = 500;
@@ -221,7 +221,7 @@ namespace ZakThread.Test.Threading
 			Assert.IsTrue(th.IsCleanedUp);
 		}
 
-		[TestMethod]
+		[Test]
 		public void ItShouldBePossibleToInterceptThreadAbortExceptions()
 		{
 			const int sleepTime = 500;
@@ -244,7 +244,7 @@ namespace ZakThread.Test.Threading
 
 
 
-		[TestMethod]
+		[Test]
 		public void ItShouldBePossibleToTerminateAnAlreadyTerminatedThread()
 		{
 			const int sleepTime = 100;
@@ -275,7 +275,7 @@ namespace ZakThread.Test.Threading
 		}
 
 
-		[TestMethod]
+		[Test]
 		public void ItShouldBePossibleToBlockAThreadWaitingForASpecificTimeout()
 		{
 			const int sleepTime = 500;
@@ -308,7 +308,7 @@ namespace ZakThread.Test.Threading
 			Thread.Sleep(1000);
 		}
 
-		[TestMethod]
+		[Test]
 		public void ItShouldBePossibleToStartAndDisposeIt()
 		{
 			const int sleepTime = 500;
@@ -331,7 +331,7 @@ namespace ZakThread.Test.Threading
 			Assert.IsTrue(th.IsInitialized);
 		}
 
-		[TestMethod]
+		[Test]
 		public void ItShouldBePossibleToInterceptAnExceptionOnInitialization()
 		{
 			const int sleepTime = 10;
@@ -353,7 +353,7 @@ namespace ZakThread.Test.Threading
 			Assert.IsTrue(th.IsExceptionHandled);
 		}
 
-		[TestMethod]
+		[Test]
 		public void ItShouldBePossibleToInterceptAnExceptionOnCyclicRunning()
 		{
 			const int sleepTime = 10;
@@ -375,7 +375,7 @@ namespace ZakThread.Test.Threading
 			Assert.IsTrue(th.IsExceptionHandled);
 		}
 
-		[TestMethod]
+		[Test]
 		public void ItShouldBePossibleToInterceptAnExceptionOnCleanUp()
 		{
 			const int sleepTime = 10;
@@ -399,7 +399,7 @@ namespace ZakThread.Test.Threading
 			Assert.IsTrue(th.IsExceptionHandled);
 		}
 
-		[TestMethod]
+		[Test]
 		public void ItShouldBePossibleToRestartAThreadThatFailed()
 		{
 			const int sleepTime = 10;
@@ -424,7 +424,7 @@ namespace ZakThread.Test.Threading
 
 
 
-		[TestMethod]
+		[Test]
 		public void ItShouldBePossibleToRestartAThreadThatFailedWithStrangeBehaviour()
 		{
 			const int sleepTime = 10;

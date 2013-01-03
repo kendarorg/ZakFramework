@@ -1,11 +1,11 @@
 ﻿using System;
 using System.IO;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using ZakCore.Utils.Commons;
 
 namespace ZakCoreUtils.Test
 {
-	[TestClass]
+	[TestFixture]
 	public class CommandLineParserTest
 	{
 		/// <summary>
@@ -21,7 +21,7 @@ namespace ZakCoreUtils.Test
 			}
 		}
 
-		[TestMethod]
+		[Test]
 		public void ItShouldBePossibleToCreateACommandLneParser()
 		{
 			const string helpString = "help";
@@ -43,7 +43,7 @@ namespace ZakCoreUtils.Test
 			Assert.AreEqual("newValue", resultValue);
 		}
 
-		[TestMethod]
+		[Test]
 		public void ItShouldBePossibleToCreateACommandLneParserAndShowHelp()
 		{
 			const string helpString = "help";
@@ -55,7 +55,7 @@ namespace ZakCoreUtils.Test
 			Assert.AreEqual(1,eb.ShowHelpCalled);
 		}
 
-		[TestMethod]
+		[Test]
 		public void ItShouldBePossibleToCheckForValuesPresence()
 		{
 			const string helpString = "help";
@@ -79,7 +79,7 @@ namespace ZakCoreUtils.Test
 		}
 
 
-		[TestMethod]
+		[Test]
 		public void ItShouldBePossibleToGetEnvironmentVariables()
 		{
 			var args = new[] { "-test"};

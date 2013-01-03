@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Globalization;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using ZakCore.Utils.Logging;
 
 namespace ZakCoreUtils.Test
 {
-	[TestClass]
+	[TestFixture]
 	public class NullLoggerTest
 	{
-		[TestMethod]
+		[Test]
 		public void NullLoggerTestConstructor()
 		{
 			var nullLogger = NullLogger.Create();
@@ -20,7 +20,7 @@ namespace ZakCoreUtils.Test
 
 		#region Log level tests
 
-		[TestMethod]
+		[Test]
 		public void TheLoggerShouldConsiderLoggerLevelDebug()
 		{
 			var logger = NullLogger.Create();
@@ -33,7 +33,7 @@ namespace ZakCoreUtils.Test
 		}
 
 
-		[TestMethod]
+		[Test]
 		public void TheLoggerShouldConsiderLoggerLevelInfo()
 		{
 			var logger = NullLogger.Create();
@@ -45,7 +45,7 @@ namespace ZakCoreUtils.Test
 			logger.Fatal("test");
 		}
 
-		[TestMethod]
+		[Test]
 		public void TheLoggerShouldConsiderLoggerLevelWarn()
 		{
 			var logger = NullLogger.Create();
@@ -57,7 +57,7 @@ namespace ZakCoreUtils.Test
 			logger.Fatal("test");
 		}
 
-		[TestMethod]
+		[Test]
 		public void TheLoggerShouldConsiderLoggerLevelError()
 		{
 			var logger = NullLogger.Create();
@@ -69,7 +69,7 @@ namespace ZakCoreUtils.Test
 			logger.Fatal("test");
 		}
 
-		[TestMethod]
+		[Test]
 		public void TheLoggerShouldConsiderLoggerLevelFatal()
 		{
 			var logger = NullLogger.Create();
@@ -82,7 +82,7 @@ namespace ZakCoreUtils.Test
 		}
 
 
-		[TestMethod]
+		[Test]
 		public void TheLoggerShouldConsiderLoggerLevelNone()
 		{
 			var logger = NullLogger.Create();
@@ -97,7 +97,7 @@ namespace ZakCoreUtils.Test
 		#endregion
 
 
-		[TestMethod]
+		[Test]
 		public void TheLoggerShouldLogWithDebug()
 		{
 			var logger = NullLogger.Create();
@@ -123,7 +123,7 @@ namespace ZakCoreUtils.Test
 		}
 
 
-		[TestMethod]
+		[Test]
 		public void TheLoggerShouldLogWithInfo()
 		{
 			var logger = NullLogger.Create();
@@ -149,7 +149,7 @@ namespace ZakCoreUtils.Test
 		}
 
 
-		[TestMethod]
+		[Test]
 		public void TheLoggerShouldLogWithWarn()
 		{
 			var logger = NullLogger.Create();
@@ -175,7 +175,7 @@ namespace ZakCoreUtils.Test
 		}
 
 
-		[TestMethod]
+		[Test]
 		public void TheLoggerShouldLogWithError()
 		{
 			var logger = NullLogger.Create();
@@ -200,7 +200,7 @@ namespace ZakCoreUtils.Test
 			logger.ErrorFormat(culture, "{0}-{1}", "test", 0.2533);
 		}
 
-		[TestMethod]
+		[Test]
 		public void TheLoggerShouldLogWithFatal()
 		{
 			var logger = NullLogger.Create();

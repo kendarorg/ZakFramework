@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using ZakCore.Utils.Commons;
 
 namespace ZakCoreUtils.Test
@@ -9,7 +9,7 @@ namespace ZakCoreUtils.Test
 	///This is a test class for ConversionUtilsTest and is intended
 	///to contain all ConversionUtilsTest Unit Tests
 	///</summary>
-	[TestClass]
+	[TestFixture]
 	public class ConversionUtilsTest
 	{
 		/// <summary>
@@ -53,7 +53,7 @@ namespace ZakCoreUtils.Test
 		/// <summary>
 		///A test for String2Bytes
 		///</summary>
-		[TestMethod]
+		[Test]
 		public void String2BytesTest()
 		{
 			const string val = "\\asdfl8-8-";
@@ -72,7 +72,7 @@ namespace ZakCoreUtils.Test
 		/// <summary>
 		///A test for Bytes2Guid
 		///</summary>
-		[TestMethod]
+		[Test]
 		public void Bytes2GuidTest()
 		{
 			Guid vg = Guid.NewGuid();
@@ -85,7 +85,7 @@ namespace ZakCoreUtils.Test
 		/// <summary>
 		///A test for DateTime2UnixTime
 		///</summary>
-		[TestMethod]
+		[Test]
 		public void DateTime2UnixTimeTest()
 		{
 			var val = new DateTime(2000, 1, 1, 12, 30, 30);

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using ZakCore.Utils.Commons;
 using ZakCore.Utils.Logging;
 using ZakTestUtils;
@@ -9,7 +9,7 @@ using ZakThread.Logging;
 
 namespace ZakThread.Test
 {
-	[TestClass]
+	[TestFixture]
 	public class FileLoggerTest
 	{
 		private class TestLogger:FileLogger
@@ -20,7 +20,7 @@ namespace ZakThread.Test
 			}
 		}
 
-		[TestMethod]
+		[Test]
 		public void ItShouldBePossibleToLogThrougTheFileLogger()
 		{
 			var loggerFileSource = TestFileUtils.CreateRootDir("Logger");
@@ -45,7 +45,7 @@ namespace ZakThread.Test
 			TestFileUtils.RemoveDir(loggerFileSource);
 		}
 
-		[TestMethod]
+		[Test]
 		public void ItShouldBePossibleToCreateANewLogFileUponDateChange()
 		{
 			var loggerFileSource = TestFileUtils.CreateRootDir("Logger");

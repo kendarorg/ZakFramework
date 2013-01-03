@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using ZakCore.Utils.Commons;
 
 namespace ZakCoreUtils.Test
@@ -9,7 +9,7 @@ namespace ZakCoreUtils.Test
 	///This is a test class for CrontabTest and is intended
 	///to contain all CrontabTest Unit Tests
 	///</summary>
-	[TestClass]
+	[TestFixture]
 	public class CrontabTest
 	{
 		/// <summary>
@@ -50,7 +50,7 @@ namespace ZakCoreUtils.Test
 
 		#endregion
 
-		[TestMethod]
+		[Test]
 		public void CrontabWithDateInput()
 		{
 			var now = DateTime.Now;
@@ -79,7 +79,7 @@ namespace ZakCoreUtils.Test
 			Assert.IsFalse(Math.Abs(newNext.Value.Second - wrongNext.Second) <= 1);
 		}
 
-		[TestMethod]
+		[Test]
 		public void FailGetNeares()
 		{
 			var now = DateTime.Now;
@@ -90,7 +90,7 @@ namespace ZakCoreUtils.Test
 			Assert.IsFalse(target.MayRunAt(bad));
 		}
 
-		[TestMethod]
+		[Test]
 		public void CrontabWithInvalidParameters()
 		{
 			Exception expex = null;
@@ -126,7 +126,7 @@ namespace ZakCoreUtils.Test
 		}
 
 
-		[TestMethod]
+		[Test]
 		public void CrontabWithSeconds()
 		{
 			var target = new Crontab("10 */1 * * * * *", true);
@@ -158,7 +158,7 @@ namespace ZakCoreUtils.Test
 		/// <summary>
 		///A test for Crontab Constructor
 		///</summary>
-		[TestMethod]
+		[Test]
 		public void CrontabMayRunAt()
 		{
 			var target = new Crontab("* * * * * * *");
@@ -186,7 +186,7 @@ namespace ZakCoreUtils.Test
 		/// <summary>
 		///A test for Crontab Constructor
 		///</summary>
-		[TestMethod]
+		[Test]
 		public void CrontabNextRun()
 		{
 			var target = new Crontab("* * * * * * *");
@@ -230,7 +230,7 @@ namespace ZakCoreUtils.Test
 		/// <summary>
 		///A test for Crontab Constructor
 		///</summary>
-		[TestMethod]
+		[Test]
 		public void CrontabSpecial()
 		{
 
@@ -270,7 +270,7 @@ namespace ZakCoreUtils.Test
 			Assert.IsFalse(target.MayRunAt(new DateTime(2012, 4, 15, 1, 1, 0)));
 		}
 
-		[TestMethod]
+		[Test]
 		public void CrontabExceed()
 		{
 			var dt = new DateTime(2000, 1, 1, 1, 0, 0);
