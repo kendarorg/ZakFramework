@@ -4,12 +4,8 @@ using System.Text;
 
 namespace ZakCore.Utils.Commons
 {
-	public class ConversionUtils
+	public static class ConversionUtils
 	{
-		private ConversionUtils()
-		{
-		}
-
 		public static DateTime MinDate = new DateTime(1800, 1, 1, 0, 0, 0);
 		public const int SIZEOFDATE = sizeof (Int64);
 		public const int SIZEOFGUID = 16;

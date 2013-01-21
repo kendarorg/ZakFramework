@@ -109,6 +109,22 @@ namespace ZakCoreUtils.Test
 		}
 
 		[Test]
+		public void ItShouldNotBePossibleToLoadANonExistingClassAnAssmbly()
+		{
+			var asm = FileUtils.LoadAssembly("ZakCoreUtilsInterfaces.dll");
+			var classLoaded = FileUtils.LoadClassFromAssemblies("Not.Existing", asm);
+			Assert.IsNull(classLoaded);
+		}
+
+		[Test]
+		public void ItShouldBePossibleToLoadAnExistingClassAnAssmbly()
+		{
+			var asm = FileUtils.LoadAssembly("ZakCoreUtilsInterfaces.dll");
+			var classLoaded = FileUtils.LoadClassFromAssemblies("ZakCore.Utils.Logging.NullLogger", asm);
+			Assert.IsNotNull(classLoaded);
+		}
+
+		[Test]
 		[Ignore]
 		public void ItShouldBePossibleToLoadAnAssmblyClassFromASpecifiedAssembly()
 		{

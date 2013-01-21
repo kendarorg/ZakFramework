@@ -65,6 +65,9 @@
   <ItemGroup>
     <None Include="app.config" />
   </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+  </ItemGroup>
   <Target Name="Test" DependsOnTargets="Clean;Compile">
     <!-- /domain=single is not support by the NUnit msbuild task, and it is required for OpenCover coverage test -->
     <Exec Command="$(NUnit-ToolPath)nunit-console-x86.exe $(TestAssembliesPath) /nologo /noshadow /domain=single /output=test-results.xml" />

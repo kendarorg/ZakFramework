@@ -2,6 +2,7 @@
 using System.Text;
 using NUnit.Framework;
 using ZakCore.Utils.Commons;
+using System.Collections.Generic;
 
 namespace ZakCoreUtils.Test
 {
@@ -50,9 +51,15 @@ namespace ZakCoreUtils.Test
 
 		#endregion
 
-		/// <summary>
-		///A test for String2Bytes
-		///</summary>
+		[Test]
+		public void Date2BytesTestWithStandardEncoding()
+		{
+			var val = DateTime.Now;
+			byte[] actual = ConversionUtils.Date2Bytes(val);
+			var expected = ConversionUtils.Bytes2Date(actual);
+			Assert.AreEqual(expected, val);
+		}
+
 		[Test]
 		public void String2BytesTest()
 		{
@@ -61,6 +68,28 @@ namespace ZakCoreUtils.Test
 			int outv;
 			byte[] actual = ConversionUtils.String2Bytes(val, enc);
 			string expected = ConversionUtils.Bytes2String(out outv, actual, 0, enc);
+			Assert.AreEqual(expected, val);
+		}
+
+		[Test]
+		public void String2BytesTestWithNullEntryValue()
+		{
+			string val = string.Empty;
+			Encoding enc = Encoding.ASCII;
+			int outv;
+			byte[] actual = ConversionUtils.String2Bytes(val, enc);
+			string expected = ConversionUtils.Bytes2String(out outv, actual, 0, enc);
+			Assert.AreEqual(expected, val);
+		}
+
+		[Test]
+		public void String2BytesTestWithStandardEncoding()
+		{
+			const string val = "\\asdfl8-8-";
+			Encoding enc = Encoding.ASCII;
+			int outv;
+			byte[] actual = ConversionUtils.String2Bytes(val);
+			string expected = ConversionUtils.Bytes2String(out outv, actual, 0);
 			Assert.AreEqual(expected, val);
 		}
 
@@ -78,6 +107,21 @@ namespace ZakCoreUtils.Test
 			Guid vg = Guid.NewGuid();
 			byte[] val = ConversionUtils.Guid2Bytes(vg);
 			const int offset = 0;
+			Guid actual = ConversionUtils.Bytes2Guid(val, GetOffset(offset));
+			Assert.AreEqual(vg, actual);
+		}
+
+		[Test]
+		public void Bytes2GuidTestWithAnotherOffset()
+		{
+			Guid vg = Guid.NewGuid();
+			byte[] val = ConversionUtils.Guid2Bytes(vg);
+			var bytesList = new List<byte>();
+			bytesList.Add((byte)'0');
+			bytesList.Add((byte)'1');
+			bytesList.AddRange(val);
+			val = bytesList.ToArray();
+			const int offset = 2;
 			Guid actual = ConversionUtils.Bytes2Guid(val, GetOffset(offset));
 			Assert.AreEqual(vg, actual);
 		}
