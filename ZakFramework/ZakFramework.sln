@@ -48,6 +48,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{42DC6B
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZakTestUtils", "ZakTestUtils\ZakTestUtils.csproj", "{3118B1C6-4101-42DC-9050-C9551673AE6E}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".build", ".build", "{83CCE23A-A72E-4D6A-A4A6-DFF5CFEA5F6F}"
+	ProjectSection(SolutionItems) = preProject
+		Build.proj = Build.proj
+		.build\MSBuild.Community.Tasks.dll = .build\MSBuild.Community.Tasks.dll
+		.build\MSBuild.Community.Tasks.targets = .build\MSBuild.Community.Tasks.targets
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZakCore.Coverage", "ZakCore.Coverage\ZakCore.Coverage.csproj", "{A4321C50-4CED-427A-B1A6-2FE34D1D8309}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = ZakFramework2.vsmdi
@@ -171,6 +180,16 @@ Global
 		{3118B1C6-4101-42DC-9050-C9551673AE6E}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{3118B1C6-4101-42DC-9050-C9551673AE6E}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{3118B1C6-4101-42DC-9050-C9551673AE6E}.Release|x86.ActiveCfg = Release|Any CPU
+		{A4321C50-4CED-427A-B1A6-2FE34D1D8309}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{A4321C50-4CED-427A-B1A6-2FE34D1D8309}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{A4321C50-4CED-427A-B1A6-2FE34D1D8309}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{A4321C50-4CED-427A-B1A6-2FE34D1D8309}.Debug|x86.ActiveCfg = Debug|x86
+		{A4321C50-4CED-427A-B1A6-2FE34D1D8309}.Debug|x86.Build.0 = Debug|x86
+		{A4321C50-4CED-427A-B1A6-2FE34D1D8309}.Release|Any CPU.ActiveCfg = Release|x86
+		{A4321C50-4CED-427A-B1A6-2FE34D1D8309}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{A4321C50-4CED-427A-B1A6-2FE34D1D8309}.Release|Mixed Platforms.Build.0 = Release|x86
+		{A4321C50-4CED-427A-B1A6-2FE34D1D8309}.Release|x86.ActiveCfg = Release|x86
+		{A4321C50-4CED-427A-B1A6-2FE34D1D8309}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -190,5 +209,6 @@ Global
 		{CC992484-CCBC-4F42-84AF-675FFE90DAC1} = {3E8C2F16-8FE5-431F-ABA0-1D83B78A86E1}
 		{0339AC8B-5D32-42F7-AF9D-ADDD13482D92} = {3E8C2F16-8FE5-431F-ABA0-1D83B78A86E1}
 		{3118B1C6-4101-42DC-9050-C9551673AE6E} = {3E8C2F16-8FE5-431F-ABA0-1D83B78A86E1}
+		{A4321C50-4CED-427A-B1A6-2FE34D1D8309} = {3E8C2F16-8FE5-431F-ABA0-1D83B78A86E1}
 	EndGlobalSection
 EndGlobal

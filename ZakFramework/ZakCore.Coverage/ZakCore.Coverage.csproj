@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{A4321C50-4CED-427A-B1A6-2FE34D1D8309}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ZakCore.Coverage</RootNamespace>
+    <AssemblyName>ZakCore.Coverage</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- FOR CODE COVERAGE START -->
+  <Target Name="AfterBuild" DependsOnTargets="Coverage">
+  </Target>
+  <PropertyGroup>
+    <NUnit-ToolPath>..\packages\NUnit.Runners.2.6.2\tools\</NUnit-ToolPath>
+    <OpenCover-ToolPath>..\packages\OpenCover.4.0.1128\</OpenCover-ToolPath>
+    <ReportGenerator-ToolPath>..\packages\ReportGenerator.1.7.2.0\</ReportGenerator-ToolPath>
+    <MSBuildCommunityTasksPath>$(MSBuildProjectDirectory)\..\Libs\msbuild\</MSBuildCommunityTasksPath>
+    <TestAssembliesPath>..\ZakCore.Coverage\bin\Debug\ZakCoreUtils.Test.dll ..\ZakCore.Coverage\bin\Debug\ZakThread.Test.dll ..\ZakCore.Coverage\bin\Debug\ZakDb.Test.dll</TestAssembliesPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ZakCoreUtils.Test\ZakCoreUtils.Test.csproj">
+      <Project>{E21A0BDF-6F57-4CA1-AC50-D3E11EB99469}</Project>
+      <Name>ZakCoreUtils.Test</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ZakDb.Test\ZakDb.Test.csproj">
+      <Project>{CC992484-CCBC-4F42-84AF-675FFE90DAC1}</Project>
+      <Name>ZakDb.Test</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ZakThread.Test\ZakThread.Test.csproj">
+      <Project>{0339AC8B-5D32-42F7-AF9D-ADDD13482D92}</Project>
+      <Name>ZakThread.Test</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+  </ItemGroup>
+  <Target Name="Test" DependsOnTargets="Clean;Compile">
+    <!-- /domain=single is not support by the NUnit msbuild task, and it is required for OpenCover coverage test -->
+    <Exec Command="$(NUnit-ToolPath)nunit-console-x86.exe $(TestAssembliesPath) /nologo /noshadow /domain=single /output=test-results.xml" />
+  </Target>
+  <Target Name="Coverage" DependsOnTargets="Clean;Compile">
+    <!-- /domain=single is not support by the NUnit msbuild task, and it is required for OpenCover coverage test -->
+    <Exec Command="$(OpenCover-ToolPath)OpenCover.Console.exe -register:user -target:&quot;$(NUnit-ToolPath)nunit-console-x86.exe&quot; -targetargs:&quot;/noshadow $(TestAssembliesPath) /domain:single&quot; -filter:&quot;+[Zak*]* -[*.Test*]* -[ZakTestUtils*]*&quot; -output:coverage.xml" />
+    <Exec Command="$(ReportGenerator-ToolPath)ReportGenerator.exe coverage.xml &quot;coveragereport&quot; html" />
+    <Exec Command="$(ReportGenerator-ToolPath)ReportGenerator.exe coverage.xml &quot;coveragereport&quot; xmlsummary" />
+    <Delete Files=".\coveragereport" />
+    <Delete Files="coverage.xml" />
+  </Target>
+  <!-- FOR CODE COVERAGE END -->
+</Project>
