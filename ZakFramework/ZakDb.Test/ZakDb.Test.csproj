@@ -13,7 +13,6 @@
     <AssemblyName>ZakDb.Test</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
   </PropertyGroup>
@@ -66,4 +65,16 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <StartAction>Program</StartAction>
+    <StartProgram>$(SolutionDir)packages\NUnit.Runners.2.6.2\tools\nunit.exe</StartProgram>
+    <StartArguments>$(TargetPath) /run</StartArguments>
+    <StartWorkingDirectory>$(TargetDir)</StartWorkingDirectory>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <StartAction>Program</StartAction>
+    <StartProgram>$(SolutionDir)packages\NUnit.Runners.2.6.2\tools\nunit.exe</StartProgram>
+    <StartArguments>$(TargetPath) /run</StartArguments>
+    <StartWorkingDirectory>$(TargetDir)</StartWorkingDirectory>
+  </PropertyGroup>
 </Project>
