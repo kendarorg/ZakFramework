@@ -112,3 +112,4 @@ UpgradeLog*.XML
 # Output
 */RunEnvironment/*
 */NugetPackages/*
+*/*/coveragereport/*
