@@ -22,6 +22,7 @@ namespace ZakThread.Threading
 			base(logger, threadName, true)
 		{
 			_runningThreads = new ConcurrentDictionary<string, IBaseMessageThread>();
+			RegisterMessages();
 		}
 
 		protected override bool RunSingleCycle()
