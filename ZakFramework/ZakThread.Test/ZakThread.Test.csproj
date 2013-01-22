@@ -56,6 +56,7 @@
     <Compile Include="Threading\Simple\SimpleMessageThreadConsumer.cs" />
     <Compile Include="Threading\Simple\SimpleThread.cs" />
     <Compile Include="Threading\Simple\TestMessage.cs" />
+    <Compile Include="Threading\ThreadManagerTest.cs" />
     <Compile Include="Threading\ZQueueBaseThreadingTest.cs" />
     <Compile Include="Threading\ZQueueMessageThreadingTest.cs" />
   </ItemGroup>
@@ -96,13 +97,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <StartAction>Program</StartAction>
     <StartProgram>$(SolutionDir)packages\NUnit.Runners.2.6.2\tools\nunit.exe</StartProgram>
-    <StartArguments>$(TargetPath) /run</StartArguments>
+    <StartArguments>$(TargetPath)</StartArguments>
     <StartWorkingDirectory>$(TargetDir)</StartWorkingDirectory>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <StartAction>Program</StartAction>
     <StartProgram>$(SolutionDir)packages\NUnit.Runners.2.6.2\tools\nunit.exe</StartProgram>
-    <StartArguments>$(TargetPath) /run</StartArguments>
+    <StartArguments>$(TargetPath)</StartArguments>
     <StartWorkingDirectory>$(TargetDir)</StartWorkingDirectory>
   </PropertyGroup>
 </Project>

@@ -518,7 +518,7 @@ namespace ZakCoreUtils.Test
 
 			Assert.AreEqual("AVAL", iniFile.GetValueString("A", "Root"));
 			Assert.AreEqual("BVAL", iniFile.GetValueString("b"));
-			Assert.AreEqual(string.Empty, iniFile.GetValueString("x"));
+			Assert.AreEqual(null, iniFile.GetValueString("x"));
 			Assert.AreEqual("CVAL", iniFile.GetValueString("C"));
 			Assert.AreEqual("AVALF", iniFile.GetValueString("A", "fuffa"));
 			Assert.AreEqual("BVALF", iniFile.GetValueString("b", "Fuffa"));

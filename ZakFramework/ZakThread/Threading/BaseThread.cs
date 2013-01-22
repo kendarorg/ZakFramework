@@ -311,10 +311,7 @@ namespace ZakThread.Threading
 
 		public virtual void Dispose()
 		{
-			if (Status == RunningStatus.Running)
-			{
-				Terminate(true);
-			}
+			Terminate(true);
 			ThreadId = 0;
 			ThreadName = null;
 			_logger = null;

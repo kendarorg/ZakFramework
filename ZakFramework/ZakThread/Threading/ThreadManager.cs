@@ -1,25 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using ZakCore.Utils.Logging;
 using ZakThread.Threading.Enums;
 using ZakThread.Threading.ThreadManagerInternals;
+using System.Collections.Concurrent;
 
 namespace ZakThread.Threading
 {
 	public sealed class ThreadManager : BaseMessageThread, IThreadManager
 	{
-		private readonly Dictionary<string, IBaseMessageThread> _runningThreads;
+		private readonly ConcurrentDictionary<string, IBaseMessageThread> _runningThreads;
 
 		public ThreadManager(ILogger logger) :
 			this(logger, "ThreadManager")
 		{
-			_runningThreads = new Dictionary<string, IBaseMessageThread>();
+			_runningThreads = new ConcurrentDictionary<string, IBaseMessageThread>();
 		}
 
 		public ThreadManager(ILogger logger, string threadName) :
 			base(logger, threadName, true)
 		{
-			_runningThreads = new Dictionary<string, IBaseMessageThread>();
+			_runningThreads = new ConcurrentDictionary<string, IBaseMessageThread>();
 		}
 
 		protected override bool RunSingleCycle()
@@ -32,17 +34,21 @@ namespace ZakThread.Threading
 		private List<IMessage> PeekAllMessages()
 		{
 			var retrievedMessages = new List<IMessage>();
+
 			foreach (var thread in _runningThreads.Values)
 			{
-				foreach (var msg in thread.PeekMessagesFromThread())
+				if (thread != null)
 				{
-					if (msg is InternalMessage)
+					foreach (var msg in thread.PeekMessagesFromThread())
 					{
-						SendMessage(msg);
-					}
-					else
-					{
-						retrievedMessages.Add(msg);
+						if (msg is InternalMessage)
+						{
+							SendMessage(msg);
+						}
+						else
+						{
+							retrievedMessages.Add(msg);
+						}
 					}
 				}
 			}
@@ -57,13 +63,13 @@ namespace ZakThread.Threading
 		public void RemoveThread(IBaseMessageThread messageThread, bool forceHalt = false)
 		{
 			SendMessageToThread(new InternalMessage(InternalMessageTypes.RemoveThread,
-			                                        new RemoveThreadContent(messageThread, forceHalt)));
+																							new RemoveThreadContent(messageThread, forceHalt)));
 		}
 
 		public void RemoveThread(string messageThreadName, bool forceHalt = false)
 		{
 			SendMessageToThread(new InternalMessage(InternalMessageTypes.RemoveThread,
-			                                        new RemoveThreadContent(messageThreadName, forceHalt)));
+																							new RemoveThreadContent(messageThreadName, forceHalt)));
 		}
 
 		public override void Terminate(bool force = false)
@@ -113,13 +119,19 @@ namespace ZakThread.Threading
 
 		private void HandleTerminate(InternalMessage internalMessage)
 		{
-			var force = (bool) internalMessage.Content;
+			var force = (bool)internalMessage.Content;
+
 			foreach (var thread in _runningThreads.Values)
 			{
-				_runningThreads[thread.ThreadName] = null;
-				thread.Terminate(force);
+				if (thread != null)
+				{
+					IBaseMessageThread threadToRemove;
+					_runningThreads[thread.ThreadName] = null;
+					_runningThreads.TryRemove(thread.ThreadName, out threadToRemove);
+					thread.Terminate(force);
+				}
 			}
-			Terminate(force);
+			base.Terminate(force);
 		}
 
 		private void HandleRemoveThread(InternalMessage internalMessage)
@@ -131,7 +143,8 @@ namespace ZakThread.Threading
 				{
 					var thread = _runningThreads[th.ThreadName];
 					_runningThreads[th.ThreadName] = null;
-					_runningThreads.Remove(th.ThreadName);
+					IBaseMessageThread outThread;
+					_runningThreads.TryRemove(th.ThreadName, out outThread);
 					thread.Terminate(th.ForceHalt);
 				}
 			}
@@ -169,11 +182,14 @@ namespace ZakThread.Threading
 		{
 			foreach (var thread in _runningThreads.Values)
 			{
-				_runningThreads[thread.ThreadName] = null;
-				thread.Terminate(true);
+				if (thread != null)
+				{
+					thread.Terminate(true);
+				}
 			}
-			base.Dispose();
+			base.Terminate(true);
 			_runningThreads.Clear();
+			base.Dispose();
 		}
 
 		public override void RegisterMessages()
