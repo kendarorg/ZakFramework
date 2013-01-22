@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Threading;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NUnit.Framework;
 using ZakCore.Utils.Commons;
+using Assert = NUnit.Framework.Assert;
+using TestContext = NUnit.Framework.TestContext;
 
 namespace ZakCoreUtils.Test
 {
@@ -280,6 +283,17 @@ namespace ZakCoreUtils.Test
 			Assert.IsFalse(target.MayRunAt(dt));
 			dt += TimeSpan.FromMinutes(40);
 			Assert.IsFalse(target.MayRunAt(dt));
+		}
+
+		[Test]
+		public void TestGetNextNearestItem()
+		{
+			var privateObject = new PrivateObject(new Crontab("* */80 * * * * *"));
+			//Invoking the private method
+			var dateRange = privateObject.Invoke("CreateDateRange");
+			var result = privateObject.Invoke("GetNextNearestItem", 10,dateRange,1) as Int32?;
+			Assert.IsNotNull(result);
+			Assert.AreEqual(0,result);
 		}
 	}
 }

@@ -34,6 +34,11 @@ namespace ZakCore.Utils.Commons
 			Year
 		};
 
+		private DateRange CreateDateRange()
+		{
+			return new DateRange();
+		}
+
 		private class DateRange
 		{
 			public DateRange()
@@ -132,7 +137,8 @@ namespace ZakCore.Utils.Commons
 
 		private DateRange SetupElement(string p, int i)
 		{
-			var d = new DateRange {Position = (DateSection) i};
+			var d = CreateDateRange();
+			d.Position = (DateSection) i;
 			if (d.Position == DateSection.Month)
 			{
 				p = ReplaceMonths(p);

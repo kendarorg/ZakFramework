@@ -153,10 +153,6 @@ namespace ZakCore.Utils.Commons
 					}
 				}
 			}
-			if (File.Exists(fileName))
-			{
-				File.Delete(fileName);
-			}
 			if (newIniFile.Count == 0) newIniFile.Add("#Empty");
 			File.WriteAllLines(fileName, newIniFile);
 			return true;
@@ -227,12 +223,7 @@ namespace ZakCore.Utils.Commons
 					if (bl.Length > 2)
 					{
 						SetValue(bl[0].ToUpper().Trim(), string.Join("=", bl, 1, bl.Length - 1), ise.Title);
-					}
-					if (bl.Length == 1)
-					{
-						SetValue(bl[0].ToUpper().Trim(), string.Empty, ise.Title);
-					}
-					else if (bl.Length == 2)
+					}else if (bl.Length == 2)
 					{
 						SetValue(bl[0].ToUpper().Trim(), bl[1].Trim(), ise.Title);
 					}
