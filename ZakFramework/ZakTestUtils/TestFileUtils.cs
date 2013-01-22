@@ -82,6 +82,11 @@ namespace ZakTestUtils
 			codeBase = Path.GetDirectoryName((new Uri(codeBase)).LocalPath);
 			codeBase = SanitizePath(codeBase);
 
+			var result1 = Directory.GetFiles(codeBase, "*.sln", SearchOption.TopDirectoryOnly);
+			if (result1.Length >= 1)
+			{
+				return codeBase;
+			}
 			var exploded = codeBase.Split(Path.DirectorySeparatorChar);
 
 			for (int i = (exploded.Length - 1); i > 0; i--)

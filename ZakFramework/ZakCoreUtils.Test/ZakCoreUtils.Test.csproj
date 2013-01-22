@@ -67,6 +67,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="TestIni.ini" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ZakCoreUtilsInterfaces\ZakCoreUtilsInterfaces.csproj">

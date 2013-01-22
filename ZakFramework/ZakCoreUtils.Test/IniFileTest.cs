@@ -1,6 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using NUnit.Framework;
 using ZakCore.Utils.Commons;
+using ZakTestUtils;
 
 namespace ZakCoreUtils.Test
 {
@@ -49,139 +53,480 @@ namespace ZakCoreUtils.Test
 
 		#endregion
 
-		/*
-	/// <summary>
-	///A test for IniFile Constructor
-	///</summary>
 		[Test]
-		public void IniFileConstructorTest()
+		public void ItShouldBePosssibleToSetMultipleValues()
 		{
-			string fileName = string.Empty; 
-			string setupRoot = string.Empty; 
-			bool replaceBuild = false; 
-			IniFile target = new IniFile(fileName, setupRoot, replaceBuild);
-			Assert.Inconclusive("TODO: Implement code to verify target");
+			var iniFile = new IniFile(null);
+			var datas = new Dictionary<string, object>
+				{
+					{"A","AVAL"},
+					{"B","BVAL"},
+					{"C","CVAL"}
+				};
+			iniFile.SetValues(datas);
+			Assert.AreEqual("AVAL", iniFile.GetValueString("A"));
+			Assert.AreEqual("BVAL", iniFile.GetValueString("b"));
+			Assert.AreEqual("CVAL", iniFile.GetValueString("C"));
 		}
 
-		/// <summary>
-		///A test for GetSections
-		///</summary>
 		[Test]
-		public void GetSectionsTest()
+		public void ItShouldBePosssibleToSetMultipleValuesOnRootWithoutCaringAboutSectionCase()
 		{
-			string fileName = string.Empty; 
-			string setupRoot = string.Empty; 
-			bool replaceBuild = false; 
-			IniFile target = new IniFile(fileName, setupRoot, replaceBuild); 
-			IEnumerable<string> expected = null; 
-			IEnumerable<string> actual;
-			actual = target.GetSections();
-			Assert.AreEqual(expected, actual);
-			Assert.Inconclusive("Verify the correctness of this test method.");
+			var iniFile = new IniFile(null);
+			var datas = new Dictionary<string, object>
+				{
+					{"A","AVAL"},
+					{"B","BVAL"},
+					{"C","CVAL"}
+				};
+			iniFile.SetValues(datas, "ROOT");
+			Assert.AreEqual("AVAL", iniFile.GetValueString("A", "Root"));
+			Assert.AreEqual("BVAL", iniFile.GetValueString("b", string.Empty));
+			Assert.AreEqual("CVAL", iniFile.GetValueString("C", null));
 		}
 
-		/// <summary>
-		///A test for GetValue
-		///</summary>
+
 		[Test]
-		public void GetValueTest()
+		public void ItShouldBePosssibleToGetAllValuesFromASection()
 		{
-			string fileName = string.Empty; 
-			string setupRoot = string.Empty; 
-			bool replaceBuild = false; 
-			IniFile target = new IniFile(fileName, setupRoot, replaceBuild); 
-			string id = string.Empty; 
-			string section = string.Empty; 
-			string expected = string.Empty; 
-			string actual;
-			actual = (string)target.GetValue(id, section);
-			Assert.AreEqual(expected, actual);
-			Assert.Inconclusive("Verify the correctness of this test method.");
+			var iniFile = new IniFile(null);
+			var datas = new Dictionary<string, object>
+				{
+					{"A","AVAL"},
+					{"B","BVAL"},
+					{"C","CVAL"}
+				};
+			iniFile.SetValues(datas, "ROOT");
+			var result = iniFile.GetValues();
+
+			Assert.AreEqual(datas["A"], result["A"]);
+			Assert.AreEqual(datas["B"], result["B"]);
+			Assert.AreEqual(datas["C"], result["C"]);
+
+			result = iniFile.GetValues(null);
+
+			Assert.AreEqual(datas["A"], result["A"]);
+			Assert.AreEqual(datas["B"], result["B"]);
+			Assert.AreEqual(datas["C"], result["C"]);
+
+			result = iniFile.GetValues(string.Empty);
+
+			Assert.AreEqual(datas["A"], result["A"]);
+			Assert.AreEqual(datas["B"], result["B"]);
+			Assert.AreEqual(datas["C"], result["C"]);
 		}
 
-		/// <summary>
-		///A test for GetValues
-		///</summary>
 		[Test]
-		public void GetValuesTest()
+		public void ItShouldBePosssibleToSetMultipleValuesOnRootWithEmptySection()
 		{
-			string fileName = string.Empty; 
-			string setupRoot = string.Empty; 
-			bool replaceBuild = false; 
-			IniFile target = new IniFile(fileName, setupRoot, replaceBuild); 
-			string section = string.Empty;
-			Dictionary<string, object> expected = null;
-			Dictionary<string, object> actual;
-			actual = target.GetValues(section);
-			Assert.AreEqual(expected, actual);
-			Assert.Inconclusive("Verify the correctness of this test method.");
+			var iniFile = new IniFile(null);
+			var datas = new Dictionary<string, object>
+				{
+					{"A","AVAL"},
+					{"B","BVAL"},
+					{"C","CVAL"}
+				};
+			iniFile.SetValues(datas, string.Empty);
+			Assert.AreEqual("AVAL", iniFile.GetValueString("A", "Root"));
+			Assert.AreEqual("BVAL", iniFile.GetValueString("b", string.Empty));
+			Assert.AreEqual("CVAL", iniFile.GetValueString("C", null));
 		}
 
-		/// <summary>
-		///A test for Save
-		///</summary>
+
 		[Test]
-		public void SaveTest()
+		public void ItShouldBePosssibleToSetMultipleValuesOnRootWithNullSection()
 		{
-			string fileName = string.Empty; 
-			string setupRoot = string.Empty; 
-			bool replaceBuild = false; 
-			IniFile target = new IniFile(fileName, setupRoot, replaceBuild); 
-			string fileName1 = string.Empty; 
-			bool expected = false; 
-			bool actual;
-			actual = target.Save(fileName1);
-			Assert.AreEqual(expected, actual);
-			Assert.Inconclusive("Verify the correctness of this test method.");
+			var iniFile = new IniFile(null);
+			var datas = new Dictionary<string, object>
+				{
+					{"A","AVAL"},
+					{"B","BVAL"},
+					{"C","CVAL"}
+				};
+			iniFile.SetValues(datas, null);
+			Assert.AreEqual("AVAL", iniFile.GetValueString("A", "Root"));
+			Assert.AreEqual("BVAL", iniFile.GetValueString("b", "rooT"));
+			Assert.AreEqual("CVAL", iniFile.GetValueString("C"));
 		}
 
-		/// <summary>
-		///A test for SetValue
-		///</summary>
 		[Test]
-		public void SetValueTest()
+		public void ItShouldBePosssibleToSetMultipleValuesOnArbitrarySectionWithoutCaringAboutSectionCase()
 		{
-			string fileName = string.Empty; 
-			string setupRoot = string.Empty; 
-			bool replaceBuild = false; 
-			IniFile target = new IniFile(fileName, setupRoot, replaceBuild); 
-			string key = string.Empty; 
-			string value = string.Empty; 
-			string section = string.Empty; 
-			target.SetValue(key, value, section);
-			Assert.Inconclusive("A method that does not return a value cannot be verified.");
+			var sectionName = Guid.NewGuid().ToString();
+			var iniFile = new IniFile(null);
+			var datas = new Dictionary<string, object>
+				{
+					{"A","AVAL"},
+					{"B","BVAL"},
+					{"C","CVAL"}
+				};
+			iniFile.SetValues(datas, sectionName + "ROOT");
+			Assert.AreEqual("AVAL", iniFile.GetValueString("A", sectionName + "Root"));
+			Assert.AreEqual("BVAL", iniFile.GetValueString("b", sectionName + "rooT"));
+			Assert.AreEqual("CVAL", iniFile.GetValueString("C", sectionName + "ROOT"));
 		}
 
-		/// <summary>
-		///A test for SetValues
-		///</summary>
+
 		[Test]
-		public void SetValuesTest()
+		public void ItShouldBePosssibleToGetAllSectionsFromAFile()
 		{
-			string fileName = string.Empty; 
-			string setupRoot = string.Empty; 
-			bool replaceBuild = false; 
-			IniFile target = new IniFile(fileName, setupRoot, replaceBuild); 
-			Dictionary<string, object> vals = null; 
-			string section = string.Empty; 
-			target.SetValues(vals, section);
-			Assert.Inconclusive("A method that does not return a value cannot be verified.");
+			var iniFile = new IniFile(null);
+			var datas = new Dictionary<string, object>
+				{
+					{"A","AVAL"},
+					{"B","BVAL"},
+					{"C","CVAL"}
+				};
+			iniFile.SetValues(datas, "ROOT");
+			iniFile.SetValues(datas, "fuffa");
+			iniFile.SetValues(datas, "test");
+
+			var result = iniFile.GetValues();
+
+			Assert.AreEqual(datas["A"], result["A"]);
+			Assert.AreEqual(datas["B"], result["B"]);
+			Assert.AreEqual(datas["C"], result["C"]);
+
+			result = iniFile.GetValues("FuFFa");
+
+			Assert.AreEqual(datas["A"], result["A"]);
+			Assert.AreEqual(datas["B"], result["B"]);
+			Assert.AreEqual(datas["C"], result["C"]);
+
+			result = iniFile.GetValues("test");
+
+			Assert.AreEqual(datas["A"], result["A"]);
+			Assert.AreEqual(datas["B"], result["B"]);
+			Assert.AreEqual(datas["C"], result["C"]);
+
+			var sections = iniFile.GetSections().ToArray();
+			Assert.IsTrue(sections.Any(a => a == "TEST"));
+			Assert.IsTrue(sections.Any(a => a == "FUFFA"));
+			Assert.IsFalse(sections.Any(a => a == "ROOT"));
 		}
 
-		/// <summary>
-		///A test for FileName
-		///</summary>
 		[Test]
-		public void FileNameTest()
+		public void ItShouldNotBePosssibleToGetANonExistingValue()
 		{
-			string fileName = string.Empty; 
-			string setupRoot = string.Empty; 
-			bool replaceBuild = false; 
-			IniFile target = new IniFile(fileName, setupRoot, replaceBuild); 
-			string actual;
-			actual = target.FileName;
-			Assert.Inconclusive("Verify the correctness of this test method.");
+			var iniFile = new IniFile(null);
+			var datas = new Dictionary<string, object>
+				{
+					{"A", "AVAL"},
+					{"B", "BVAL"},
+					{"C", "CVAL"}
+				};
+			iniFile.SetValues(datas, "ROOT");
+			iniFile.SetValues(datas, "fuffa");
+
+			var result = iniFile.GetValues();
+
+			Assert.AreEqual(datas["A"], result["A"]);
+			Assert.AreEqual(datas["B"], result["B"]);
+			Assert.AreEqual(datas["C"], result["C"]);
+
+			result = iniFile.GetValues("FuFFa");
+
+			Assert.AreEqual(datas["A"], result["A"]);
+			Assert.AreEqual(datas["B"], result["B"]);
+			Assert.AreEqual(datas["C"], result["C"]);
+
+			Assert.IsNull(iniFile.GetValue("A","test"));
+			Assert.IsNull(iniFile.GetValue("D", "fuffa"));
 		}
-		*/
+
+		[Test]
+		public void ItShouldBePosssibleToAddValueToNonExistingSection()
+		{
+			var iniFile = new IniFile(null);
+			var datas = new Dictionary<string, object>
+				{
+					{"A","AVAL"},
+					{"B","BVAL"},
+					{"C","CVAL"}
+				};
+			iniFile.SetValues(datas);
+			Assert.AreEqual("AVAL", iniFile.GetValueString("A"));
+			Assert.AreEqual("BVAL", iniFile.GetValueString("b"));
+			Assert.AreEqual("CVAL", iniFile.GetValueString("C"));
+
+			iniFile.SetValue("A","AVAL","test");
+			Assert.AreEqual("AVAL", iniFile.GetValueString("A","test"));
+		}
+
+		[Test]
+		public void ItShouldBePosssibleToAddValueToExistingSection()
+		{
+			var iniFile = new IniFile(null);
+			var datas = new Dictionary<string, object>
+				{
+					{"A","AVAL"},
+					{"B","BVAL"},
+					{"C","CVAL"}
+				};
+			iniFile.SetValues(datas);
+			Assert.AreEqual("AVAL", iniFile.GetValueString("A"));
+			Assert.AreEqual("BVAL", iniFile.GetValueString("b"));
+			Assert.AreEqual("CVAL", iniFile.GetValueString("C"));
+
+			iniFile.SetValue("D", "DVAL", "rooT");
+			Assert.AreEqual("DVAL", iniFile.GetValueString("D", "roOt"));
+		}
+
+		[Test]
+		public void ItShouldBePosssibleToAddValueWithBuildSpectificationToExistingSection()
+		{
+			var iniFile = new IniFile(null,null,true);
+			var datas = new Dictionary<string, object>
+				{
+					{"A","AVAL"},
+					{"B","BVAL{build}"},
+					{"C","CVAL"}
+				};
+			iniFile.SetValues(datas);
+			iniFile.SetValue("E","EVAL",null);
+			Assert.AreEqual("AVAL", iniFile.GetValueString("A"));
+			Assert.AreEqual("EVAL", iniFile.GetValueString("E"));
+#if DEBUG
+			Assert.AreEqual("BVALDebug", iniFile.GetValueString("B", "roOt"));
+#else
+			Assert.AreEqual("BVALRelease", iniFile.GetValueString("B", "roOt"));
+#endif
+			Assert.AreEqual("CVAL", iniFile.GetValueString("C"));
+
+			iniFile.SetValue("D", "DVAL{build}", "rooT");
+#if DEBUG
+			Assert.AreEqual("DVALDebug", iniFile.GetValueString("D", "roOt"));
+#else
+			Assert.AreEqual("DVALRelease", iniFile.GetValueString("D", "roOt"));
+#endif
+
+		}
+
+		[Test]
+		public void ItShouldBePosssibleToChangeAVaalue()
+		{
+			var iniFile = new IniFile(null, null, true);
+			var datas = new Dictionary<string, object>
+				{
+					{"A", "AVAL"},
+					{"B", "BVAL{build}"},
+					{"C", "CVAL"}
+				};
+			iniFile.SetValues(datas);
+			iniFile.SetValue("B", "EVAL", null);
+			Assert.AreEqual("EVAL", iniFile.GetValueString("B", "roOt"));
+		}
+
+		[Test]
+		public void ItShouldBePosssibleToLoadAFile()
+		{
+			var projectRoot = Path.Combine(TestFileUtils.GetSolutionRoot(),"ZakCoreUtils.Test");
+			var file = Path.Combine(projectRoot, "TestIni.ini");
+			
+#if DEBUG
+			var destFile = Path.Combine(projectRoot, "bin", "Debug", "TestIni.ini");
+#else
+			var destFile = Path.Combine(projectRoot,"bin","Release", "TestIni.ini");
+#endif
+			if(File.Exists(destFile)) File.Delete(destFile);
+			File.Copy(file,destFile);
+
+			var iniFile = new IniFile(destFile);
+
+			Assert.AreEqual("AVAL", iniFile.GetValueString("A","Root"));
+			Assert.AreEqual("BVAL", iniFile.GetValueString("b"));
+			Assert.AreEqual(string.Empty, iniFile.GetValueString("z"));
+			Assert.AreEqual("CVAL", iniFile.GetValueString("C"));
+			Assert.AreEqual("AVALF", iniFile.GetValueString("A","fuffa"));
+			Assert.AreEqual("BVALF", iniFile.GetValueString("b", "Fuffa"));
+			Assert.AreEqual("CVALF", iniFile.GetValueString("C", "fufFa"));
+		}
+
+		[Test]
+		public void ItShouldBePosssibleToLoadAFileGivenRootAndFileName()
+		{
+			var projectRoot = Path.Combine(TestFileUtils.GetSolutionRoot(), "ZakCoreUtils.Test");
+			var projectRoot2 = Path.Combine(TestFileUtils.GetSolutionRoot(), "ZakCore.Coverage");
+			var file = Path.Combine(projectRoot, "TestIni.ini");
+
+#if DEBUG
+			var destRoot = Path.Combine(projectRoot, "bin", "Debug");
+			var destFile = Path.Combine(projectRoot, "bin", "Debug", "TestIni.ini");
+#else
+			var destRoot = Path.Combine(projectRoot, "bin", "Release");
+			var destFile = Path.Combine(projectRoot,"bin","Release", "TestIni.ini");
+#endif
+			var oriDestRoot = destRoot;
+			destRoot += Path.DirectorySeparatorChar;
+			if (File.Exists(destFile)) File.Delete(destFile);
+			File.Copy(file, destFile);
+
+			var iniFile = new IniFile("TestIni.ini",destRoot);
+			//Assert.AreEqual(destFile,iniFile.FileName);
+
+			foreach(var item in  iniFile.GetValues("Root"))
+				Console.WriteLine(item.Key+"="+item.Value);
+
+			Assert.AreEqual("AVAL", iniFile.GetValueString("A", "Root"));
+			Assert.AreEqual("BVAL", iniFile.GetValueString("b"));
+			Assert.AreEqual("CVAL", iniFile.GetValueString("C"));
+			Assert.AreEqual("AVALF", iniFile.GetValueString("A", "fuffa"));
+			Assert.AreEqual("BVALF", iniFile.GetValueString("b", "Fuffa"));
+			Assert.AreEqual("CVALF", iniFile.GetValueString("C", "fufFa"));
+			
+			
+			Assert.IsTrue(iniFile.GetValueString("D", "fufFa").StartsWith("DVALF" + oriDestRoot)||
+				iniFile.GetValueString("D", "fufFa").StartsWith("DVALF" + projectRoot2));
+		}
+
+
+		[Test]
+		public void ItShouldBePosssibleToSaveAFile()
+		{
+			var projectRoot = Path.Combine(TestFileUtils.GetSolutionRoot(), "ZakCoreUtils.Test");
+			var file = Path.Combine(projectRoot, "TestIni.ini");
+
+#if DEBUG
+			var destFile = Path.Combine(projectRoot, "bin", "Debug", "TestIni.ini");
+#else
+			var destFile = Path.Combine(projectRoot,"bin","Release", "TestIni.ini");
+#endif
+			if (File.Exists(destFile)) File.Delete(destFile);
+			File.Copy(file, destFile);
+
+			var iniFile = new IniFile(destFile);
+
+			Assert.AreEqual("AVAL", iniFile.GetValueString("A", "Root"));
+			Assert.AreEqual("BVAL", iniFile.GetValueString("b"));
+			Assert.AreEqual("CVAL", iniFile.GetValueString("C"));
+			Assert.AreEqual("KVAL=3", iniFile.GetValueString("k"));
+			Assert.AreEqual("AVALF", iniFile.GetValueString("A", "fuffa"));
+			Assert.AreEqual("BVALF", iniFile.GetValueString("b", "Fuffa"));
+			Assert.AreEqual("CVALF", iniFile.GetValueString("C", "fufFa"));
+			iniFile.SetValue("C","changed");
+			iniFile.SetValue("E", "added");
+
+			iniFile.Save(destFile + ".sav");
+			Assert.IsTrue(File.Exists(destFile + ".sav"));
+
+			iniFile = new IniFile(destFile + ".sav");
+			Assert.AreEqual("AVAL", iniFile.GetValueString("A", "Root"));
+			Assert.AreEqual("BVAL", iniFile.GetValueString("b"));
+			Assert.AreEqual("changed", iniFile.GetValueString("C"));
+			Assert.AreEqual("added", iniFile.GetValueString("e"));
+			Assert.AreEqual("AVALF", iniFile.GetValueString("A", "fuffa"));
+			Assert.AreEqual("BVALF", iniFile.GetValueString("b", "Fuffa"));
+			Assert.AreEqual("CVALF", iniFile.GetValueString("C", "fufFa"));
+			Assert.AreEqual("KVAL=3", iniFile.GetValueString("k"));
+		}
+
+		[Test]
+		public void ItShouldBePosssibleToChangeAFile()
+		{
+			var projectRoot = Path.Combine(TestFileUtils.GetSolutionRoot(), "ZakCoreUtils.Test");
+			var file = Path.Combine(projectRoot, "TestIni.ini");
+
+#if DEBUG
+			var destFile = Path.Combine(projectRoot, "bin", "Debug", "TestIni.ini");
+#else
+			var destFile = Path.Combine(projectRoot,"bin","Release", "TestIni.ini");
+#endif
+			if (File.Exists(destFile)) File.Delete(destFile);
+			File.Copy(file, destFile);
+
+			var iniFile = new IniFile(destFile);
+
+			Assert.AreEqual("AVAL", iniFile.GetValueString("A", "Root"));
+			Assert.AreEqual("BVAL", iniFile.GetValueString("b"));
+			Assert.AreEqual("CVAL", iniFile.GetValueString("C"));
+			Assert.AreEqual("AVALF", iniFile.GetValueString("A", "fuffa"));
+			Assert.AreEqual("BVALF", iniFile.GetValueString("b", "Fuffa"));
+			Assert.AreEqual("CVALF", iniFile.GetValueString("C", "fufFa"));
+			iniFile.SetValue("C", "changed");
+			iniFile.SetValue("E", "added");
+
+			iniFile.Save(destFile);
+			Assert.IsTrue(File.Exists(destFile));
+
+			iniFile = new IniFile(destFile);
+			Assert.AreEqual("AVAL", iniFile.GetValueString("A", "Root"));
+			Assert.AreEqual("BVAL", iniFile.GetValueString("b"));
+			Assert.AreEqual("changed", iniFile.GetValueString("C"));
+			Assert.AreEqual("added", iniFile.GetValueString("e"));
+			Assert.AreEqual("AVALF", iniFile.GetValueString("A", "fuffa"));
+			Assert.AreEqual("BVALF", iniFile.GetValueString("b", "Fuffa"));
+			Assert.AreEqual("CVALF", iniFile.GetValueString("C", "fufFa"));
+		}
+
+		[Test]
+		public void ItShouldNotBePosssibleToSaveANotInitalizedFile()
+		{
+			var iniFile = new IniFile(null);
+			ArgumentNullException expected = null;
+			try
+			{
+				iniFile.Save();
+			}
+			catch (ArgumentNullException ex)
+			{
+				expected = ex;
+			}
+			Assert.IsNotNull(expected);
+		}
+
+		[Test]
+		public void ItShouldBePosssibleToSaveAnEmptyFile()
+		{
+			var projectRoot = Path.Combine(TestFileUtils.GetSolutionRoot(), "ZakCoreUtils.Test");
+			var file = Path.Combine(projectRoot, "TestIni.ini");
+
+#if DEBUG
+			var destFile = Path.Combine(projectRoot, "bin", "Debug", "TestIni.ini");
+#else
+			var destFile = Path.Combine(projectRoot,"bin","Release", "TestIni.ini");
+#endif
+			if (File.Exists(destFile + ".empty")) File.Delete(destFile + ".empty");
+			
+			var iniFile = new IniFile(null);
+			iniFile.Save(destFile + ".empty");
+			iniFile.Save(destFile + ".empty");
+			var result = File.ReadAllText(destFile + ".empty");
+			Assert.IsTrue(result.StartsWith("#Empty"));
+		}
+
+
+		[Test]
+		public void ItShouldBePosssibleToSetAFileWithRoot()
+		{
+			var projectRoot = Path.Combine(TestFileUtils.GetSolutionRoot(), "ZakCoreUtils.Test");
+			var projectRoot2 = Path.Combine(TestFileUtils.GetSolutionRoot(), "ZakCore.Coverage");
+			var file = Path.Combine(projectRoot, "TestIni.ini");
+
+#if DEBUG
+			var destRoot = Path.Combine(projectRoot, "bin", "Debug");
+			var destFile = Path.Combine(projectRoot, "bin", "Debug", "TestIni.ini");
+#else
+			var destRoot = Path.Combine(projectRoot, "bin", "Release");
+			var destFile = Path.Combine(projectRoot,"bin","Release", "TestIni.ini");
+#endif
+			var oriDestRoot = destRoot;
+			destRoot += Path.DirectorySeparatorChar;
+			if (File.Exists(destFile)) File.Delete(destFile);
+			File.Copy(file, destFile);
+
+			var iniFile = new IniFile("TestIni.ini", destRoot,true);
+		
+			Assert.IsNotNull(iniFile.FileName);
+
+			Assert.AreEqual("AVAL", iniFile.GetValueString("A", "Root"));
+			Assert.AreEqual("BVAL", iniFile.GetValueString("b"));
+			Assert.AreEqual("CVAL", iniFile.GetValueString("C"));
+			Assert.AreEqual("AVALF", iniFile.GetValueString("A", "fuffa"));
+			Assert.AreEqual("BVALF", iniFile.GetValueString("b", "Fuffa"));
+			Assert.AreEqual("CVALF", iniFile.GetValueString("C", "fufFa"));
+			iniFile.SetValue("J","J{root}");
+			Assert.IsTrue(iniFile.GetValueString("J").StartsWith("J" + oriDestRoot)||
+				iniFile.GetValueString("J").StartsWith("J" + projectRoot2));
+		}
 	}
 }

@@ -22,12 +22,17 @@ namespace ZakCore.Utils.Commons
 		{
 			if (string.IsNullOrEmpty(section))
 			{
-				section = "root";
+				section = "ROOT";
 			}
+			section = section.ToUpper();
+
 			var toret = new Dictionary<string, object>();
-			foreach (var v in _sections[section.ToUpper()].Values)
+			if (_sections.ContainsKey(section))
 			{
-				toret.Add(v.Key, v.Value);
+				foreach (var v in _sections[section.ToUpper()].Values)
+				{
+					toret.Add(v.Key, v.Value);
+				}
 			}
 			return toret;
 		}
@@ -46,10 +51,6 @@ namespace ZakCore.Utils.Commons
 
 		public object GetValue(String id, String section = "root")
 		{
-			if (_sections == null)
-			{
-				return null;
-			}
 			if (string.IsNullOrEmpty(section))
 			{
 				section = "root";
@@ -72,24 +73,20 @@ namespace ZakCore.Utils.Commons
 			{
 				section = "root";
 			}
-			if (_sections == null)
-			{
-				_sections = new Dictionary<string, IniSection>();
-			}
 
-			if (value == null || !(value is string))
+			if (value is string)
 			{
-				if (_replaceBuild && value != null)
+				if (_replaceBuild)
 				{
 #if DEBUG
-					value = ((string) value).Replace("{build}", "Debug");
+					value = ((string)value).Replace("{build}", "Debug");
 #elif RELASE
-				value = value.Replace("{build}", "Release");
+				  value = ((string) value).Replace("{build}", "Release");
 #endif
 				}
-				if (_setupRoot != null && value != null)
+				if (_setupRoot != null)
 				{
-					value = ((string) value).Replace("{root}", _setupRoot);
+					value = ((string)value).Replace("{root}", _setupRoot);
 				}
 			}
 
@@ -117,7 +114,7 @@ namespace ZakCore.Utils.Commons
 			public Dictionary<string, object> Values;
 		}
 
-		private Dictionary<string, IniSection> _sections;
+		private readonly Dictionary<string, IniSection> _sections;
 
 		public virtual bool Save(string fileName = null)
 		{
@@ -131,8 +128,10 @@ namespace ZakCore.Utils.Commons
 			}
 			if (File.Exists(fileName))
 			{
-				File.Move(fileName, fileName + "." + (DateTime.UtcNow.Ticks/TimeSpan.TicksPerSecond) + ".bak");
+				File.Move(fileName, fileName + "." + (DateTime.UtcNow.Ticks / TimeSpan.TicksPerSecond) + ".bak");
 			}
+			_fileName = fileName;
+			_setupRoot = Path.GetDirectoryName(_fileName);
 
 			var newIniFile = new List<string>();
 			if (_sections != null)
@@ -154,22 +153,18 @@ namespace ZakCore.Utils.Commons
 					}
 				}
 			}
-			else
-			{
-				newIniFile.Add("#Empty");
-			}
 			if (File.Exists(fileName))
 			{
 				File.Delete(fileName);
 			}
-
+			if (newIniFile.Count == 0) newIniFile.Add("#Empty");
 			File.WriteAllLines(fileName, newIniFile);
 			return true;
 		}
 
-		private readonly string _fileName;
+		private string _fileName;
 		private readonly bool _replaceBuild;
-		private readonly string _setupRoot;
+		private string _setupRoot;
 
 		public string FileName
 		{
@@ -192,7 +187,7 @@ namespace ZakCore.Utils.Commons
 			_replaceBuild = replaceBuild;
 			_fileName = fileName;
 			_sections = new Dictionary<string, IniSection>();
-			var allLines = new String[] {};
+			var allLines = new String[] { };
 
 			_fileName = FileUtils.FindFile(fileName, _setupRoot);
 
@@ -205,6 +200,7 @@ namespace ZakCore.Utils.Commons
 					Title = "ROOT",
 					Values = new Dictionary<string, object>()
 				};
+			_sections.Add(ise.Title, ise);
 
 			foreach (string s in allLines)
 			{
@@ -220,7 +216,10 @@ namespace ZakCore.Utils.Commons
 							Title = r.Substring(1, r.Length - 2).ToUpper(),
 							Values = new Dictionary<string, object>()
 						};
-					_sections.Add(ise.Title, ise);
+					if (!_sections.ContainsKey(ise.Title))
+					{
+						_sections.Add(ise.Title, ise);
+					}
 				}
 				else if (r.IndexOf('=') > 0)
 				{
