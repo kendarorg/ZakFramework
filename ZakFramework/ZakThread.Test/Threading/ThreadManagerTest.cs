@@ -152,5 +152,38 @@ namespace ZakThread.Test.Threading
 			Thread.Sleep(500);
 			Assert.IsTrue(threadManager.Status == RunningStatus.Halted);
 		}
+
+		[Test]
+		public void ItShouldBBePossibleToRunAManagerTerminatingItFromChild()
+		{
+			var subThread = new List<BaseMessageThread>();
+			for (int i = 0; i < 10; i++)
+			{
+				subThread.Add(new SimpleMessageThreadConsumer(1, "ThreadSub" + i));
+			}
+			var threadManager = new ThreadManager(NullLogger.Create());
+			threadManager.RunThread();
+			Thread.Sleep(100);
+			foreach (var item in subThread)
+			{
+				threadManager.AddThread(item);
+				threadManager.RunThread(item.ThreadName);
+			}
+			Thread.Sleep(1000);
+			Assert.IsTrue(threadManager.Status == RunningStatus.Running);
+			foreach (var item in subThread)
+			{
+				Assert.IsTrue(item.Status == RunningStatus.Running);
+			}
+			((SimpleMessageThreadConsumer)subThread[0]).SendTerminationMessage();
+			Thread.Sleep(500);
+			foreach (var item in subThread)
+			{
+				Assert.IsTrue(item.Status == RunningStatus.Aborted || item.Status == RunningStatus.Halted);
+			}
+			threadManager.Terminate();
+			Thread.Sleep(500);
+			Assert.IsTrue(threadManager.Status == RunningStatus.Halted || threadManager.Status == RunningStatus.Aborted);
+		}
 	}
 }

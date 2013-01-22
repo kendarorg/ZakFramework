@@ -3,6 +3,7 @@ using System.Threading;
 using ZakCore.Utils.Logging;
 using ZakThread.Logging;
 using ZakThread.Threading;
+using ZakThread.Threading.ThreadManagerInternals;
 
 namespace ZakThread.Test.Threading.Simple
 {
@@ -25,6 +26,11 @@ namespace ZakThread.Test.Threading.Simple
 			IsCleanedUp = false;
 			IsExceptionHandled = false;
 			_sleepTime = sleepTime;
+		}
+
+		public void SendTerminationMessage()
+		{
+			SendMessage(new InternalMessage(InternalMessageTypes.Terminate, true));
 		}
 
 		protected override bool HandleMessage(IMessage msg)

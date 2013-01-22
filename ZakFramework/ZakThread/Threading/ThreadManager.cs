@@ -44,7 +44,7 @@ namespace ZakThread.Threading
 					{
 						if (msg is InternalMessage)
 						{
-							SendMessage(msg);
+							HandleMessageInternal(msg);
 						}
 						else
 						{
