@@ -19,7 +19,7 @@ namespace ZakThread.Test.Threading
 			Thread.Sleep(100);
 			Assert.IsTrue(threadManager.Status == RunningStatus.Running);
 			threadManager.Terminate();
-			Thread.Sleep(500);
+			Thread.Sleep(1000);
 			Assert.IsTrue(threadManager.Status == RunningStatus.Halted);
 		}
 

@@ -10,19 +10,47 @@ namespace ZakThread.Threading
 {
 	public sealed class ThreadManager : BaseMessageThread, IThreadManager
 	{
-		private readonly ConcurrentDictionary<string, IBaseMessageThread> _runningThreads;
+		private class ThreadDescriptor
+		{
+			public ThreadDescriptor(IBaseMessageThread thread)
+			{
+				Thread = thread;
+				RegisteredTypes = new Dictionary<Type, bool>();
+			}
+			public IBaseMessageThread Thread { get; private set; }
+			public Dictionary<Type, bool> RegisteredTypes { get; private set; }
+		}
+
+		private readonly ConcurrentDictionary<string, ThreadDescriptor> _runningThreads;
 
 		public ThreadManager(ILogger logger) :
 			this(logger, "ThreadManager")
 		{
-			_runningThreads = new ConcurrentDictionary<string, IBaseMessageThread>();
+			_runningThreads = new ConcurrentDictionary<string, ThreadDescriptor>();
+			_toElaborate = new List<IMessage>();
 		}
 
 		public ThreadManager(ILogger logger, string threadName) :
 			base(logger, threadName, true)
 		{
-			_runningThreads = new ConcurrentDictionary<string, IBaseMessageThread>();
 			RegisterMessages();
+		}
+
+		protected List<IMessage> _toElaborate;
+
+		protected override bool CyclicExecution()
+		{
+			_toElaborate.Clear();
+			IMessage msg;
+			while ((msg = PeekMessage()) != null)
+			{
+				if (msg is InternalMessage)
+				{
+					if (!HandleMessageInternal((IMessage)msg.Clone())) return false;
+				}
+				_toElaborate.Add(msg);
+			}
+			return base.CyclicExecution();
 		}
 
 		protected override bool RunSingleCycle()
@@ -40,19 +68,17 @@ namespace ZakThread.Threading
 			{
 				if (thread != null)
 				{
-					foreach (var msg in thread.PeekMessagesFromThread())
+					foreach (var msg in thread.Thread.PeekMessagesFromThread())
 					{
 						if (msg is InternalMessage)
 						{
-							HandleMessageInternal(msg);
+							HandleMessageInternal((IMessage)msg.Clone());
 						}
-						else
-						{
-							retrievedMessages.Add(msg);
-						}
+						retrievedMessages.Add(msg);
 					}
 				}
 			}
+			retrievedMessages.AddRange(_toElaborate);
 			return retrievedMessages;
 		}
 
@@ -101,9 +127,13 @@ namespace ZakThread.Threading
 				case (InternalMessageTypes.RunThread):
 					HandleRunThread(internalMessage);
 					break;
+				case (InternalMessageTypes.RegisterMessageType):
+					HandleRegisterMessageType(internalMessage);
+					break;
 			}
 			return true;
 		}
+
 
 		private void HandleRunThread(InternalMessage internalMessage)
 		{
@@ -113,7 +143,7 @@ namespace ZakThread.Threading
 				if (_runningThreads.ContainsKey(threadName))
 				{
 					var thread = _runningThreads[threadName];
-					thread.RunThread();
+					thread.Thread.RunThread();
 				}
 			}
 		}
@@ -126,10 +156,10 @@ namespace ZakThread.Threading
 			{
 				if (thread != null)
 				{
-					IBaseMessageThread threadToRemove;
-					_runningThreads[thread.ThreadName] = null;
-					_runningThreads.TryRemove(thread.ThreadName, out threadToRemove);
-					thread.Terminate(force);
+					ThreadDescriptor threadToRemove;
+					_runningThreads[thread.Thread.ThreadName] = null;
+					_runningThreads.TryRemove(thread.Thread.ThreadName, out threadToRemove);
+					thread.Thread.Terminate(force);
 				}
 			}
 			base.Terminate(force);
@@ -144,9 +174,9 @@ namespace ZakThread.Threading
 				{
 					var thread = _runningThreads[th.ThreadName];
 					_runningThreads[th.ThreadName] = null;
-					IBaseMessageThread outThread;
+					ThreadDescriptor outThread;
 					_runningThreads.TryRemove(th.ThreadName, out outThread);
-					thread.Terminate(th.ForceHalt);
+					thread.Thread.Terminate(th.ForceHalt);
 				}
 			}
 		}
@@ -159,25 +189,13 @@ namespace ZakThread.Threading
 				if (!_runningThreads.ContainsKey(th.ThreadName))
 				{
 					th.Manager = this;
-					th.RegisterMessages();
-					_runningThreads[th.ThreadName] = th;
+					_runningThreads[th.ThreadName] = new ThreadDescriptor(th);
 					th.RunThread();
+					th.RegisterMessages();
 				}
 			}
 		}
 
-		private void ElaborateAllMessages(List<IMessage> retrievedMessages)
-		{
-			if (retrievedMessages.Count == 0) return;
-
-			foreach (var thread in _runningThreads.Values)
-			{
-				if (thread.Status == RunningStatus.Running)
-				{
-					throw new NotImplementedException();
-				}
-			}
-		}
 
 		public override void Dispose()
 		{
@@ -185,7 +203,7 @@ namespace ZakThread.Threading
 			{
 				if (thread != null)
 				{
-					thread.Terminate(true);
+					thread.Thread.Terminate(true);
 				}
 			}
 			base.Terminate(true);
@@ -195,6 +213,52 @@ namespace ZakThread.Threading
 
 		public override void RegisterMessages()
 		{
+		}
+
+
+		private void HandleRegisterMessageType(InternalMessage internalMessage)
+		{
+			internalMessage.SourceThread = internalMessage.SourceThread.ToUpper();
+			if (_runningThreads.ContainsKey(internalMessage.SourceThread))
+			{
+				ThreadDescriptor td;
+				if (internalMessage.Content as Type != null && _runningThreads.TryGetValue(internalMessage.SourceThread, out td))
+				{
+					if (!td.RegisteredTypes.ContainsKey((Type)internalMessage.Content))
+					{
+						td.RegisteredTypes.Add((Type)internalMessage.Content, true);
+					}
+				}
+			}
+		}
+
+		public bool IsTypeRegistered(string threadName, Type messageType)
+		{
+			if (_runningThreads.ContainsKey(threadName.ToUpper()))
+			{
+				ThreadDescriptor td;
+				if (_runningThreads.TryGetValue(threadName, out td))
+				{
+					return td.RegisteredTypes.ContainsKey(messageType);
+				}
+			}
+			return false;
+		}
+
+		private void ElaborateAllMessages(List<IMessage> retrievedMessages)
+		{
+			if (retrievedMessages.Count == 0) return;
+
+			foreach (var message in retrievedMessages)
+			{
+				foreach (var thread in _runningThreads.Values)
+				{
+					if (thread.Thread.Status == RunningStatus.Running && thread.RegisteredTypes.ContainsKey(message.GetType()))
+					{
+						thread.Thread.SendMessageToThread((IMessage)message.Clone());
+					}
+				}
+			}
 		}
 	}
 }

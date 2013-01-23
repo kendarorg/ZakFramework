@@ -5,6 +5,7 @@
 		AddThread = 0,
 		RemoveThread = 1,
 		Terminate = 2,
-		RunThread
+		RunThread,
+		RegisterMessageType
 	}
 }

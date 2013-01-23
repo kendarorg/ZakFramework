@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using ZakCore.Utils.Collections;
 using ZakCore.Utils.Logging;
+using ZakThread.Threading.ThreadManagerInternals;
 
 namespace ZakThread.Threading
 {
@@ -41,6 +42,10 @@ namespace ZakThread.Threading
 
 		public void SendMessageToThread(IMessage msg)
 		{
+			if (string.IsNullOrEmpty(msg.SourceThread))
+			{
+				msg.SourceThread = ThreadName;
+			}
 			_incomingMessages.Enqueue(msg);
 		}
 
@@ -75,6 +80,12 @@ namespace ZakThread.Threading
 			_threadManager = null;
 			_outgoingMessages.Clear();
 			_incomingMessages.Clear();
+		}
+
+		protected void RegisterMessage(Type messageTypeToRegister)
+		{
+			Manager.SendMessageToThread(new InternalMessage(InternalMessageTypes.RegisterMessageType,
+																							messageTypeToRegister){SourceThread = ThreadName});
 		}
 	}
 }
