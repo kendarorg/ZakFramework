@@ -20,5 +20,15 @@ namespace _003AConcurrentTreeStructure.Lib.ConcurrentTreeInternals
 		public DateTime TimeStamp { get; set; }
 		public ConcurrentTreeMessageTypes MessageType { get; private set; }
 		public object[] Parameters { get; private set; }
+
+		public string SourceThread { get; set; }
+		public object Clone()
+		{
+			var res = new ConcurrentTreeMessage(MessageType, Parameters);
+			res.TimeStamp = TimeStamp;
+			res.Id = Id;
+			res.SourceThread = SourceThread;
+			return res;
+		}
 	}
 }
