@@ -2,6 +2,8 @@
 using System.Threading;
 using ZakCore.Utils.Logging;
 using ZakThread.Async;
+using System;
+using System.Diagnostics;
 
 namespace ZakThread.Test.Async.SampleObjects
 {
@@ -32,10 +34,14 @@ namespace ZakThread.Test.Async.SampleObjects
 
 		public override void HandleBatchCompleted(List<RequestObjectMessage> batchExecuted)
 		{
+			Console.WriteLine(".");
+			Debug.WriteLine("*");
 			foreach (var item in batchExecuted)
 			{
+				
 				Interlocked.Increment(ref _callsCount);
 			}
 		}
 	}
 }
+
