@@ -24,8 +24,20 @@ namespace ZakCache.CacheManager.CacheInternals
 		public CacheMessageType MessageType { get; set; }
 		public Guid Id { get; set; }
 		public DateTime TimeStamp { get; set; }
+		public string SourceThread { get; set; }
 		public RetrieveDataCallback DataCallback {get;set;}
 		public object[] DataCallbackParameters {get;set;}
 
+		public object Clone()
+		{
+			var ret = new CacheThreadMessage(Key, MessageType, Tags);
+			ret.Content = Content;
+			ret.Id = Id;
+			ret.TimeStamp = TimeStamp;
+			ret.DataCallback = DataCallback;
+			ret.DataCallbackParameters = ret.DataCallbackParameters;
+			ret.SourceThread = SourceThread;
+			return ret;
+		}
 	}
 }
