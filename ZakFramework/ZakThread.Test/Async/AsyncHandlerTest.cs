@@ -2,12 +2,14 @@
 using System.Threading;
 using System.Threading.Tasks;
 using NUnit.Framework;
+using ZakThread.Test.Async.SampleObjects;
 
 namespace ZakThread.Test.Async
 {
 	[TestFixture]
 	public class AsyncHandlerTest
 	{
+		public ParallelOptions TaskOptions = new ParallelOptions {MaxDegreeOfParallelism = -1};
 		[Test]
 		public void ItShouldBePossibleToRunTasksInParallelDelegatingThemToTheThread()
 		{
@@ -16,7 +18,7 @@ namespace ZakThread.Test.Async
 			int cores = Environment.ProcessorCount;
 			var counter = new CounterContainer();
 			var successful = new CounterContainer();
-			var callsHandler = new SampleTasksHandler("TEST", waitTimeMs);
+			var callsHandler = new SampleAsyncTasksHandler("TEST", waitTimeMs, TaskOptions);
 			callsHandler.RunThread();
 			Thread.Sleep(100);
 			var parallelOptions = new ParallelOptions
@@ -55,7 +57,7 @@ namespace ZakThread.Test.Async
 			int cores = Environment.ProcessorCount;
 			var counter = new CounterContainer();
 			var successful = new CounterContainer();
-			var callsHandler = new SampleTasksHandler("TEST", waitTimeMs, batchSize, batchTimeoutMs);
+			var callsHandler = new SampleAsyncTasksHandler("TEST", waitTimeMs, TaskOptions, batchSize, batchTimeoutMs);
 			callsHandler.RunThread();
 			Thread.Sleep(100);
 			var parallelOptions = new ParallelOptions
@@ -95,7 +97,7 @@ namespace ZakThread.Test.Async
 			int cores = Environment.ProcessorCount;
 			var counter = new CounterContainer();
 			var successful = new CounterContainer();
-			var callsHandler = new SampleTasksHandler("TEST", waitTimeMs, batchSize, batchTimeoutMs);
+			var callsHandler = new SampleAsyncTasksHandler("TEST", waitTimeMs, TaskOptions, batchSize, batchTimeoutMs);
 			callsHandler.RunThread();
 			Thread.Sleep(100);
 			var parallelOptions = new ParallelOptions

@@ -1,4 +1,4 @@
-﻿namespace ZakThread.Test.Async.Utils
+﻿namespace ZakThread.Async
 {
 	public class BaseRequestObject
 	{

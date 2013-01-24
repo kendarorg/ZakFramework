@@ -2,7 +2,7 @@
 using System.Threading;
 using ZakThread.Threading;
 
-namespace ZakThread.Test.Async.Utils
+namespace ZakThread.Async
 {
 	public class RequestObjectMessage : IMessage
 	{
@@ -31,7 +31,7 @@ namespace ZakThread.Test.Async.Utils
 			return this;
 		}
 
-		internal void SetCompleted(long batchId = -1)
+		public void SetCompleted(long batchId = -1)
 		{
 			BatchId = batchId;
 			_autoResetEvent.Set();

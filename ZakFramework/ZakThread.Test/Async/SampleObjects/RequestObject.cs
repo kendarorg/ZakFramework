@@ -1,6 +1,6 @@
-﻿using ZakThread.Test.Async.Utils;
+﻿using ZakThread.Async;
 
-namespace ZakThread.Test.Async
+namespace ZakThread.Test.Async.SampleObjects
 {
 	public class RequestObject : BaseRequestObject
 	{

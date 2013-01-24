@@ -5,12 +5,12 @@ using System.Threading;
 using ZakCore.Utils.Logging;
 using ZakThread.Threading;
 
-namespace ZakThread.Test.Async.Utils
+namespace ZakThread.Async
 {
 	/// <summary>
 	/// Base class to run tasks synchronously
 	/// </summary>
-	public abstract class BaseSyncHandlerThread : BaseMessageThread
+	public abstract class BaseSyncHandlerThread : BaseMessageThread, ITasksHandlerThread
 	{
 		private long _batchId;
 		private Stopwatch _batchTimeout;
@@ -32,13 +32,13 @@ namespace ZakThread.Test.Async.Utils
 			get { return _batchSize; }
 			protected set
 			{
-				_batchSize = value <= 0 ? 1 : value; 
+				_batchSize = value <= 0 ? 1 : value;
+				if (BatchTimeoutMs == 0)
+				{
+					BatchTimeoutMs = 100;
+				}
 				if (BatchSize > 1)
 				{
-					if (BatchTimeoutMs == 0)
-					{
-						BatchTimeoutMs = 100;
-					}
 					_batchTimeout = new Stopwatch();
 					_batchExecuted = new List<RequestObjectMessage>();
 				}
@@ -64,24 +64,34 @@ namespace ZakThread.Test.Async.Utils
 			return sw.ElapsedMilliseconds;
 		}
 
+		public void FireAndForget(BaseRequestObject requestObject, int timeoutMs, string senderId = null)
+		{
+			if (requestObject == null) throw new ArgumentNullException("requestObject");
+			if (timeoutMs < 0) throw new ArgumentException("Parameter must be greater than 0", "timeoutMs");
+
+			var msg = new RequestObjectMessage(requestObject, timeoutMs) { SourceThread = senderId };
+			SendMessageToThread(msg);
+		}
+
+		public abstract bool HandleTaskRequest(RequestObjectMessage container, BaseRequestObject requestObject);
+		public abstract void HandleBatchCompleted(List<RequestObjectMessage> batchExecuted);
+
 		protected override bool HandleMessage(IMessage msg)
 		{
-			var toret = false;
+			var toret = true;
 			var msgTask = msg as RequestObjectMessage;
 			if (msgTask != null)
 			{
-				if (HandleSyncTaskRequest(msgTask, msgTask.Content))
+				HandleTaskRequest(msgTask, msgTask.Content);
+
+				if (BatchSize == 1)
 				{
-					if (BatchSize == 1)
-					{
-						msgTask.SetCompleted();
-					}
-					else
-					{
-						if (!_batchTimeout.IsRunning) _batchTimeout.Start();
-						_batchExecuted.Add(msgTask);
-					}
-					toret = true;
+					msgTask.SetCompleted();
+				}
+				else
+				{
+					if (!_batchTimeout.IsRunning) _batchTimeout.Start();
+					_batchExecuted.Add(msgTask);
 				}
 			}
 			else
@@ -100,6 +110,7 @@ namespace ZakThread.Test.Async.Utils
 				{
 					if (_batchTimeout.ElapsedMilliseconds > BatchTimeoutMs || _batchExecuted.Count >= BatchSize)
 					{
+						HandleBatchCompleted(_batchExecuted);
 						foreach (var item in _batchExecuted)
 						{
 							item.SetCompleted(_batchId);
@@ -111,8 +122,6 @@ namespace ZakThread.Test.Async.Utils
 				}
 			}
 		}
-
-		protected abstract bool HandleSyncTaskRequest(RequestObjectMessage container, BaseRequestObject requestObject);
 
 		public override void RegisterMessages()
 		{

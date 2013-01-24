@@ -36,12 +36,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Async\BaseRequestObject.cs" />
     <Compile Include="Threading\Enums\QueryOperation.cs" />
     <Compile Include="Threading\Enums\RunningStatus.cs" />
     <Compile Include="Threading\IBaseMessageThread.cs" />
     <Compile Include="Threading\IBaseThread.cs" />
     <Compile Include="Threading\IMessage.cs" />
+    <Compile Include="Async\ITasksHandlerThread.cs" />
     <Compile Include="Threading\IThreadManager.cs" />
+    <Compile Include="Async\RequestObjectMessage.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ZakCoreUtilsInterfaces\ZakCoreUtilsInterfaces.csproj">

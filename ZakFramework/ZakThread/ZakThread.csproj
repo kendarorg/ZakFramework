@@ -35,6 +35,8 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Async\BaseAsyncHandlerThread.cs" />
+    <Compile Include="Async\BasesSyncHandlerThread.cs" />
     <Compile Include="HighPower\AsyncQueuedExecutor.cs" />
     <Compile Include="HighPower\AsyncTask.cs" />
     <Compile Include="HighPower\Bases\BaseAsyncHandler.cs" />

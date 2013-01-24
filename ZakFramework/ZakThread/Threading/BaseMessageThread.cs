@@ -42,10 +42,6 @@ namespace ZakThread.Threading
 
 		public void SendMessageToThread(IMessage msg)
 		{
-			if (string.IsNullOrEmpty(msg.SourceThread))
-			{
-				msg.SourceThread = ThreadName;
-			}
 			_incomingMessages.Enqueue(msg);
 		}
 
