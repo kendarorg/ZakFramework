@@ -15,7 +15,7 @@ namespace ZakThread.Async
 		private long _batchId;
 		private Stopwatch _batchTimeout;
 		private int _batchSize;
-		private List<RequestObjectMessage> _batchExecuted;
+		private Queue<RequestObjectMessage> _batchExecuted;
 
 		protected BaseSyncHandlerThread(ILogger logger, string threadName, bool restartOnError = true) :
 			base(logger, threadName, restartOnError)
@@ -39,15 +39,22 @@ namespace ZakThread.Async
 				}
 				if (BatchSize > 1)
 				{
+					//MaxMesssagesPerCycle = BatchSize;
 					_batchTimeout = new Stopwatch();
-					_batchExecuted = new List<RequestObjectMessage>();
+					_batchExecuted = new Queue<RequestObjectMessage>();
 				}
 			}
 		}
 
+		protected override bool CyclicExecution()
+		{
+			var toret = base.CyclicExecution();
+			if (toret) SetBatchCompleted();
+			return toret;
+		}
+
 		protected override bool RunSingleCycle()
 		{
-			SetBatchCompleted();
 			return true;
 		}
 
@@ -55,7 +62,6 @@ namespace ZakThread.Async
 		{
 			if (requestObject == null) throw new ArgumentNullException("requestObject");
 			if (timeoutMs < 0) throw new ArgumentException("Parameter must be greater than 0", "timeoutMs");
-
 			var msg = new RequestObjectMessage(requestObject, timeoutMs) { SourceThread = senderId };
 			SendMessageToThread(msg);
 			var sw = new Stopwatch();
@@ -75,7 +81,7 @@ namespace ZakThread.Async
 		}
 
 		public abstract bool HandleTaskRequest(RequestObjectMessage container, BaseRequestObject requestObject);
-		public abstract void HandleBatchCompleted(List<RequestObjectMessage> batchExecuted);
+		public abstract void HandleBatchCompleted(IEnumerable<RequestObjectMessage> batchExecuted);
 
 		protected override bool HandleMessage(IMessage msg)
 		{
@@ -92,7 +98,7 @@ namespace ZakThread.Async
 				else
 				{
 					if (!_batchTimeout.IsRunning) _batchTimeout.Start();
-					_batchExecuted.Add(msgTask);
+					_batchExecuted.Enqueue(msgTask);
 				}
 			}
 			else
@@ -110,12 +116,16 @@ namespace ZakThread.Async
 				{
 					if (_batchTimeout.ElapsedMilliseconds > BatchTimeoutMs || _batchExecuted.Count >= BatchSize)
 					{
+						_batchTimeout.Stop();
+						var ms = _batchTimeout.ElapsedMilliseconds;
+						var sz = _batchExecuted.Count;
+						Debug.WriteLine(DateTime.Now+" Ms "+ms+" Sz "+sz);
 						HandleBatchCompleted(_batchExecuted);
-						foreach (var item in _batchExecuted)
+						while (_batchExecuted.Count>0)
 						{
+							var item = _batchExecuted.Dequeue();
 							item.SetCompleted(_batchId);
 						}
-						_batchExecuted = new List<RequestObjectMessage>();
 						Interlocked.Increment(ref _batchId);
 						_batchTimeout.Reset();
 						_batchTimeout.Start();

@@ -157,11 +157,11 @@ namespace ZakThread.HighPower
 			OnExecutionCompleted();
 			if (jobDone > 0)
 			{
-				Thread.Sleep(0);
+				Thread.Yield();
 			}
 			else
 			{
-				Thread.Sleep(0);
+				Thread.Yield();
 				if (WaitCycle > 0) Thread.Sleep(WaitCycle);
 			}
 			return true;

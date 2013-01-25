@@ -34,7 +34,7 @@ namespace ZakTestUtils.Test
 		{
 			_firstTestCounter = new CounterContainer();
 			_errorTestCounter = new CounterContainer();
-			var tt = new TestThreads(FirstTest, 1);
+			var tt = new TestThreads(false, FirstTest, 1);
 			tt.RunParallel(100);
 			while (_firstTestCounter.Counter < 100)
 			{
@@ -49,7 +49,7 @@ namespace ZakTestUtils.Test
 		{
 			_firstTestCounter = new CounterContainer();
 			_errorTestCounter = new CounterContainer();
-			var tt = new TestThreads(FirstTest, 10);
+			var tt = new TestThreads(false, FirstTest, 10);
 			tt.RunParallel(1000);
 			while (_firstTestCounter.Counter < 1000)
 			{
@@ -65,7 +65,7 @@ namespace ZakTestUtils.Test
 		{
 			_firstTestCounter = new CounterContainer();
 			_errorTestCounter = new CounterContainer();
-			var tt = new TestThreads(SecondTest, 10);
+			var tt = new TestThreads(false, SecondTest, 10);
 			tt.RunParallel(1000, 2);
 			while (_firstTestCounter.Counter < 1000 && _errorTestCounter.Counter==0)
 			{

@@ -10,6 +10,6 @@ namespace ZakThread.Async
 		long DoRequestAndWait(BaseRequestObject requestObject, int timeoutMs, string senderId = null);
 		void FireAndForget(BaseRequestObject requestObject, int timeoutMs, string senderId = null);
 		bool HandleTaskRequest(RequestObjectMessage container, BaseRequestObject requestObject);
-		void HandleBatchCompleted(List<RequestObjectMessage> batchExecuted);
+		void HandleBatchCompleted(IEnumerable<RequestObjectMessage> batchExecuted);
 	}
 }

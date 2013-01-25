@@ -1,14 +1,28 @@
 ﻿using System;
 using System.Threading;
+using ZakCore.Utils.Collections;
 using ZakThread.Threading;
 
 namespace ZakThread.Async
 {
 	public class RequestObjectMessage : IMessage
 	{
+		private static LockFreeQueue<ManualResetEventSlim> _resetEvents;
+
+		static RequestObjectMessage()
+		{
+			_resetEvents = new LockFreeQueue<ManualResetEventSlim>();
+			int count = 100;
+			while (count >= 0)
+			{
+				_resetEvents.Enqueue(new ManualResetEventSlim(false));
+				count--;
+			}
+		}
+
 		private readonly BaseRequestObject _requestObject;
 		private readonly int _timeoutMs;
-		private readonly AutoResetEvent _autoResetEvent;
+		private ManualResetEventSlim _autoResetEvent;
 
 		public RequestObjectMessage(BaseRequestObject requestObject, int timeoutMs)
 		{
@@ -16,7 +30,12 @@ namespace ZakThread.Async
 			if (timeoutMs < 0) throw new ArgumentException("Parameter must be greater than 0", "timeoutMs");
 
 			_requestObject = requestObject;
-			_autoResetEvent = new AutoResetEvent(false);
+			_autoResetEvent = _resetEvents.DequeueSingle();
+			if (null == _autoResetEvent)
+			{
+				_autoResetEvent = new ManualResetEventSlim(false);
+			}
+			_autoResetEvent.Reset();
 			_timeoutMs = timeoutMs == 0 ? -1 : timeoutMs;
 		}
 
@@ -35,11 +54,13 @@ namespace ZakThread.Async
 		{
 			BatchId = batchId;
 			_autoResetEvent.Set();
+			_resetEvents.Enqueue(_autoResetEvent);
+			_autoResetEvent = null;
 		}
 
 		public void Wait()
 		{
-			if (!_autoResetEvent.WaitOne(_timeoutMs))
+			if (!_autoResetEvent.Wait(_timeoutMs))
 			{
 				throw new TimeoutException(string.Format("Timeout waiting for answers expired ({0} ms)", _timeoutMs));
 			}

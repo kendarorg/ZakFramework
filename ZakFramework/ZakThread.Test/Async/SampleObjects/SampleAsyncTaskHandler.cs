@@ -35,7 +35,7 @@ namespace ZakThread.Test.Async.SampleObjects
 			return true;
 		}
 
-		public override void HandleBatchCompleted(List<RequestObjectMessage> batchExecuted)
+		public override void HandleBatchCompleted(IEnumerable<RequestObjectMessage> batchExecuted)
 		{
 			foreach (var item in batchExecuted)
 			{

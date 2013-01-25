@@ -31,7 +31,7 @@ namespace ZakThread.Threading
 		/// <summary>
 		/// Start the thread
 		/// </summary>
-		void RunThread();
+		void RunThread(int timeoutMs = 1000);
 
 		/// <summary>
 		/// Terminate the thread

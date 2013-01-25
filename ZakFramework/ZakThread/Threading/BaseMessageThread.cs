@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Threading;
 using ZakCore.Utils.Collections;
 using ZakCore.Utils.Logging;
 using ZakThread.Threading.ThreadManagerInternals;
@@ -11,20 +13,34 @@ namespace ZakThread.Threading
 		private readonly LockFreeQueue<IMessage> _incomingMessages;
 		private readonly LockFreeQueue<IMessage> _outgoingMessages;
 
+		public int MaxMesssagesPerCycle { get; protected set; }
+
 		protected BaseMessageThread(ILogger logger, String threadName, bool restartOnError = true) :
 			base(logger, threadName, restartOnError)
 		{
 			_incomingMessages = new LockFreeQueue<IMessage>();
 			_outgoingMessages = new LockFreeQueue<IMessage>();
+			MaxMesssagesPerCycle = -1;
 		}
 
 		protected override bool CyclicExecution()
 		{
 			IMessage msg;
+			int messagesPerCycle = 0;
 			while ((msg = PeekMessage())!=null)
 			{
 				if (!HandleMessageInternal(msg)) return false;
+				messagesPerCycle++;
+				if (MaxMesssagesPerCycle > 0 && messagesPerCycle >= MaxMesssagesPerCycle)
+				{
+					break;
+				}
 			}
+
+			if(messagesPerCycle>0)
+			Debug.WriteLine(DateTime.Now+" Msgs per cycle "+messagesPerCycle);
+			else Debug.Write(".");
+			
 			return base.CyclicExecution();
 		}
 

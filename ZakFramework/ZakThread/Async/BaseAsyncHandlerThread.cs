@@ -75,7 +75,7 @@ namespace ZakThread.Async
 		}
 
 		public abstract bool HandleTaskRequest(RequestObjectMessage container, BaseRequestObject requestObject);
-		public abstract void HandleBatchCompleted(List<RequestObjectMessage> batchExecuted);
+		public abstract void HandleBatchCompleted(IEnumerable<RequestObjectMessage> batchExecuted);
 
 		protected override bool HandleMessage(IMessage msg)
 		{

@@ -60,6 +60,10 @@
       <Project>{3BA1ECC6-73E3-470B-AEA1-9B559ECB7AAE}</Project>
       <Name>ZakCoreUtils</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ZakThreadInterfaces\ZakThreadInterfaces.csproj">
+      <Project>{26B48B9A-B9F1-48DC-8D6E-E7F361E3BBF9}</Project>
+      <Name>ZakThreadInterfaces</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />

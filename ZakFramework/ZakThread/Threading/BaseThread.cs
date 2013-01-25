@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Threading;
 using ZakCore.Utils.Collections;
 using ZakCore.Utils.Logging;
@@ -107,10 +108,13 @@ namespace ZakThread.Threading
 		/// <summary>
 		/// Start the thread
 		/// </summary>
-		public virtual void RunThread()
+		public virtual void RunThread(int timeoutMs = 1000)
 		{
 			_thread = new Thread(StaticRunThread);
 			IntThread.Start(this);
+			var sw = new Stopwatch();
+			sw.Start();
+			while (Status != RunningStatus.Running && sw.ElapsedMilliseconds < timeoutMs) Thread.Sleep(timeoutMs/10);
 		}
 
 		/// <summary>
@@ -186,15 +190,26 @@ namespace ZakThread.Threading
 			Status = RunningStatus.Running;
 			while (Interlocked.Read(ref _continueRunning) == 1)
 			{
+				
 				if (!CyclicExecution())
 				{
 					Status = RunningStatus.Halted;
 					return;
 				}
-				Thread.Sleep(0);
+				
+				_cyclesRuns++;
+				if (_cyclesRuns%10 == 0)
+				{
+					Thread.Sleep(5);
+					Thread.Yield();
+				}
 			}
 			Status = RunningStatus.Halted;
 		}
+
+		private ulong _cyclesRuns = 0;
+
+		public ulong CyclesRuns { get { return _cyclesRuns; } }
 
 		/// <summary>
 		/// Terminate the thread
@@ -252,8 +267,8 @@ namespace ZakThread.Threading
 				if (tmp != RunningStatus.Running &&
 					tmp != RunningStatus.Halting) //TODO Partial coverage??
 				{
-					Thread.Sleep(0);
 					Thread.Sleep(1);
+					Thread.Sleep(0);
 					break;
 				}
 				Thread.Sleep(0);

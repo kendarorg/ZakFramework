@@ -19,6 +19,7 @@ namespace ZakThread.Test.Async.SampleObjects
 		{
 			BatchSize = batchSize;
 			BatchTimeoutMs = batchTimeoutMs;
+			MaxMesssagesPerCycle = 500;
 			_waitTimeMs = waitTimeMs;
 			_callsCount = 0;
 		}
@@ -32,13 +33,16 @@ namespace ZakThread.Test.Async.SampleObjects
 			return true;
 		}
 
-		public override void HandleBatchCompleted(List<RequestObjectMessage> batchExecuted)
+		public override void RunThread(int timeoutMs = 1000)
 		{
-			Console.WriteLine(".");
-			Debug.WriteLine("*");
+			base.RunThread(timeoutMs);
+			Debug.WriteLine("ThreadStarted");
+		}
+
+		public override void HandleBatchCompleted(IEnumerable<RequestObjectMessage> batchExecuted)
+		{
 			foreach (var item in batchExecuted)
 			{
-				
 				Interlocked.Increment(ref _callsCount);
 			}
 		}
