@@ -125,14 +125,17 @@ namespace ZakThread.Async
 						Debug.WriteLine("");
 						HandleBatchCompleted(_batchExecuted);
 						var be = _batchExecuted;
-						Task.Factory.StartNew(() =>
+						//Task.Factory.StartNew(() =>
 							{
-								while (be.Count > 0)
+								var item = _batchExecuted.Dequeue();
+								while (item!=null)
 								{
-									var item = be.Dequeue();
+									
 									item.SetCompleted(_batchId);
+									item = _batchExecuted.Dequeue();
 								}
-							});
+							}
+							//);
 						
 						_batchExecuted = new Queue<RequestObjectMessage>();
 						Interlocked.Increment(ref _batchId);

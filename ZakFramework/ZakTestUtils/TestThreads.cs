@@ -66,9 +66,7 @@ namespace ZakTestUtils
 			{
 				while (CyclesCounter.Counter < count)
 				{
-					Thread.Sleep(10);
-					Thread.Sleep(0);
-					Thread.Yield();
+					Thread.Sleep(100);
 				}
 			}
 			else
@@ -104,6 +102,7 @@ namespace ZakTestUtils
 					_toExecute(this, ea);
 					i++;
 					Thread.Sleep(0);
+					if (i%10 == 0) Thread.Yield();
 				}
 			}
 			for (int i = from; i < to; i++)
@@ -127,7 +126,6 @@ namespace ZakTestUtils
 				CyclesCounter.Increment();
 				if (i%10 == 0)
 				{
-					Thread.Sleep(10);
 					Thread.Yield();
 				}
 			}

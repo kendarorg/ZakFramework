@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Threading;
 using ZakCore.Utils.Collections;
 using ZakCore.Utils.Logging;
 using ZakThread.Threading.ThreadManagerInternals;
@@ -36,10 +34,6 @@ namespace ZakThread.Threading
 					break;
 				}
 			}
-
-			/*if(messagesPerCycle>0)
-			//Debug.WriteLine(DateTime.Now+" Msgs per cycle "+messagesPerCycle);
-			else Debug.Write(".");*/
 			
 			return base.CyclicExecution();
 		}

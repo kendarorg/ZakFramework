@@ -115,6 +115,7 @@ namespace ZakThread.Threading
 			var sw = new Stopwatch();
 			sw.Start();
 			while (Status != RunningStatus.Running && sw.ElapsedMilliseconds < timeoutMs) Thread.Sleep(timeoutMs/10);
+			sw.Stop();
 		}
 
 		/// <summary>
@@ -198,9 +199,9 @@ namespace ZakThread.Threading
 				}
 				
 				_cyclesRuns++;
-				if (_cyclesRuns%10 == 0)
+				if (_cyclesRuns%100 == 0)
 				{
-					Thread.Sleep(5);
+					Thread.Sleep(1);
 					Thread.Yield();
 				}
 			}

@@ -12,15 +12,15 @@ namespace ZakThread.Test.Async
 	[TestFixture]
 	public class SyncHandlerTest
 	{
-		private const int MAX_DEGREE_OF_PARALLELISM = 10;
+		private const int MAX_DEGREE_OF_PARALLELISM = 4;
 		private const int MESSAGES_MULTIPLIER = 100;
 		private const int BATCH_SIZE_DIVISOR = 10;
 		private const int NUMBER_OF_MESSAGES = MESSAGES_MULTIPLIER * MAX_DEGREE_OF_PARALLELISM;
 		private const int BATCH_SIZE = NUMBER_OF_MESSAGES / BATCH_SIZE_DIVISOR;
-		private CounterContainer counter;
-		private CounterContainer successful;
+		private CounterContainer _counter;
+		private CounterContainer _successful;
 
-		public void DoFireAndForget(object sender, ZakTestUtils.TestThreads.TestThreadsEventArgs args)
+		public void DoFireAndForget(object sender, TestThreads.TestThreadsEventArgs args)
 		{
 			var callsHandler = (ITasksHandlerThread)args.Param;
 			var sw = new Stopwatch();
@@ -30,16 +30,16 @@ namespace ZakThread.Test.Async
 			sw.Stop();
 		}
 
-		public void DoRequestAndWait(object sender, ZakTestUtils.TestThreads.TestThreadsEventArgs args)
+		public void DoRequestAndWait(object sender, TestThreads.TestThreadsEventArgs args)
 		{
 			var callsHandler = (ITasksHandlerThread)args.Param;
 			var sw = new Stopwatch();
 			sw.Start();
 			var requestObject = new RequestObject(args.CurrentCycle);
 			sw.Stop();
-			counter.Add(callsHandler.DoRequestAndWait(requestObject, 1000));
+			_counter.Add(callsHandler.DoRequestAndWait(requestObject, 1000));
 
-			if (args.CurrentCycle == -requestObject.GetReturnAs<long>()) successful.Increment();
+			if (args.CurrentCycle == -requestObject.GetReturnAs<long>()) _successful.Increment();
 		}
 
 		[Test]
@@ -47,8 +47,8 @@ namespace ZakThread.Test.Async
 		{
 			const int iterations = NUMBER_OF_MESSAGES;
 			const int waitTimeMs = 1;
-			counter = new CounterContainer();
-			successful = new CounterContainer();
+			_counter = new CounterContainer();
+			_successful = new CounterContainer();
 
 			var callsHandler = new SampleSyncTasksHandler("TEST", waitTimeMs);
 			callsHandler.RunThread();
@@ -71,7 +71,7 @@ namespace ZakThread.Test.Async
 			Debug.WriteLine("");
 			Assert.AreEqual(iterations, testThread.CyclesCounter.Counter);
 			Assert.AreEqual(iterations, callsHandler.CallsCount);
-			Assert.AreEqual(iterations, successful.Counter);
+			Assert.AreEqual(iterations, _successful.Counter);
 			callsHandler.Terminate();
 			testThread.Terminate();
 		}
@@ -82,8 +82,8 @@ namespace ZakThread.Test.Async
 			const int iterations = NUMBER_OF_MESSAGES;
 			const int waitTimeMs = 1;
 			int cores = Environment.ProcessorCount;
-			counter = new CounterContainer();
-			successful = new CounterContainer();
+			_counter = new CounterContainer();
+			_successful = new CounterContainer();
 			var callsHandler = new SampleSyncTasksHandler("TEST", waitTimeMs);
 			callsHandler.RunThread();
 			Thread.Sleep(100);
@@ -110,14 +110,14 @@ namespace ZakThread.Test.Async
 		[Test]
 		public void CItShouldBePossibleToRunTasksInBatchCheckingBatchSize()
 		{
-			const int iterations = NUMBER_OF_MESSAGES;
+			const int iterations = 100;
 			const int waitTimeMs = 1;
-			const int batchSize = 100;
+			const int batchSize = 10;
 			const int batchTimeoutMs = 10000;
 
 			int cores = Environment.ProcessorCount;
-			counter = new CounterContainer();
-			successful = new CounterContainer();
+			_counter = new CounterContainer();
+			_successful = new CounterContainer();
 			var callsHandler = new SampleSyncTasksHandler("TEST", waitTimeMs, batchSize, batchTimeoutMs);
 			callsHandler.RunThread();
 			Thread.Sleep(100);
@@ -129,7 +129,7 @@ namespace ZakThread.Test.Async
 			while ((sw.ElapsedMilliseconds + initTime) < waitTimeMs * iterations * 2 || !testThread.IsFinished)
 			{
 				if (testThread.IsFinished && initTime == 0) initTime = sw.ElapsedMilliseconds;
-				if (iterations == successful.Counter && iterations == callsHandler.CallsCount)
+				if (iterations == _successful.Counter && iterations == callsHandler.CallsCount && testThread.IsFinished)
 				{
 					break;
 				}
@@ -140,7 +140,7 @@ namespace ZakThread.Test.Async
 			Debug.WriteLine("c Init time " + initTime);
 			Debug.WriteLine("c Run time " + sw.ElapsedMilliseconds);
 			Debug.WriteLine("");
-			Assert.AreEqual(iterations, successful.Counter);
+			Assert.AreEqual(iterations, _successful.Counter);
 			Assert.AreEqual(iterations, callsHandler.CallsCount);
 			callsHandler.Terminate();
 			testThread.Terminate();
@@ -155,8 +155,8 @@ namespace ZakThread.Test.Async
 			const int batchTimeoutMs = 1000;
 
 			int cores = Environment.ProcessorCount;
-			counter = new CounterContainer();
-			successful = new CounterContainer();
+			_counter = new CounterContainer();
+			_successful = new CounterContainer();
 			var callsHandler = new SampleSyncTasksHandler("TEST", waitTimeMs, batchSize, batchTimeoutMs);
 			callsHandler.RunThread();
 			Thread.Sleep(100);
@@ -187,8 +187,8 @@ namespace ZakThread.Test.Async
 			const int batchTimeoutMs = 1;
 
 			int cores = Environment.ProcessorCount;
-			counter = new CounterContainer();
-			successful = new CounterContainer();
+			_counter = new CounterContainer();
+			_successful = new CounterContainer();
 			var callsHandler = new SampleSyncTasksHandler("TEST", waitTimeMs, batchSize, batchTimeoutMs);
 			callsHandler.RunThread();
 			Thread.Sleep(100);
@@ -199,13 +199,13 @@ namespace ZakThread.Test.Async
 			sw.Start();
 			while (sw.ElapsedMilliseconds < waitTimeMs * iterations * 2)
 			{
-				if (iterations == successful.Counter) break;
+				if (iterations == _successful.Counter) break;
 				Thread.Sleep(100);
 			}
 
 			Thread.Sleep(1000);
 			sw.Stop();
-			Assert.AreEqual(iterations, successful.Counter);
+			Assert.AreEqual(iterations, _successful.Counter);
 			Assert.AreEqual(iterations, callsHandler.CallsCount);
 			callsHandler.Terminate();
 			testThread.Terminate();
@@ -221,8 +221,8 @@ namespace ZakThread.Test.Async
 			const int batchTimeoutMs = 1;
 
 			int cores = Environment.ProcessorCount;
-			counter = new CounterContainer();
-			successful = new CounterContainer();
+			_counter = new CounterContainer();
+			_successful = new CounterContainer();
 			var callsHandler = new SampleSyncTasksHandler("TEST", waitTimeMs, batchSize, batchTimeoutMs);
 			callsHandler.RunThread();
 			Thread.Sleep(100);

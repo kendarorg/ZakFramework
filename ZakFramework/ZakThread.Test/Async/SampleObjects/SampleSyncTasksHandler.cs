@@ -19,7 +19,6 @@ namespace ZakThread.Test.Async.SampleObjects
 		{
 			BatchSize = batchSize;
 			BatchTimeoutMs = batchTimeoutMs;
-			MaxMesssagesPerCycle = 500;
 			_waitTimeMs = waitTimeMs;
 			_callsCount = 0;
 		}
