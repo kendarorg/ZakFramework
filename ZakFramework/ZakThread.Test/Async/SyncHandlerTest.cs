@@ -12,7 +12,11 @@ namespace ZakThread.Test.Async
 	[TestFixture]
 	public class SyncHandlerTest
 	{
-		private const int MAX_DEGREE_OF_PARALLELISM = 10;
+		private const int MAX_DEGREE_OF_PARALLELISM = 4;
+		private const int MESSAGES_MULTIPLIER = 10;
+		private const int BATCH_SIZE_DIVISOR = 4;
+		private const int NUMBER_OF_MESSAGES = MESSAGES_MULTIPLIER * MAX_DEGREE_OF_PARALLELISM;
+		private const int BATCH_SIZE = NUMBER_OF_MESSAGES/BATCH_SIZE_DIVISOR;
 		private CounterContainer counter;
 		private CounterContainer successful;
 
@@ -34,7 +38,7 @@ namespace ZakThread.Test.Async
 		[Test]
 		public void AItShouldBePossibleToRunTasksInParallelDelegatingThemToTheThread()
 		{
-			const int iterations = 100;
+			const int iterations = NUMBER_OF_MESSAGES;
 			const int waitTimeMs = 1;
 			counter = new CounterContainer();
 			successful = new CounterContainer();
@@ -62,7 +66,7 @@ namespace ZakThread.Test.Async
 		[Test]
 		public void BItShouldBePossibleToRunTasksInParallelDelegatingThemToTheThreadWithFireAndForget()
 		{
-			const int iterations = 100;
+			const int iterations = NUMBER_OF_MESSAGES;
 			const int waitTimeMs = 1;
 			int cores = Environment.ProcessorCount;
 			counter = new CounterContainer();
@@ -80,6 +84,7 @@ namespace ZakThread.Test.Async
 				Thread.Sleep(100);
 			}
 			sw.Stop();
+			Thread.Sleep(1000);
 			Assert.AreEqual(iterations, callsHandler.CallsCount);
 			callsHandler.Terminate();
 			testThread.Terminate();
@@ -88,9 +93,9 @@ namespace ZakThread.Test.Async
 		[Test]
 		public void CItShouldBePossibleToRunTasksInBatchCheckingBatchSize()
 		{
-			const int iterations = 100;
+			const int iterations = NUMBER_OF_MESSAGES;
 			const int waitTimeMs = 1;
-			const int batchSize = 10;
+			const int batchSize = BATCH_SIZE;
 			const int batchTimeoutMs = 100;
 
 			int cores = Environment.ProcessorCount;
@@ -120,9 +125,9 @@ namespace ZakThread.Test.Async
 		[Test]
 		public void ItShouldBePossibleToRunTasksInBatchCheckingBatchSizeWithFireAndForget()
 		{
-			const int iterations = 100;
+			const int iterations = NUMBER_OF_MESSAGES;
 			const int waitTimeMs = 1;
-			const int batchSize = 4;
+			const int batchSize = BATCH_SIZE;
 			const int batchTimeoutMs = 10;
 
 			int cores = Environment.ProcessorCount;
@@ -151,9 +156,9 @@ namespace ZakThread.Test.Async
 		[Test]
 		public void ItShouldBePossibleToRunTasksInBatchCheckingTimeout()
 		{
-			const int iterations = 100;
+			const int iterations = NUMBER_OF_MESSAGES;
 			const int waitTimeMs = 1;
-			const int batchSize = 100;
+			const int batchSize = BATCH_SIZE;
 			const int batchTimeoutMs = 1;
 
 			int cores = Environment.ProcessorCount;
@@ -185,9 +190,9 @@ namespace ZakThread.Test.Async
 		[Test]
 		public void ItShouldBePossibleToRunTasksInBatchCheckingTimeoutFireAndForget()
 		{
-			const int iterations = 100;
+			const int iterations = NUMBER_OF_MESSAGES;
 			const int waitTimeMs = 1;
-			const int batchSize = 100;
+			const int batchSize = BATCH_SIZE;
 			const int batchTimeoutMs = 1;
 
 			int cores = Environment.ProcessorCount;

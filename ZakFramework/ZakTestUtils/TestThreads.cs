@@ -44,8 +44,8 @@ namespace ZakTestUtils
 
 			for (int i = 0; i < _maxDegreeOfParallelism; i++)
 			{
-				var from = count * i;
-				var to = count * (i + 1);
+				var from = steps * i;
+				var to = steps * (i + 1);
 				var thread = new Thread(RunTask);
 				thread.Start(new Tuple<int, int, object>(from, to, param));
 				_threads.Add(thread);
@@ -80,6 +80,7 @@ namespace ZakTestUtils
 				{
 					Exceptions.Enqueue(ex);
 				}
+				//Thread.Sleep(1 );
 				Thread.Sleep(0);
 			}
 			Interlocked.Decrement(ref _runningThreads);

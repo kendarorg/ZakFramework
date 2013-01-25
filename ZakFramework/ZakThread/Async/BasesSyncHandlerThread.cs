@@ -47,6 +47,7 @@ namespace ZakThread.Async
 
 		protected override bool RunSingleCycle()
 		{
+			SetBatchCompleted();
 			return true;
 		}
 
@@ -98,7 +99,6 @@ namespace ZakThread.Async
 			{
 				toret = base.HandleMessageInternal(msg);
 			}
-			SetBatchCompleted();
 			return toret;
 		}
 
@@ -118,6 +118,7 @@ namespace ZakThread.Async
 						_batchExecuted = new List<RequestObjectMessage>();
 						Interlocked.Increment(ref _batchId);
 						_batchTimeout.Reset();
+						_batchTimeout.Start();
 					}
 				}
 			}
