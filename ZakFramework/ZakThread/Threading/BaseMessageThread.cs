@@ -37,9 +37,9 @@ namespace ZakThread.Threading
 				}
 			}
 
-			if(messagesPerCycle>0)
-			Debug.WriteLine(DateTime.Now+" Msgs per cycle "+messagesPerCycle);
-			else Debug.Write(".");
+			/*if(messagesPerCycle>0)
+			//Debug.WriteLine(DateTime.Now+" Msgs per cycle "+messagesPerCycle);
+			else Debug.Write(".");*/
 			
 			return base.CyclicExecution();
 		}

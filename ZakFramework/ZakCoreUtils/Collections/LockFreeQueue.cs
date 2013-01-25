@@ -63,11 +63,18 @@ namespace ZakCore.Utils.Collections
 		/// </summary>
 		private PointerT _tail;
 
+		private readonly bool _isNullable;
+
+		private long _count;
+
+		public long Count { get { return Interlocked.Read(ref _count); } }
+
 		/// <summary>
 		/// Constructor
 		/// </summary>
 		public LockFreeQueue()
 		{
+			_isNullable = default(T) == null;
 			var node = new NodeT();
 			_head._ptr = _tail._ptr = node;
 		}
@@ -148,6 +155,7 @@ namespace ZakCore.Utils.Collections
 			} // endloop
 
 			// dispose of head.ptr
+			Interlocked.Decrement(ref _count); 
 			return true;
 		}
 
@@ -158,7 +166,7 @@ namespace ZakCore.Utils.Collections
 		public void Enqueue(T t)
 		{
 			// Allocate a new node from the free list
-			var node = new NodeT {_value = t};
+			var node = new NodeT { _value = t };
 
 			// copy enqueued value into node
 
@@ -192,6 +200,7 @@ namespace ZakCore.Utils.Collections
 					}
 				} // endif
 			} // endloop
+			Interlocked.Increment(ref _count); 
 		}
 
 		/// <summary>
@@ -202,8 +211,12 @@ namespace ZakCore.Utils.Collections
 		public IEnumerable<T> Dequeue(Int64 count = Int64.MaxValue)
 		{
 			// ReSharper disable ExpressionIsAlwaysNull
-			Object ndo = null;
-			var nd = (T) ndo;
+			object obj = null;
+			if (!_isNullable)
+			{
+				obj = default(T);
+			}
+			var nd = (T)obj;
 			while (Dequeue(ref nd) && count > 0)
 			{
 				yield return nd;
@@ -215,13 +228,23 @@ namespace ZakCore.Utils.Collections
 		public T DequeueSingle()
 		{
 			// ReSharper disable ExpressionIsAlwaysNull
-			Object ndo = null;
-			var nd = (T) ndo;
+			object obj = null;
+			if (!_isNullable)
+			{
+				obj = default(T);
+			}
+			
+			var nd = (T)obj;
 			if (Dequeue(ref nd))
 			{
 				return nd;
 			}
-			return default(T);
+			obj = null;
+			if (!_isNullable)
+			{
+				obj = default(T);
+			}
+			return (T)obj;
 			// ReSharper restore ExpressionIsAlwaysNull
 		}
 

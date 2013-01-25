@@ -40,7 +40,7 @@ namespace ZakTestUtils
 
 		public CounterContainer CyclesCounter { get; set; }
 
-		public long RunParallel(int count, object param = null)
+		public long RunParallel(int count, object param = null,bool infinite=false)
 		{
 			var sw = new Stopwatch();
 
@@ -57,7 +57,7 @@ namespace ZakTestUtils
 				var from = steps * i;
 				var to = steps * (i + 1);
 				var thread = new Thread(RunTask);
-				thread.Start(new Tuple<int, int, object>(from, to, param));
+				thread.Start(new Tuple<int, int, object,bool>(from, to, param, infinite));
 				_threads.Add(thread);
 			}
 			sw.Start();
@@ -83,11 +83,29 @@ namespace ZakTestUtils
 
 		private void RunTask(object param)
 		{
-			var tuple = (Tuple<int, int, object>)param;
+			var tuple = (Tuple<int, int, object, bool>)param;
 			var from = tuple.Item1;
 			var to = tuple.Item2;
 			var par = tuple.Item3;
+			var infinte = tuple.Item4;
 			_eventStart.Wait(5000);
+			if (infinte)
+			{
+				int i = 0;
+				while (true)
+				{
+					var ea = new TestThreadsEventArgs
+					{
+						CurrentCycle = i,
+						From = from,
+						To = to,
+						Param = par
+					};
+					_toExecute(this, ea);
+					i++;
+					Thread.Sleep(0);
+				}
+			}
 			for (int i = from; i < to; i++)
 			{
 				try

@@ -12,7 +12,7 @@ namespace ZakThread.Test.Async
 	[TestFixture]
 	public class SyncHandlerTest
 	{
-		private const int MAX_DEGREE_OF_PARALLELISM = 20;
+		private const int MAX_DEGREE_OF_PARALLELISM = 10;
 		private const int MESSAGES_MULTIPLIER = 100;
 		private const int BATCH_SIZE_DIVISOR = 10;
 		private const int NUMBER_OF_MESSAGES = MESSAGES_MULTIPLIER * MAX_DEGREE_OF_PARALLELISM;
@@ -54,18 +54,21 @@ namespace ZakThread.Test.Async
 			callsHandler.RunThread();
 			Thread.Sleep(100);
 
-			var testThread = new TestThreads(true,DoRequestAndWait, MAX_DEGREE_OF_PARALLELISM);
+			var testThread = new TestThreads(false,DoRequestAndWait, MAX_DEGREE_OF_PARALLELISM);
 			var initTime = testThread.RunParallel(iterations, callsHandler);
 			var sw = new Stopwatch();
 			sw.Start();
-			while ((sw.ElapsedMilliseconds + initTime) < waitTimeMs * iterations * 2)
+			while ((sw.ElapsedMilliseconds + initTime) < waitTimeMs * iterations * 2 || !testThread.IsFinished)
 			{
+				if (testThread.IsFinished && initTime==0) initTime = sw.ElapsedMilliseconds;
 				if (iterations == callsHandler.CallsCount) break;
-				Thread.Sleep(5);
+				Thread.Sleep(10);
 			}
 			sw.Stop();
+			Debug.WriteLine("");
 			Debug.WriteLine("a Init time " + initTime);
 			Debug.WriteLine("a Run time " + sw.ElapsedMilliseconds);
+			Debug.WriteLine("");
 			Assert.AreEqual(iterations, testThread.CyclesCounter.Counter);
 			Assert.AreEqual(iterations, callsHandler.CallsCount);
 			Assert.AreEqual(iterations, successful.Counter);
@@ -84,18 +87,21 @@ namespace ZakThread.Test.Async
 			var callsHandler = new SampleSyncTasksHandler("TEST", waitTimeMs);
 			callsHandler.RunThread();
 			Thread.Sleep(100);
-			var testThread = new TestThreads(true, DoFireAndForget, MAX_DEGREE_OF_PARALLELISM);
+			var testThread = new TestThreads(false, DoFireAndForget, MAX_DEGREE_OF_PARALLELISM);
 			var initTime = testThread.RunParallel(iterations, callsHandler);
 			var sw = new Stopwatch();
 			sw.Start();
-			while ((sw.ElapsedMilliseconds + initTime) < waitTimeMs * iterations * 2)
+			while ((sw.ElapsedMilliseconds + initTime) < waitTimeMs * iterations * 2 || !testThread.IsFinished)
 			{
+				if (testThread.IsFinished && initTime == 0) initTime = sw.ElapsedMilliseconds;
 				if (iterations == callsHandler.CallsCount) break;
-				Thread.Sleep(5);
+				Thread.Sleep(10);
 			}
 			sw.Stop();
+			Debug.WriteLine("");
 			Debug.WriteLine("b Init time " + initTime);
 			Debug.WriteLine("b Run time " + sw.ElapsedMilliseconds);
+			Debug.WriteLine("");
 			Assert.AreEqual(iterations, callsHandler.CallsCount);
 			callsHandler.Terminate();
 			testThread.Terminate();
@@ -106,8 +112,8 @@ namespace ZakThread.Test.Async
 		{
 			const int iterations = NUMBER_OF_MESSAGES;
 			const int waitTimeMs = 1;
-			const int batchSize = 1000000;
-			const int batchTimeoutMs = 1000;
+			const int batchSize = 100;
+			const int batchTimeoutMs = 10000;
 
 			int cores = Environment.ProcessorCount;
 			counter = new CounterContainer();
@@ -115,13 +121,14 @@ namespace ZakThread.Test.Async
 			var callsHandler = new SampleSyncTasksHandler("TEST", waitTimeMs, batchSize, batchTimeoutMs);
 			callsHandler.RunThread();
 			Thread.Sleep(100);
-			var testThread = new TestThreads(true, DoRequestAndWait, MAX_DEGREE_OF_PARALLELISM);
+			var testThread = new TestThreads(false, DoRequestAndWait, MAX_DEGREE_OF_PARALLELISM);
 			var initTime = testThread.RunParallel(iterations, callsHandler);
 
 			var sw = new Stopwatch();
 			sw.Start();
-			while ((sw.ElapsedMilliseconds + initTime) < waitTimeMs * iterations * 2)
+			while ((sw.ElapsedMilliseconds + initTime) < waitTimeMs * iterations * 2 || !testThread.IsFinished)
 			{
+				if (testThread.IsFinished && initTime == 0) initTime = sw.ElapsedMilliseconds;
 				if (iterations == successful.Counter && iterations == callsHandler.CallsCount)
 				{
 					break;
@@ -129,8 +136,10 @@ namespace ZakThread.Test.Async
 				Thread.Sleep(100);
 			}
 			sw.Stop();
+			Debug.WriteLine("");
 			Debug.WriteLine("c Init time " + initTime);
 			Debug.WriteLine("c Run time " + sw.ElapsedMilliseconds);
+			Debug.WriteLine("");
 			Assert.AreEqual(iterations, successful.Counter);
 			Assert.AreEqual(iterations, callsHandler.CallsCount);
 			callsHandler.Terminate();

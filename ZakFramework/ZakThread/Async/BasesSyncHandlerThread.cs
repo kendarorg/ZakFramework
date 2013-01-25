@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
+using System.Threading.Tasks;
 using ZakCore.Utils.Logging;
 using ZakThread.Threading;
 
@@ -86,11 +87,11 @@ namespace ZakThread.Async
 		protected override bool HandleMessage(IMessage msg)
 		{
 			var toret = true;
-			var msgTask = msg as RequestObjectMessage;
-			if (msgTask != null)
+			if (msg.GetType().Name.EndsWith("RequestObjectMessage"))
 			{
-				HandleTaskRequest(msgTask, msgTask.Content);
+				var msgTask = (RequestObjectMessage)msg;
 
+				HandleTaskRequest(msgTask, msgTask.Content);
 				if (BatchSize == 1)
 				{
 					msgTask.SetCompleted();
@@ -119,13 +120,21 @@ namespace ZakThread.Async
 						_batchTimeout.Stop();
 						var ms = _batchTimeout.ElapsedMilliseconds;
 						var sz = _batchExecuted.Count;
-						Debug.WriteLine(DateTime.Now+" Ms "+ms+" Sz "+sz);
+						Debug.WriteLine("");
+						Debug.WriteLine(DateTime.Now + " Ms " + ms + " Sz " + sz);
+						Debug.WriteLine("");
 						HandleBatchCompleted(_batchExecuted);
-						while (_batchExecuted.Count>0)
-						{
-							var item = _batchExecuted.Dequeue();
-							item.SetCompleted(_batchId);
-						}
+						var be = _batchExecuted;
+						Task.Factory.StartNew(() =>
+							{
+								while (be.Count > 0)
+								{
+									var item = be.Dequeue();
+									item.SetCompleted(_batchId);
+								}
+							});
+						
+						_batchExecuted = new Queue<RequestObjectMessage>();
 						Interlocked.Increment(ref _batchId);
 						_batchTimeout.Reset();
 						_batchTimeout.Start();

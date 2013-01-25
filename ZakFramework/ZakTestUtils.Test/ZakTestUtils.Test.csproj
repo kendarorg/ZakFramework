@@ -55,6 +55,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ZakCoreUtils\ZakCoreUtils.csproj">
+      <Project>{3BA1ECC6-73E3-470B-AEA1-9B559ECB7AAE}</Project>
+      <Name>ZakCoreUtils</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ZakTestUtils\ZakTestUtils.csproj">
       <Project>{3118B1C6-4101-42DC-9050-C9551673AE6E}</Project>
       <Name>ZakTestUtils</Name>
