@@ -144,13 +144,13 @@ namespace ZakThread.Test.Threading
 			threadManager.AddThread(subThread2);
 			Thread.Sleep(100);
 
-			Assert.IsTrue(threadManager.Status == RunningStatus.Running);
+			Assert.AreEqual(RunningStatus.Running, threadManager.Status);
 			threadManager.SendMessageToThread(new TestMessage());
 			subThread2.TerminateMessage = 1;
 			Thread.Sleep(100);
 			threadManager.Terminate();
 			Thread.Sleep(500);
-			Assert.IsTrue(threadManager.Status == RunningStatus.Halted);
+			Assert.AreEqual(RunningStatus.Halted, threadManager.Status);
 			threadManager.Terminate();
 		}
 	}

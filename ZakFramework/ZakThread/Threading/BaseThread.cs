@@ -78,15 +78,15 @@ namespace ZakThread.Threading
 		/// <summary>
 		/// Thread status
 		/// </summary>
-		private Int64 _status = (Int64) RunningStatus.None;
+		private Int64 _status = (Int64)RunningStatus.None;
 
 		/// <summary>
 		/// Status of the object.
 		/// </summary>
 		public RunningStatus Status
 		{
-			get { return (RunningStatus) Interlocked.Read(ref _status); }
-			private set { Interlocked.Exchange(ref _status, (Int64) value); }
+			get { return (RunningStatus)Interlocked.Read(ref _status); }
+			private set { Interlocked.Exchange(ref _status, (Int64)value); }
 		}
 
 		/// <summary>
@@ -114,7 +114,7 @@ namespace ZakThread.Threading
 			IntThread.Start(this);
 			var sw = new Stopwatch();
 			sw.Start();
-			while (Status != RunningStatus.Running && sw.ElapsedMilliseconds < timeoutMs) Thread.Sleep(timeoutMs/10);
+			while (Status != RunningStatus.Running && sw.ElapsedMilliseconds < timeoutMs) Thread.Sleep(timeoutMs / 10);
 			sw.Stop();
 		}
 
@@ -124,7 +124,7 @@ namespace ZakThread.Threading
 		/// <param name="par"></param>
 		private static void StaticRunThread(Object par)
 		{
-			var b = (BaseThread) par;
+			var b = (BaseThread)par;
 			Boolean exceptionThrown = false;
 			Boolean threadAborted = false;
 			try
@@ -145,7 +145,7 @@ namespace ZakThread.Threading
 			{
 				Boolean continueRunning = b.HandleException(ex);
 				b._exceptions.Enqueue(ex);
-				if (continueRunning && b._restartOnError)	//TODO Partial coverage??
+				if (continueRunning && b._restartOnError && Interlocked.Read(ref b._continueRunning) == 1)	//TODO Partial coverage??
 				{
 					Interlocked.Exchange(ref b._continueRunning, 0);
 					b._thread = new Thread(StaticRunThread);
@@ -158,7 +158,7 @@ namespace ZakThread.Threading
 
 			Interlocked.Exchange(ref b._continueRunning, 0);
 
-			if (threadAborted) 
+			if (threadAborted)
 			{
 				return;
 			}
@@ -191,19 +191,20 @@ namespace ZakThread.Threading
 			Status = RunningStatus.Running;
 			while (Interlocked.Read(ref _continueRunning) == 1)
 			{
-				
+
 				if (!CyclicExecution())
 				{
 					Status = RunningStatus.Halted;
 					return;
 				}
-				
+
 				_cyclesRuns++;
-				if (_cyclesRuns%100 == 0)
+				if (_cyclesRuns % 100 == 0)
 				{
 					Thread.Sleep(1);
 					Thread.Yield();
 				}
+				Thread.Sleep(0);
 			}
 			Status = RunningStatus.Halted;
 		}
@@ -218,12 +219,16 @@ namespace ZakThread.Threading
 		/// <param name="force">If true, abort!!!</param>
 		public virtual void Terminate(Boolean force = false)
 		{
+			Interlocked.Exchange(ref _continueRunning, 0);
 			if (IntThread == null)
 			{
 				Status = RunningStatus.Halted;
 				return;
 			}
-
+			if (Status == RunningStatus.ExceptionThrown && !_restartOnError)
+			{
+				return;
+			}
 			if (Status != RunningStatus.Running && Status != RunningStatus.Halting)
 			{
 				return;
@@ -236,7 +241,6 @@ namespace ZakThread.Threading
 			else
 			{
 				Status = RunningStatus.Halting;
-				Interlocked.Exchange(ref _continueRunning, 0);
 			}
 		}
 
@@ -257,8 +261,8 @@ namespace ZakThread.Threading
 			}
 			DateTime timeoutTime = DateTime.UtcNow;
 			timeoutTime = timeoutTime.AddMilliseconds(timeoutMs);
-			
-			int waitCycle = (int)timeoutMs/100;
+
+			int waitCycle = (int)timeoutMs / 100;
 			if (waitCycle < 1) waitCycle = 1;
 
 			tmp = RunningStatus.None;
@@ -318,18 +322,19 @@ namespace ZakThread.Threading
 		/// <returns></returns>
 		protected abstract Boolean RunSingleCycle();
 
-//#if DEBUG
+		//#if DEBUG
 		internal Thread IntThread
 		{
 			get { return _thread; }
 		}
-//#endif
+		//#endif
 
 		public virtual void Dispose()
 		{
 			Terminate(true);
 			ThreadId = 0;
 			ThreadName = null;
+			Thread.Sleep(100);
 			_logger = null;
 			_exceptions.Clear();
 			_thread = null;

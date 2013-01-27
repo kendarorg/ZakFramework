@@ -21,12 +21,12 @@ namespace ZakThread.Threading
 			public Dictionary<Type, bool> RegisteredTypes { get; private set; }
 		}
 
-		private readonly ConcurrentDictionary<string, ThreadDescriptor> _runningThreads;
+		private readonly Dictionary<string, ThreadDescriptor> _runningThreads;
 
 		public ThreadManager(ILogger logger) :
 			this(logger, "ThreadManager")
 		{
-			_runningThreads = new ConcurrentDictionary<string, ThreadDescriptor>();
+			_runningThreads = new Dictionary<string, ThreadDescriptor>();
 			_toElaborate = new List<IMessage>();
 		}
 
@@ -148,21 +148,25 @@ namespace ZakThread.Threading
 			}
 		}
 
+		private bool _terminating = false;
+
 		private void HandleTerminate(InternalMessage internalMessage)
 		{
+			if(_terminating) return;
+			_terminating = true;
 			var force = (bool)internalMessage.Content;
-
+			var toTerminate = new List<ThreadDescriptor>();
+			base.Terminate(force);
 			foreach (var thread in _runningThreads.Values)
 			{
 				if (thread != null)
 				{
-					ThreadDescriptor threadToRemove;
 					_runningThreads[thread.Thread.ThreadName] = null;
-					_runningThreads.TryRemove(thread.Thread.ThreadName, out threadToRemove);
 					thread.Thread.Terminate(force);
 				}
 			}
-			base.Terminate(force);
+			_runningThreads.Clear();
+			_terminating = false;
 		}
 
 		private void HandleRemoveThread(InternalMessage internalMessage)
@@ -174,9 +178,10 @@ namespace ZakThread.Threading
 				{
 					var thread = _runningThreads[th.ThreadName];
 					_runningThreads[th.ThreadName] = null;
-					ThreadDescriptor outThread;
-					_runningThreads.TryRemove(th.ThreadName, out outThread);
+					/*ThreadDescriptor outThread;
+					_runningThreads.TryRemove(th.ThreadName, out outThread);*/
 					thread.Thread.Terminate(th.ForceHalt);
+					_runningThreads.Remove(th.ThreadName);
 				}
 			}
 		}

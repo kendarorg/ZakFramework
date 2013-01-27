@@ -41,7 +41,12 @@ namespace ZakThread.Test.Threading.Simple
 				SendMessage(msg);
 			}
 			if (ReceiveAStopMessage) return false;
-			if (ThrowExceptionOnMessageHandling != null) throw ThrowExceptionOnMessageHandling;
+			if (ThrowExceptionOnMessageHandling != null)
+			{
+				var throwing = ThrowExceptionOnMessageHandling;
+				ThrowExceptionOnMessageHandling = null;
+				throw throwing;
+			}
 			return true;
 		}
 

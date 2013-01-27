@@ -231,6 +231,7 @@ namespace ZakThread.Test.Threading
 			th.RunThread();
 			Thread.Sleep(100);
 			th.Terminate(true);
+			Thread.Sleep(100);
 
 			Assert.AreEqual(RunningStatus.Aborted, th.Status);
 
@@ -326,7 +327,8 @@ namespace ZakThread.Test.Threading
 			Assert.AreEqual(RunningStatus.Aborted, th.Status);
 			Thread.Sleep(1000);
 
-			Assert.IsNull(th.LastError);
+			var lastError = th.LastError;
+			Assert.IsNull(lastError);
 
 			Assert.IsTrue(th.IsInitialized);
 		}

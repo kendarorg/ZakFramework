@@ -95,7 +95,7 @@ namespace ZakCore.Utils.Collections
 				Interlocked.Exchange(ref destination._count, exchange._count);
 				return true;
 			}
-
+			Console.Write("X");
 			return false;
 		}
 

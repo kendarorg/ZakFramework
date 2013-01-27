@@ -107,7 +107,7 @@ namespace ZakThread.Test.Threading
 			Assert.AreEqual(RunningStatus.ExceptionThrown, th.Status);
 			Exception expectedEx = th.LastError;
 			Assert.IsNotNull(expectedEx);
-			Assert.AreEqual(expectedEx.Message, th.ThrowExceptionOnMessageHandling.Message);
+			Assert.AreEqual(expectedEx.Message, expectedException.Message);
 
 
 			Assert.IsTrue(th.IsInitialized);

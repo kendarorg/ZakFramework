@@ -37,20 +37,20 @@ namespace ZakThread.Test.Threading
 			foreach (var item in subThread)
 			{
 				threadManager.AddThread(item);
-				threadManager.RunThread(item.ThreadName);
+				//threadManager.RunThread(item.ThreadName);
 			}
 			Thread.Sleep(1000);
-			Assert.IsTrue(threadManager.Status == RunningStatus.Running);
+			Assert.AreEqual(RunningStatus.Running, threadManager.Status);
 			foreach (var item in subThread)
 			{
-				Assert.IsTrue(item.Status == RunningStatus.Running);
+				Assert.AreEqual(RunningStatus.Running, item.Status);
 			}
 			threadManager.Terminate();
 			Thread.Sleep(500);
-			Assert.IsTrue(threadManager.Status == RunningStatus.Halted);
+			Assert.AreEqual(RunningStatus.Halted, threadManager.Status);
 			foreach (var item in subThread)
 			{
-				Assert.IsTrue(item.Status == RunningStatus.Halted);
+				Assert.AreEqual(RunningStatus.Halted, item.Status);
 			}
 		}
 
@@ -100,7 +100,7 @@ namespace ZakThread.Test.Threading
 			foreach (var item in subThread)
 			{
 				threadManager.AddThread(item);
-				threadManager.RunThread(item.ThreadName);
+				//threadManager.RunThread(item.ThreadName);
 			}
 			Thread.Sleep(1000);
 			Assert.IsTrue(threadManager.Status == RunningStatus.Running);
@@ -134,23 +134,23 @@ namespace ZakThread.Test.Threading
 			foreach (var item in subThread)
 			{
 				threadManager.AddThread(item);
-				threadManager.RunThread(item.ThreadName);
+				//threadManager.RunThread(item.ThreadName);
 			}
 			Thread.Sleep(1000);
-			Assert.IsTrue(threadManager.Status == RunningStatus.Running);
+			Assert.AreEqual(RunningStatus.Running, threadManager.Status);
 			foreach (var item in subThread)
 			{
-				Assert.IsTrue(item.Status == RunningStatus.Running);
+				Assert.AreEqual(RunningStatus.Running, item.Status);
 				threadManager.RemoveThread(item.ThreadName);
 			}
 			Thread.Sleep(500);
 			foreach (var item in subThread)
 			{
-				Assert.IsTrue(item.Status == RunningStatus.Halted);
+				Assert.AreEqual(RunningStatus.Halted, item.Status);
 			}
 			threadManager.Terminate();
 			Thread.Sleep(500);
-			Assert.IsTrue(threadManager.Status == RunningStatus.Halted);
+			Assert.AreEqual(RunningStatus.Halted, threadManager.Status);
 		}
 
 		[Test]
@@ -167,7 +167,7 @@ namespace ZakThread.Test.Threading
 			foreach (var item in subThread)
 			{
 				threadManager.AddThread(item);
-				threadManager.RunThread(item.ThreadName);
+				//threadManager.RunThread(item.ThreadName);
 			}
 			Thread.Sleep(1000);
 			Assert.IsTrue(threadManager.Status == RunningStatus.Running);
@@ -177,13 +177,13 @@ namespace ZakThread.Test.Threading
 			}
 			((SimpleMessageThreadConsumer)subThread[0]).SendTerminationMessage();
 			Thread.Sleep(500);
+			Assert.IsTrue(threadManager.Status == RunningStatus.Aborted);
 			foreach (var item in subThread)
 			{
-				Assert.IsTrue(item.Status == RunningStatus.Aborted || item.Status == RunningStatus.Halted);
+				Assert.IsTrue(item.Status == RunningStatus.Aborted);
 			}
 			threadManager.Terminate();
 			Thread.Sleep(500);
-			Assert.IsTrue(threadManager.Status == RunningStatus.Halted || threadManager.Status == RunningStatus.Aborted);
 		}
 	}
 }
