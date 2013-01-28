@@ -45,6 +45,11 @@ namespace ZakThread.Test.Async.SampleObjects
 				Interlocked.Increment(ref _callsCount);
 			}
 		}
+
+		protected override bool HandleMessage(ZakThread.Threading.IMessage msg)
+		{
+			return true;
+		}
 	}
 }
 

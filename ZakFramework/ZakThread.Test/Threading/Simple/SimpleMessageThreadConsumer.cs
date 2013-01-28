@@ -103,5 +103,10 @@ namespace ZakThread.Test.Threading.Simple
 			if (ThrowExceptionOnCleanUp != null) throw ThrowExceptionOnCleanUp;
 			IsCleanedUp = true;
 		}
+
+		internal void SetMaxMessagePerCycle(int p)
+		{
+			MaxMesssagesPerCycle = p;
+		}
 	}
 }

@@ -78,7 +78,8 @@ namespace ZakThread.Test.Threading
 		[Test]
 		public void ItShouldBePossibleToRegisterAMessageFromAChildThreadAutomatically()
 		{
-			var subThread = new MessageThread(true,NullLogger.Create(),"SUBTHREAD");
+			var subThread = new MessageThread(true, NullLogger.Create(), "SUBTHREAD"); ;
+			subThread.SetMaxMessagePerCycle(1);
 			var subThread2 = new MessageThread(false,NullLogger.Create(), "SUBTHREAD2");
 			var threadManager = new ThreadManager(NullLogger.Create());
 			var privateObject = new PrivateObject(threadManager);

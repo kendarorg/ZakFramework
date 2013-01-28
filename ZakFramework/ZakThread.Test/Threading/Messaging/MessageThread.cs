@@ -67,5 +67,10 @@ namespace ZakThread.Test.Threading.Messaging
 				RegisterMessage(typeof(TestMessage));
 			}
 		}
+
+		internal void SetMaxMessagePerCycle(int p)
+		{
+			MaxMesssagesPerCycle = p;
+		}
 	}
 }

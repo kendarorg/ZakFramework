@@ -37,6 +37,8 @@ namespace ZakThread.Async
 			}
 			_autoResetEvent.Reset();
 			_timeoutMs = timeoutMs == 0 ? -1 : timeoutMs;
+			Id = Guid.NewGuid();
+			TimeStamp = DateTime.UtcNow;
 		}
 
 		public BaseRequestObject Content { get { return _requestObject; } }
@@ -47,7 +49,7 @@ namespace ZakThread.Async
 
 		public object Clone()
 		{
-			return this;
+			throw new NotSupportedException("RequestObjectMessage not available");
 		}
 
 		public void SetCompleted(long batchId = -1)

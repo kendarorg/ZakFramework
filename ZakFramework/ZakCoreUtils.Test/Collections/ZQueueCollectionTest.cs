@@ -55,7 +55,23 @@ namespace ZakCoreUtils.Test.Collections
 			Assert.IsNull(lfq.DequeueSingle());	
 		}
 
+		[Test]
+		public void ItShouldBePossibleToEnqueuAndDequeuNonNullableElements()
+		{
+			var lfq = new LockFreeQueue<int>();
+			var lele = new List<int>();
+			for (int i = 0; i < ENQUEUED_DATA; i++)
+			{
+				lele.Add(i);
+			}
+			lfq.Enqueue(lele);
+			Assert.AreEqual(0, lfq.DequeueSingle());
+			lfq.Clear();
+			Assert.AreEqual(0,lfq.Count);
+			Assert.AreEqual(0,lfq.DequeueSingle());
+		}
 
 		protected const int ENQUEUED_DATA = 10;
 	}
+
 }
