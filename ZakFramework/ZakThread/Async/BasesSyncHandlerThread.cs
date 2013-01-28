@@ -22,11 +22,21 @@ namespace ZakThread.Async
 			base(logger, threadName, restartOnError)
 		{
 			_batchId = 0;
-			BatchTimeoutMs = 0;
+			BatchTimeoutMs = -1;
 			BatchSize = 1;
 		}
 
-		public int BatchTimeoutMs { get; protected set; }
+		private int _batchTimeoutMs;
+
+		public int BatchTimeoutMs
+		{
+			get { return _batchTimeoutMs; }
+			protected set
+			{
+				if (value == 1 || value == 0) _batchTimeoutMs = 2;
+				else _batchTimeoutMs = value;
+			}
+		}
 
 		public int BatchSize
 		{
@@ -34,9 +44,9 @@ namespace ZakThread.Async
 			protected set
 			{
 				_batchSize = value <= 0 ? 1 : value;
-				if (BatchTimeoutMs == 0)
+				if (BatchTimeoutMs == -1)
 				{
-					BatchTimeoutMs = 100;
+					BatchTimeoutMs = 10;
 				}
 				if (BatchSize > 1)
 				{
@@ -115,28 +125,28 @@ namespace ZakThread.Async
 			{
 				if (_batchExecuted.Count > 0)
 				{
-					if (_batchTimeout.ElapsedMilliseconds > BatchTimeoutMs || _batchExecuted.Count >= BatchSize)
+					//if (_batchTimeout.ElapsedMilliseconds > BatchTimeoutMs || _batchExecuted.Count >= BatchSize)
 					{
 						_batchTimeout.Stop();
-						var ms = _batchTimeout.ElapsedMilliseconds;
-						var sz = _batchExecuted.Count;
-						Debug.WriteLine("");
-						Debug.WriteLine(DateTime.Now + " Ms " + ms + " Sz " + sz);
-						Debug.WriteLine("");
+						//var ms = _batchTimeout.ElapsedMilliseconds;
+						//var sz = _batchExecuted.Count;
+						//Debug.WriteLine("");
+						//Debug.WriteLine(DateTime.Now + " Ms " + ms + " Sz " + sz);
+						//Debug.WriteLine("");
 						HandleBatchCompleted(_batchExecuted);
-						var be = _batchExecuted;
+						//var be = _batchExecuted;
 						//Task.Factory.StartNew(() =>
+						//{
+							var item = _batchExecuted.Dequeue();
+							while (item != null)
 							{
-								var item = _batchExecuted.Dequeue();
-								while (item!=null)
-								{
-									
-									item.SetCompleted(_batchId);
-									item = _batchExecuted.Dequeue();
-								}
+
+								item.SetCompleted(_batchId);
+								item = _batchExecuted.Count > 0 ? _batchExecuted.Dequeue() : null;
 							}
-							//);
-						
+						//}
+						//);
+
 						_batchExecuted = new Queue<RequestObjectMessage>();
 						Interlocked.Increment(ref _batchId);
 						_batchTimeout.Reset();

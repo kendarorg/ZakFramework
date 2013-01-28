@@ -6,6 +6,7 @@ using ZakThread.Test.Async.SampleObjects;
 
 namespace ZakThread.Test.Async
 {
+#if NOPE
 	[TestFixture]
 	public class AsyncHandlerTest
 	{
@@ -125,4 +126,5 @@ namespace ZakThread.Test.Async
 			callsHandler.Terminate();
 		}
 	}
+#endif
 }

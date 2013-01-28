@@ -52,7 +52,7 @@ namespace ZakThread.Test.Threading.Simple
 			}
 			if (ThrowThreadAbortException)
 			{
-				Thread.Sleep(10000);
+				Thread.Sleep(100);
 			}
 
 			Thread.Sleep(_sleepTime);

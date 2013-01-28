@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading;
 using ZakCore.Utils.Logging;
 using ZakThread.Threading.Enums;
 using ZakThread.Threading.ThreadManagerInternals;
-using System.Collections.Concurrent;
 
 namespace ZakThread.Threading
 {
@@ -21,7 +19,7 @@ namespace ZakThread.Threading
 			public Dictionary<Type, bool> RegisteredTypes { get; private set; }
 		}
 
-		private readonly Dictionary<string, ThreadDescriptor> _runningThreads;
+		private Dictionary<string, ThreadDescriptor> _runningThreads;
 
 		public ThreadManager(ILogger logger) :
 			this(logger, "ThreadManager")
@@ -36,9 +34,9 @@ namespace ZakThread.Threading
 			RegisterMessages();
 		}
 
-		protected List<IMessage> _toElaborate;
+		private readonly List<IMessage> _toElaborate;
 
-		protected override bool CyclicExecution()
+		protected override bool RunMessagesPump()
 		{
 			_toElaborate.Clear();
 			IMessage msg;
@@ -50,37 +48,15 @@ namespace ZakThread.Threading
 				}
 				_toElaborate.Add(msg);
 			}
-			return base.CyclicExecution();
+			return true;
 		}
 
 		protected override bool RunSingleCycle()
 		{
-			var retrievedMessages = PeekAllMessages();
-			ElaborateAllMessages(retrievedMessages);
+			ElaborateAllMessages();
 			return true;
 		}
 
-		private List<IMessage> PeekAllMessages()
-		{
-			var retrievedMessages = new List<IMessage>();
-
-			foreach (var thread in _runningThreads.Values)
-			{
-				if (thread != null)
-				{
-					foreach (var msg in thread.Thread.PeekMessagesFromThread())
-					{
-						if (msg is InternalMessage)
-						{
-							HandleMessageInternal((IMessage)msg.Clone());
-						}
-						retrievedMessages.Add(msg);
-					}
-				}
-			}
-			retrievedMessages.AddRange(_toElaborate);
-			return retrievedMessages;
-		}
 
 		public void AddThread(IBaseMessageThread messageThread)
 		{
@@ -148,29 +124,34 @@ namespace ZakThread.Threading
 			}
 		}
 
-		private bool _terminating = false;
+		private bool _terminating;
 
 		private void HandleTerminate(InternalMessage internalMessage)
 		{
-			if(_terminating) return;
+			if (_terminating) return;
 			_terminating = true;
 			var force = (bool)internalMessage.Content;
-			var toTerminate = new List<ThreadDescriptor>();
-			base.Terminate(force);
+			var thrs = new List<ThreadDescriptor>();
 			foreach (var thread in _runningThreads.Values)
+			{
+				thrs.Add(thread);
+			}
+			_runningThreads = new Dictionary<string, ThreadDescriptor>();
+			foreach (var thread in thrs)
 			{
 				if (thread != null)
 				{
-					_runningThreads[thread.Thread.ThreadName] = null;
 					thread.Thread.Terminate(force);
 				}
 			}
-			_runningThreads.Clear();
 			_terminating = false;
+			base.Terminate(force);
 		}
 
 		private void HandleRemoveThread(InternalMessage internalMessage)
 		{
+			if (_terminating) return;
+
 			var th = internalMessage.Content as RemoveThreadContent;
 			if (th != null)
 			{
@@ -239,22 +220,23 @@ namespace ZakThread.Threading
 
 		public bool IsTypeRegistered(string threadName, Type messageType)
 		{
+			var toret = false;
 			if (_runningThreads.ContainsKey(threadName.ToUpper()))
 			{
 				ThreadDescriptor td;
 				if (_runningThreads.TryGetValue(threadName, out td))
 				{
-					return td.RegisteredTypes.ContainsKey(messageType);
+					toret = td.RegisteredTypes.ContainsKey(messageType);
 				}
 			}
-			return false;
+			return toret;
 		}
 
-		private void ElaborateAllMessages(List<IMessage> retrievedMessages)
+		private void ElaborateAllMessages()
 		{
-			if (retrievedMessages.Count == 0) return;
+			if (_toElaborate.Count == 0) return;
 
-			foreach (var message in retrievedMessages)
+			foreach (var message in _toElaborate)
 			{
 				foreach (var thread in _runningThreads.Values)
 				{

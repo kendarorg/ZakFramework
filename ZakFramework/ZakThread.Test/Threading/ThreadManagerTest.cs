@@ -81,7 +81,9 @@ namespace ZakThread.Test.Threading
 			Assert.IsTrue(threadManager.Status == RunningStatus.Aborted);
 			foreach (var item in subThread)
 			{
-				Assert.IsTrue(item.Status == RunningStatus.Aborted || item.Status == RunningStatus.Halted);
+				Assert.IsTrue(item.Status == RunningStatus.AbortedOnCleanup || 
+					item.Status == RunningStatus.Aborted || 
+					item.Status == RunningStatus.Halted);
 			}
 		}
 
@@ -112,7 +114,7 @@ namespace ZakThread.Test.Threading
 			Thread.Sleep(500);
 			foreach (var item in subThread)
 			{
-				Assert.IsTrue(item.Status == RunningStatus.Halted);
+				Assert.IsTrue(item.Status == RunningStatus.Halted || item.Status == RunningStatus.Halting);
 			}
 			threadManager.Terminate();
 			Thread.Sleep(500);

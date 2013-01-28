@@ -90,8 +90,11 @@ namespace ZakTestUtils
 			if (infinte)
 			{
 				int i = 0;
+				var sw = new Stopwatch();
+				sw.Start();
 				while (true)
 				{
+					long start = sw.ElapsedMilliseconds;
 					var ea = new TestThreadsEventArgs
 					{
 						CurrentCycle = i,
@@ -101,8 +104,8 @@ namespace ZakTestUtils
 					};
 					_toExecute(this, ea);
 					i++;
-					Thread.Sleep(0);
-					if (i%10 == 0) Thread.Yield();
+					if(sw.ElapsedMilliseconds<2) Thread.Sleep(2);
+					else Thread.Sleep(1);
 				}
 			}
 			for (int i = from; i < to; i++)
@@ -118,16 +121,13 @@ namespace ZakTestUtils
 					};
 					_toExecute(this, ea);
 					Results.Enqueue(ea.Result);
+					Thread.Sleep(1);
 				}
 				catch (Exception ex)
 				{
 					Exceptions.Enqueue(ex);
 				}
 				CyclesCounter.Increment();
-				if (i%10 == 0)
-				{
-					Thread.Yield();
-				}
 			}
 			Interlocked.Decrement(ref _runningThreads);
 		}

@@ -20,12 +20,18 @@ namespace ZakThread.Threading
 			_outgoingMessages = new LockFreeQueue<IMessage>();
 			MaxMesssagesPerCycle = -1;
 		}
-
+		
 		protected override bool CyclicExecution()
+		{
+			if (!RunMessagesPump()) return false;
+			return base.CyclicExecution();
+		}
+
+		protected virtual bool RunMessagesPump()
 		{
 			IMessage msg;
 			int messagesPerCycle = 0;
-			while ((msg = PeekMessage())!=null)
+			while ((msg = PeekMessage()) != null)
 			{
 				if (!HandleMessageInternal(msg)) return false;
 				messagesPerCycle++;
@@ -34,8 +40,7 @@ namespace ZakThread.Threading
 					break;
 				}
 			}
-			
-			return base.CyclicExecution();
+			return true;
 		}
 
 		internal virtual bool HandleMessageInternal(IMessage msg)
@@ -47,7 +52,14 @@ namespace ZakThread.Threading
 
 		protected void SendMessage(IMessage msg)
 		{
-			_outgoingMessages.Enqueue(msg);
+			if (Manager != null)
+			{
+				Manager.SendMessageToThread(msg);
+			}
+			else
+			{
+				_outgoingMessages.Enqueue(msg);
+			}
 		}
 
 		public void SendMessageToThread(IMessage msg)
@@ -62,11 +74,13 @@ namespace ZakThread.Threading
 
 		public IMessage PeekMessageFromThread()
 		{
+			if (Manager != null) throw new NotSupportedException();
 			return _outgoingMessages.DequeueSingle();
 		}
 
 		public IEnumerable<IMessage> PeekMessagesFromThread()
 		{
+			if (Manager != null) throw new NotSupportedException();
 			return _outgoingMessages.Dequeue();
 		}
 
@@ -90,8 +104,11 @@ namespace ZakThread.Threading
 
 		protected void RegisterMessage(Type messageTypeToRegister)
 		{
-			Manager.SendMessageToThread(new InternalMessage(InternalMessageTypes.RegisterMessageType,
+			if (Manager!=null)
+			{
+				Manager.SendMessageToThread(new InternalMessage(InternalMessageTypes.RegisterMessageType,
 																							messageTypeToRegister){SourceThread = ThreadName});
+			}
 		}
 	}
 }

@@ -8,7 +8,7 @@ namespace ZakCore.Utils.Collections
 	/// Lock free queue implementation
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
-	public class LockFreeQueue<T>
+	public class LockFreeQueue<T> : IQueue<T>
 	{
 		/// <summary>
 		/// Internal queue node
@@ -95,7 +95,7 @@ namespace ZakCore.Utils.Collections
 				Interlocked.Exchange(ref destination._count, exchange._count);
 				return true;
 			}
-			Console.Write("X");
+			//Console.Write("X");
 			return false;
 		}
 

@@ -1,0 +1,4 @@
+﻿BaseMessageThread.maxmessagepercycle
+BasesSyncHandlerThread ->standard messages handling+running inside a thread manager
+RequestObjectMessage -> Usage of id,timestamp, clone
+RequestObjectMessage ->Timeout exception

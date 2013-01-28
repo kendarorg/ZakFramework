@@ -60,7 +60,7 @@ namespace ZakThread.Async
 
 		public void Wait()
 		{
-			if (!_autoResetEvent.Wait(_timeoutMs))
+			if (_autoResetEvent!=null && !_autoResetEvent.Wait(_timeoutMs))
 			{
 				throw new TimeoutException(string.Format("Timeout waiting for answers expired ({0} ms)", _timeoutMs));
 			}

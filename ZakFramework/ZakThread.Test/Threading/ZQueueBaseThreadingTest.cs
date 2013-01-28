@@ -39,13 +39,15 @@ namespace ZakThread.Test.Threading
 			Thread.Sleep(100);
 
 			Assert.AreEqual(1, BaseThread.ThreadCounter);
-
 			Assert.AreEqual(RunningStatus.Running, th.Status);
-
+			Assert.IsTrue(th.CyclesRun > 0);
 			th.Terminate();
 			Thread.Sleep(200);
 
 			Assert.AreEqual(RunningStatus.Halted, th.Status);
+			var runs = th.CyclesRun;
+			Thread.Sleep(100);
+			Assert.AreEqual(runs,th.CyclesRun);
 			Assert.IsNull(th.LastError);
 
 			Assert.IsTrue(th.IsInitialized);
@@ -279,18 +281,17 @@ namespace ZakThread.Test.Threading
 		[Test]
 		public void ItShouldBePossibleToBlockAThreadWaitingForASpecificTimeout()
 		{
-			const int sleepTime = 500;
+			const int sleepTime = 50000;
 			const string testName = "TestThread";
 			var th = new SimpleThread(sleepTime, testName) { ThrowThreadAbortException = true };
 
 			th.RunThread();
 			Thread.Sleep(100);
-			th.Terminate();
 			TimeoutException exceptionThrown = null;
 			try
 			{
 				th.Terminate();
-				th.WaitTermination(100);
+				th.WaitTermination(10);
 			}
 			catch (TimeoutException ex)
 			{

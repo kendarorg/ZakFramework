@@ -37,7 +37,6 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Async\BaseRequestObject.cs" />
-    <Compile Include="SimpleResetEvent.cs" />
     <Compile Include="Threading\Enums\QueryOperation.cs" />
     <Compile Include="Threading\Enums\RunningStatus.cs" />
     <Compile Include="Threading\IBaseMessageThread.cs" />
