@@ -11,11 +11,11 @@ namespace ZakThread.Async
 	/// <summary>
 	/// Base class to run tasks synchronously
 	/// </summary>
-	public abstract class BaseSyncHandlerThread : MainHandler
+	public abstract class BaseAsyncHandlerThread : MainHandler
 	{
 		private Queue<RequestObjectMessage> _batchExecuted;
 
-		protected BaseSyncHandlerThread(ILogger logger, string threadName, bool restartOnError = true) :
+		protected BaseAsyncHandlerThread(ILogger logger, string threadName, bool restartOnError = true) :
 			base(logger, threadName, restartOnError)
 		{
 			_batchExecuted = new Queue<RequestObjectMessage>();

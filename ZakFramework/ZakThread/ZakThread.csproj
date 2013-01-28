@@ -35,8 +35,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Async\BaseAsyncHandlerThread.cs" />
-    <Compile Include="Async\BasesSyncHandlerThread.cs" />
+    <Compile Include="Async\BasesAsyncHandlerThread.cs" />
     <Compile Include="Async\MainHandler.cs" />
     <Compile Include="Logging\FileLogger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

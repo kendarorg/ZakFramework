@@ -6,7 +6,7 @@ using ZakThread.Test.Threading.Simple;
 
 namespace ZakThread.Test.Async.SampleObjects
 {
-	class SyncTaskHandlerWithMessageRegistration : SampleSyncTasksHandler
+	class SyncTaskHandlerWithMessageRegistration : SampleAsyncTasksHandler
 	{
 		public SyncTaskHandlerWithMessageRegistration(string threadName, int waitTimeMs,
 		int batchSize = 0, int batchTimeoutMs = 0) :

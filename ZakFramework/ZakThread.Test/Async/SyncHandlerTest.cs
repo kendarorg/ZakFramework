@@ -68,7 +68,7 @@ namespace ZakThread.Test.Async
 			_successful = new CounterContainer();
 			_threadCalls = new CounterContainer();
 
-			var callsHandler = new SampleSyncTasksHandler("TEST", waitTimeMs);
+			var callsHandler = new SampleAsyncTasksHandler("TEST", waitTimeMs);
 			callsHandler.RunThread();
 			Thread.Sleep(100);
 
@@ -104,7 +104,7 @@ namespace ZakThread.Test.Async
 			_successful = new CounterContainer();
 			_threadCalls = new CounterContainer();
 
-			var callsHandler = new SampleSyncTasksHandler("TEST", waitTimeMs);
+			var callsHandler = new SampleAsyncTasksHandler("TEST", waitTimeMs);
 			callsHandler.RunThread();
 			Thread.Sleep(100);
 
@@ -142,7 +142,7 @@ namespace ZakThread.Test.Async
 			_counter = new CounterContainer();
 			_successful = new CounterContainer();
 			_threadCalls = new CounterContainer();
-			var callsHandler = new SampleSyncTasksHandler("TEST", waitTimeMs);
+			var callsHandler = new SampleAsyncTasksHandler("TEST", waitTimeMs);
 			callsHandler.RunThread();
 			Thread.Sleep(100);
 			var testThread = new TestThreads(false, DoFireAndForget, MAX_DEGREE_OF_PARALLELISM);
@@ -178,7 +178,7 @@ namespace ZakThread.Test.Async
 			_counter = new CounterContainer();
 			_successful = new CounterContainer();
 			_threadCalls = new CounterContainer();
-			var callsHandler = new SampleSyncTasksHandler("TEST", waitTimeMs, batchSize, batchTimeoutMs);
+			var callsHandler = new SampleAsyncTasksHandler("TEST", waitTimeMs, batchSize, batchTimeoutMs);
 			callsHandler.RunThread();
 			Thread.Sleep(100);
 			var testThread = new TestThreads(false, DoRequestAndWait, MAX_DEGREE_OF_PARALLELISM);
@@ -219,7 +219,7 @@ namespace ZakThread.Test.Async
 			_counter = new CounterContainer();
 			_successful = new CounterContainer();
 			_threadCalls = new CounterContainer();
-			var callsHandler = new SampleSyncTasksHandler("TEST", waitTimeMs, batchSize, batchTimeoutMs);
+			var callsHandler = new SampleAsyncTasksHandler("TEST", waitTimeMs, batchSize, batchTimeoutMs);
 			callsHandler.RunThread();
 			Thread.Sleep(100);
 			var testThread = new TestThreads(false, DoFireAndForget, MAX_DEGREE_OF_PARALLELISM);
@@ -256,7 +256,7 @@ namespace ZakThread.Test.Async
 			_counter = new CounterContainer();
 			_successful = new CounterContainer();
 			_threadCalls = new CounterContainer();
-			var callsHandler = new SampleSyncTasksHandler("TEST", waitTimeMs, batchSize, batchTimeoutMs);
+			var callsHandler = new SampleAsyncTasksHandler("TEST", waitTimeMs, batchSize, batchTimeoutMs);
 			callsHandler.RunThread();
 			Thread.Sleep(100);
 			var testThread = new TestThreads(false, DoRequestAndWait, MAX_DEGREE_OF_PARALLELISM);
@@ -292,7 +292,7 @@ namespace ZakThread.Test.Async
 			_counter = new CounterContainer();
 			_successful = new CounterContainer();
 			_threadCalls = new CounterContainer();
-			var callsHandler = new SampleSyncTasksHandler("TEST", waitTimeMs, batchSize, batchTimeoutMs);
+			var callsHandler = new SampleAsyncTasksHandler("TEST", waitTimeMs, batchSize, batchTimeoutMs);
 			callsHandler.RunThread();
 			Thread.Sleep(100);
 			var testThread = new TestThreads(false, DoFireAndForget, MAX_DEGREE_OF_PARALLELISM);

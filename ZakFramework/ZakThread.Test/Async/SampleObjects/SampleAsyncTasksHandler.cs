@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
-using System.Threading.Tasks;
 using ZakCore.Utils.Logging;
 using ZakThread.Async;
+using System;
 using System.Diagnostics;
 
 namespace ZakThread.Test.Async.SampleObjects
@@ -52,3 +52,4 @@ namespace ZakThread.Test.Async.SampleObjects
 		}
 	}
 }
+
