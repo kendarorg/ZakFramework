@@ -1,129 +1,316 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using ZakThread.Test.Async.SampleObjects;
+using ZakTestUtils;
+using ZakThread.Async;
 
 namespace ZakThread.Test.Async
 {
-#if NOPE
+#if NOT_YET_READY
 	[TestFixture]
 	public class AsyncHandlerTest
 	{
-		public ParallelOptions TaskOptions = new ParallelOptions {MaxDegreeOfParallelism = -1};
+		private const int MAX_DEGREE_OF_PARALLELISM = 8;
+		private const int MESSAGES_MULTIPLIER = 1000;
+		private const int BATCH_SIZE_DIVISOR = 10;
+		private const int NUMBER_OF_MESSAGES = MESSAGES_MULTIPLIER * MAX_DEGREE_OF_PARALLELISM;
+		private const int BATCH_SIZE = NUMBER_OF_MESSAGES / BATCH_SIZE_DIVISOR;
+		private CounterContainer _counter;
+		private CounterContainer _successful;
+		private CounterContainer _threadCalls;
+
+		public void DoFireAndForget(object sender, TestThreads.TestThreadsEventArgs args)
+		{
+			_threadCalls.Increment();
+			var callsHandler = (ITasksHandlerThread)args.Param;
+			var sw = new Stopwatch();
+			sw.Start();
+			var requestObject = new RequestObject(args.CurrentCycle);
+			callsHandler.FireAndForget(requestObject, 1000);
+
+			sw.Stop();
+		}
+
+		public void DoRequestAndWaitTimeout(object sender, TestThreads.TestThreadsEventArgs args)
+		{
+			_threadCalls.Increment();
+			var callsHandler = (ITasksHandlerThread)args.Param;
+			var sw = new Stopwatch();
+			sw.Start();
+			var requestObject = new RequestObject(args.CurrentCycle);
+			sw.Stop();
+			_counter.Add(callsHandler.DoRequestAndWait(requestObject, 2));
+
+			if (args.CurrentCycle == -requestObject.GetReturnAs<long>()) _successful.Increment();
+		}
+
+		public void DoRequestAndWait(object sender, TestThreads.TestThreadsEventArgs args)
+		{
+			_threadCalls.Increment();
+			var callsHandler = (ITasksHandlerThread)args.Param;
+			var sw = new Stopwatch();
+			sw.Start();
+			var requestObject = new RequestObject(args.CurrentCycle);
+			sw.Stop();
+			_counter.Add(callsHandler.DoRequestAndWait(requestObject, 1000));
+
+			if (args.CurrentCycle == -requestObject.GetReturnAs<long>()) _successful.Increment();
+		}
+
 		[Test]
 		public void ItShouldBePossibleToRunTasksInParallelDelegatingThemToTheThread()
 		{
-			const int iterations = 100;
-			const int waitTimeMs = 10;
-			int cores = Environment.ProcessorCount;
-			var counter = new CounterContainer();
-			var successful = new CounterContainer();
-			var callsHandler = new SampleAsyncTasksHandler("TEST", waitTimeMs, TaskOptions);
+			const int iterations = NUMBER_OF_MESSAGES;
+			const int waitTimeMs = 0;
+			_counter = new CounterContainer();
+			_successful = new CounterContainer();
+			_threadCalls = new CounterContainer();
+
+			var callsHandler = new SampleAsyncTasksHandler("TEST", waitTimeMs);
 			callsHandler.RunThread();
 			Thread.Sleep(100);
-			var parallelOptions = new ParallelOptions
-				{
-					MaxDegreeOfParallelism = cores
-				};
 
-			Parallel.For((long) 0, iterations, parallelOptions, (i) =>
+			var testThread = new TestThreads(false, DoRequestAndWait, MAX_DEGREE_OF_PARALLELISM);
+			var initTime = testThread.RunParallel(iterations, callsHandler);
+			var sw = new Stopwatch();
+			sw.Start();
+			while ((sw.ElapsedMilliseconds + initTime) < waitTimeMs * iterations * 3 || !testThread.IsFinished)
 			{
-				try
-				{
-					var requestObject = new RequestObject(i);
-					counter.Add(callsHandler.DoRequestAndWait(requestObject,1000));
-					if(i==-requestObject.GetReturnAs<long>()) successful.Increment();
-				}
-				catch(TimeoutException exception)
-				{
-					Console.WriteLine(exception);
-				}
-			});
+				if (testThread.IsFinished && initTime == 0) initTime = sw.ElapsedMilliseconds;
+				if (iterations == callsHandler.CallsCount) break;
+				Thread.Sleep(10);
+			}
+			sw.Stop();
+			Debug.WriteLine("");
+			Debug.WriteLine("a Init time " + initTime);
+			Debug.WriteLine("a Run time " + sw.ElapsedMilliseconds);
+			Debug.WriteLine("");
+			Assert.AreEqual(iterations, _threadCalls.Counter);
+			Assert.AreEqual(iterations, testThread.CyclesCounter.Counter);
+			Assert.AreEqual(iterations, callsHandler.CallsCount);
+			Assert.AreEqual(iterations, _successful.Counter);
+			callsHandler.Terminate();
+			testThread.Terminate();
+		}
 
-			Thread.Sleep((waitTimeMs * iterations) / cores);
-			Assert.AreEqual(iterations,successful.Counter);
+		[Test]
+		public void ItShouldBePossibleToRunTasksInParallelWithTimeouts()
+		{
+			const int iterations = 10;
+			const int waitTimeMs = 100;
+			_counter = new CounterContainer();
+			_successful = new CounterContainer();
+			_threadCalls = new CounterContainer();
+
+			var callsHandler = new SampleAsyncTasksHandler("TEST", waitTimeMs);
+			callsHandler.RunThread();
+			Thread.Sleep(100);
+
+			var testThread = new TestThreads(false, DoRequestAndWaitTimeout, 2);
+			var initTime = testThread.RunParallel(iterations, callsHandler);
+			var sw = new Stopwatch();
+			sw.Start();
+			while ((sw.ElapsedMilliseconds + initTime) < waitTimeMs * iterations * 3 || !testThread.IsFinished)
+			{
+				if (testThread.IsFinished && initTime == 0) initTime = sw.ElapsedMilliseconds;
+				if (iterations == callsHandler.CallsCount) break;
+				Thread.Sleep(10);
+			}
+			sw.Stop();
+			Debug.WriteLine("");
+			Debug.WriteLine("a Init time " + initTime);
+			Debug.WriteLine("a Run time " + sw.ElapsedMilliseconds);
+			Debug.WriteLine("");
+			Assert.AreEqual(iterations, _threadCalls.Counter);
+			Assert.AreEqual(iterations, testThread.CyclesCounter.Counter);
+			Assert.AreEqual(iterations, callsHandler.CallsCount);
+			Assert.AreNotEqual(iterations, _successful.Counter);
+			var errorsAndSuccesses = testThread.Exceptions.Count + _successful.Counter;
+			Assert.AreEqual(iterations, errorsAndSuccesses);
+			callsHandler.Terminate();
+			testThread.Terminate();
+		}
+
+		[Test]
+		public void ItShouldBePossibleToRunTasksInParallelDelegatingThemToTheThreadWithFireAndForget()
+		{
+			const int iterations = NUMBER_OF_MESSAGES;
+			const int waitTimeMs = 0;
+			int cores = Environment.ProcessorCount;
+			_counter = new CounterContainer();
+			_successful = new CounterContainer();
+			_threadCalls = new CounterContainer();
+			var callsHandler = new SampleAsyncTasksHandler("TEST", waitTimeMs);
+			callsHandler.RunThread();
+			Thread.Sleep(100);
+			var testThread = new TestThreads(false, DoFireAndForget, MAX_DEGREE_OF_PARALLELISM);
+			var initTime = testThread.RunParallel(iterations, callsHandler);
+			var sw = new Stopwatch();
+			sw.Start();
+			while ((sw.ElapsedMilliseconds + initTime) < waitTimeMs * iterations * 3 || !testThread.IsFinished)
+			{
+				if (testThread.IsFinished && initTime == 0) initTime = sw.ElapsedMilliseconds;
+				if (iterations == callsHandler.CallsCount) break;
+				Thread.Sleep(10);
+			}
+			sw.Stop();
+			Debug.WriteLine("");
+			Debug.WriteLine("b Init time " + initTime);
+			Debug.WriteLine("b Run time " + sw.ElapsedMilliseconds);
+			Debug.WriteLine("");
+			Assert.AreEqual(iterations, _threadCalls.Counter);
 			Assert.AreEqual(iterations, callsHandler.CallsCount);
 			callsHandler.Terminate();
+			testThread.Terminate();
 		}
 
 		[Test]
 		public void ItShouldBePossibleToRunTasksInBatchCheckingBatchSize()
 		{
-			const int iterations = 100;
-			const int waitTimeMs = 1;
-			const int batchSize = 10;
-			const int batchTimeoutMs = 10;
+			const int iterations = NUMBER_OF_MESSAGES;
+			const int waitTimeMs = 0;
+			const int batchSize = 100;
+			const int batchTimeoutMs = 1000;
 
 			int cores = Environment.ProcessorCount;
-			var counter = new CounterContainer();
-			var successful = new CounterContainer();
-			var callsHandler = new SampleAsyncTasksHandler("TEST", waitTimeMs, TaskOptions, batchSize, batchTimeoutMs);
+			_counter = new CounterContainer();
+			_successful = new CounterContainer();
+			_threadCalls = new CounterContainer();
+			var callsHandler = new SampleAsyncTasksHandler("TEST", waitTimeMs, batchSize, batchTimeoutMs);
 			callsHandler.RunThread();
 			Thread.Sleep(100);
-			var parallelOptions = new ParallelOptions
-			{
-				MaxDegreeOfParallelism = -1
-			};
+			var testThread = new TestThreads(false, DoRequestAndWait, MAX_DEGREE_OF_PARALLELISM);
+			var initTime = testThread.RunParallel(iterations, callsHandler);
 
-			Parallel.For((long)0, iterations, parallelOptions, (i) =>
+			var sw = new Stopwatch();
+			sw.Start();
+			while ((sw.ElapsedMilliseconds + initTime) < waitTimeMs * iterations * 3 || !testThread.IsFinished)
 			{
-				try
+				if (testThread.IsFinished && initTime == 0) initTime = sw.ElapsedMilliseconds;
+				if (iterations == _successful.Counter && iterations == callsHandler.CallsCount && testThread.IsFinished)
 				{
-					var requestObject = new RequestObject(i);
-					counter.Add(callsHandler.DoRequestAndWait(requestObject,1000));
-					if (i == -requestObject.GetReturnAs<long>()) successful.Increment();
+					break;
 				}
-				catch (TimeoutException exception)
-				{
-					Console.WriteLine(exception);
-				}
-			});
-
-			Thread.Sleep((waitTimeMs * iterations) / cores);
-			Assert.AreEqual(iterations, successful.Counter);
+				Thread.Sleep(100);
+			}
+			sw.Stop();
+			Debug.WriteLine("");
+			Debug.WriteLine("c Init time " + initTime);
+			Debug.WriteLine("c Run time " + sw.ElapsedMilliseconds);
+			Debug.WriteLine("");
+			Assert.AreEqual(iterations, _threadCalls.Counter);
+			Assert.AreEqual(iterations, _successful.Counter);
 			Assert.AreEqual(iterations, callsHandler.CallsCount);
 			callsHandler.Terminate();
+			testThread.Terminate();
+		}
+
+		[Test]
+		public void ItShouldBePossibleToRunTasksInBatchCheckingBatchSizeWithFireAndForget()
+		{
+			const int iterations = NUMBER_OF_MESSAGES;
+			const int waitTimeMs = 2;
+			const int batchSize = 4;
+			const int batchTimeoutMs = 1000;
+
+			int cores = Environment.ProcessorCount;
+			_counter = new CounterContainer();
+			_successful = new CounterContainer();
+			_threadCalls = new CounterContainer();
+			var callsHandler = new SampleAsyncTasksHandler("TEST", waitTimeMs, batchSize, batchTimeoutMs);
+			callsHandler.RunThread();
+			Thread.Sleep(100);
+			var testThread = new TestThreads(false, DoFireAndForget, MAX_DEGREE_OF_PARALLELISM);
+			testThread.RunParallel(iterations, callsHandler);
+
+			var sw = new Stopwatch();
+			sw.Start();
+			while (sw.ElapsedMilliseconds < waitTimeMs * iterations * 3 || !testThread.IsFinished)
+			{
+				if (iterations == callsHandler.CallsCount) break;
+				Thread.Sleep(100);
+			}
+			sw.Stop();
+
+			Debug.WriteLine("");
+			Debug.WriteLine("d Run time " + sw.ElapsedMilliseconds);
+			Debug.WriteLine("");
+			Assert.AreEqual(iterations, _threadCalls.Counter);
+			Assert.AreEqual(iterations, callsHandler.CallsCount);
+			callsHandler.Terminate();
+			testThread.Terminate();
 		}
 
 
 		[Test]
 		public void ItShouldBePossibleToRunTasksInBatchCheckingTimeout()
 		{
-			const int iterations = 100;
-			const int waitTimeMs = 1;
-			const int batchSize = 100;
+			const int iterations = NUMBER_OF_MESSAGES;
+			const int waitTimeMs = 2;
+			const int batchSize = BATCH_SIZE;
 			const int batchTimeoutMs = 1;
 
 			int cores = Environment.ProcessorCount;
-			var counter = new CounterContainer();
-			var successful = new CounterContainer();
-			var callsHandler = new SampleAsyncTasksHandler("TEST", waitTimeMs, TaskOptions, batchSize, batchTimeoutMs);
+			_counter = new CounterContainer();
+			_successful = new CounterContainer();
+			_threadCalls = new CounterContainer();
+			var callsHandler = new SampleAsyncTasksHandler("TEST", waitTimeMs, batchSize, batchTimeoutMs);
 			callsHandler.RunThread();
 			Thread.Sleep(100);
-			var parallelOptions = new ParallelOptions
-			{
-				MaxDegreeOfParallelism = -1
-			};
+			var testThread = new TestThreads(false, DoRequestAndWait, MAX_DEGREE_OF_PARALLELISM);
+			testThread.RunParallel(iterations, callsHandler);
 
-			Parallel.For((long)0, iterations, parallelOptions, (i) =>
+			var sw = new Stopwatch();
+			sw.Start();
+			while (sw.ElapsedMilliseconds < waitTimeMs * iterations * 3 || !testThread.IsFinished)
 			{
-				try
-				{
-					var requestObject = new RequestObject(i);
-					counter.Add(callsHandler.DoRequestAndWait(requestObject, 1000));
-					if (i == -requestObject.GetReturnAs<long>()) successful.Increment();
-				}
-				catch (TimeoutException exception)
-				{
-					Console.WriteLine(exception);
-				}
-			});
+				if (iterations == _successful.Counter) break;
+				Thread.Sleep(100);
+			}
 
-			Thread.Sleep((waitTimeMs * iterations) / cores);
-			Assert.AreEqual(iterations, successful.Counter);
+			Thread.Sleep(1000);
+			sw.Stop();
+			Assert.AreEqual(iterations, _threadCalls.Counter);
+			Assert.AreEqual(iterations, _successful.Counter);
 			Assert.AreEqual(iterations, callsHandler.CallsCount);
 			callsHandler.Terminate();
+			testThread.Terminate();
+		}
+
+
+		[Test]
+		public void ItShouldBePossibleToRunTasksInBatchCheckingTimeoutFireAndForget()
+		{
+			const int iterations = NUMBER_OF_MESSAGES;
+			const int waitTimeMs = 2;
+			const int batchSize = NUMBER_OF_MESSAGES;
+			const int batchTimeoutMs = 1;
+
+			int cores = Environment.ProcessorCount;
+			_counter = new CounterContainer();
+			_successful = new CounterContainer();
+			_threadCalls = new CounterContainer();
+			var callsHandler = new SampleAsyncTasksHandler("TEST", waitTimeMs, batchSize, batchTimeoutMs);
+			callsHandler.RunThread();
+			Thread.Sleep(100);
+			var testThread = new TestThreads(false, DoFireAndForget, MAX_DEGREE_OF_PARALLELISM);
+			testThread.RunParallel(iterations, callsHandler);
+
+			var sw = new Stopwatch();
+			sw.Start();
+			while (sw.ElapsedMilliseconds < waitTimeMs * iterations * 3 || !testThread.IsFinished)
+			{
+				if (iterations == callsHandler.CallsCount) break;
+				Thread.Sleep(100);
+			}
+			sw.Stop();
+			Assert.AreEqual(iterations, _threadCalls.Counter);
+			Assert.AreEqual(iterations, callsHandler.CallsCount);
+			callsHandler.Terminate();
+			testThread.Terminate();
 		}
 	}
 #endif

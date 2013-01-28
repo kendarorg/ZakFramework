@@ -11,115 +11,32 @@ namespace ZakThread.Async
 	/// <summary>
 	/// Base class to run tasks synchronously
 	/// </summary>
-	public abstract class BaseSyncHandlerThread : BaseMessageThread, ITasksHandlerThread
+	public abstract class BaseSyncHandlerThread : MainHandler
 	{
-		private long _batchId;
-		private Stopwatch _batchTimeout;
-		private int _batchSize;
 		private Queue<RequestObjectMessage> _batchExecuted;
 
 		protected BaseSyncHandlerThread(ILogger logger, string threadName, bool restartOnError = true) :
 			base(logger, threadName, restartOnError)
 		{
-			_batchId = 0;
-			BatchTimeoutMs = -1;
-			BatchSize = 1;
+			_batchExecuted = new Queue<RequestObjectMessage>();
 		}
 
-		private int _batchTimeoutMs;
-
-		public int BatchTimeoutMs
+		internal override void HandleInternalTaskRequest(IMessage msg)
 		{
-			get { return _batchTimeoutMs; }
-			protected set
+			var msgTask = (RequestObjectMessage)msg;
+			HandleTaskRequest(msgTask, msgTask.Content);
+			if (BatchSize == 1)
 			{
-				if (value == 1 || value == 0) _batchTimeoutMs = 2;
-				else _batchTimeoutMs = value;
-			}
-		}
-
-		public int BatchSize
-		{
-			get { return _batchSize; }
-			protected set
-			{
-				_batchSize = value <= 0 ? 1 : value;
-				if (BatchTimeoutMs == -1)
-				{
-					BatchTimeoutMs = 10;
-				}
-				if (BatchSize > 1)
-				{
-					//MaxMesssagesPerCycle = BatchSize;
-					_batchTimeout = new Stopwatch();
-					_batchExecuted = new Queue<RequestObjectMessage>();
-				}
-			}
-		}
-
-		protected override bool CyclicExecution()
-		{
-			var toret = base.CyclicExecution();
-			if (toret) SetBatchCompleted();
-			return toret;
-		}
-
-		protected override bool RunSingleCycle()
-		{
-			return true;
-		}
-
-		public long DoRequestAndWait(BaseRequestObject requestObject, int timeoutMs, string senderId = null)
-		{
-			if (requestObject == null) throw new ArgumentNullException("requestObject");
-			if (timeoutMs < 0) throw new ArgumentException("Parameter must be greater than 0", "timeoutMs");
-			var msg = new RequestObjectMessage(requestObject, timeoutMs) { SourceThread = senderId };
-			SendMessageToThread(msg);
-			var sw = new Stopwatch();
-			sw.Start();
-			msg.Wait();
-			sw.Stop();
-			return sw.ElapsedMilliseconds;
-		}
-
-		public void FireAndForget(BaseRequestObject requestObject, int timeoutMs, string senderId = null)
-		{
-			if (requestObject == null) throw new ArgumentNullException("requestObject");
-			if (timeoutMs < 0) throw new ArgumentException("Parameter must be greater than 0", "timeoutMs");
-
-			var msg = new RequestObjectMessage(requestObject, timeoutMs) { SourceThread = senderId };
-			SendMessageToThread(msg);
-		}
-
-		public abstract bool HandleTaskRequest(RequestObjectMessage container, BaseRequestObject requestObject);
-		public abstract void HandleBatchCompleted(IEnumerable<RequestObjectMessage> batchExecuted);
-
-		internal override bool HandleMessageInternal(IMessage msg)
-		{
-			var toret = true;
-			if (msg.GetType().Name.EndsWith("RequestObjectMessage"))
-			{
-				var msgTask = (RequestObjectMessage)msg;
-
-				HandleTaskRequest(msgTask, msgTask.Content);
-				if (BatchSize == 1)
-				{
-					msgTask.SetCompleted();
-				}
-				else
-				{
-					if (!_batchTimeout.IsRunning) _batchTimeout.Start();
-					_batchExecuted.Enqueue(msgTask);
-				}
+				msgTask.SetCompleted();
 			}
 			else
 			{
-				toret = base.HandleMessageInternal(msg);
+				if (!_batchTimeout.IsRunning) _batchTimeout.Start();
+				_batchExecuted.Enqueue(msgTask);
 			}
-			return toret;
 		}
 
-		private void SetBatchCompleted()
+		internal override void SetBatchCompleted()
 		{
 			if (BatchSize > 1)
 			{
@@ -128,24 +45,15 @@ namespace ZakThread.Async
 					//if (_batchTimeout.ElapsedMilliseconds > BatchTimeoutMs || _batchExecuted.Count >= BatchSize)
 					{
 						_batchTimeout.Stop();
-						//var ms = _batchTimeout.ElapsedMilliseconds;
-						//var sz = _batchExecuted.Count;
-						//Debug.WriteLine("");
-						//Debug.WriteLine(DateTime.Now + " Ms " + ms + " Sz " + sz);
-						//Debug.WriteLine("");
 						HandleBatchCompleted(_batchExecuted);
-						//var be = _batchExecuted;
-						//Task.Factory.StartNew(() =>
-						//{
-							var item = _batchExecuted.Dequeue();
-							while (item != null)
-							{
 
-								item.SetCompleted(_batchId);
-								item = _batchExecuted.Count > 0 ? _batchExecuted.Dequeue() : null;
-							}
-						//}
-						//);
+						var item = _batchExecuted.Dequeue();
+						while (item != null)
+						{
+
+							item.SetCompleted(_batchId);
+							item = _batchExecuted.Count > 0 ? _batchExecuted.Dequeue() : null;
+						}
 
 						_batchExecuted = new Queue<RequestObjectMessage>();
 						Interlocked.Increment(ref _batchId);
@@ -154,11 +62,6 @@ namespace ZakThread.Async
 					}
 				}
 			}
-		}
-
-		public override void RegisterMessages()
-		{
-			RegisterMessage(typeof(RequestObjectMessage));
 		}
 	}
 }
