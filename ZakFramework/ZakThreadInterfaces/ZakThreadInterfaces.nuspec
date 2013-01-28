@@ -11,7 +11,7 @@
 		<projectUrl>http://www.kendar.org</projectUrl>
     <dependencies>
       <group targetFramework=".NETFramework4.0">
-        <dependency id="ZakCoreUtilsInterfaces" version="$version$" />
+        <dependency id="ZakCoreUtils" version="$version$" />
       </group>
     </dependencies>
   </metadata>

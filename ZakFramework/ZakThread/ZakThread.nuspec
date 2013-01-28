@@ -10,8 +10,8 @@
     <description>$description$</description>
     <dependencies>
       <group targetFramework=".NETFramework4.0">
+        <dependency id="ZakCoreUtils" version="$version$" />
         <dependency id="ZakCoreUtilsInterfaces" version="$version$" />
-				<dependency id="ZakCoreUtils" version="$version$" />
 				<dependency id="ZakThreadInterfaces" version="$version$" />
       </group>
     </dependencies>

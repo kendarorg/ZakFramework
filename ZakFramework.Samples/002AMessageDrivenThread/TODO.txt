@@ -1,0 +1,1 @@
+﻿LockFreeQueue ->test for non nullable types

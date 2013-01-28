@@ -41,17 +41,19 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="ZakCoreUtils">
-      <HintPath>..\packages\ZakCoreUtils.2.0.1.0\lib\net40\ZakCoreUtils.dll</HintPath>
+    <Reference Include="ZakCoreUtils, Version=2.0.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\ZakCoreUtils.2.0.2.0\lib\net40\ZakCoreUtils.dll</HintPath>
     </Reference>
-    <Reference Include="ZakCoreUtilsInterfaces">
-      <HintPath>..\packages\ZakCoreUtilsInterfaces.2.0.1.0\lib\net40\ZakCoreUtilsInterfaces.dll</HintPath>
+    <Reference Include="ZakCoreUtilsInterfaces, Version=2.0.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\ZakCoreUtilsInterfaces.2.0.2.0\lib\net40\ZakCoreUtilsInterfaces.dll</HintPath>
     </Reference>
     <Reference Include="ZakThread">
-      <HintPath>..\packages\ZakThread.2.0.1.0\lib\net40\ZakThread.dll</HintPath>
+      <HintPath>..\packages\ZakThread.2.0.2.0\lib\net40\ZakThread.dll</HintPath>
     </Reference>
     <Reference Include="ZakThreadInterfaces">
-      <HintPath>..\packages\ZakThreadInterfaces.2.0.1.0\lib\net40\ZakThreadInterfaces.dll</HintPath>
+      <HintPath>..\packages\ZakThreadInterfaces.2.0.2.0\lib\net40\ZakThreadInterfaces.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -66,6 +68,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="TODO.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
