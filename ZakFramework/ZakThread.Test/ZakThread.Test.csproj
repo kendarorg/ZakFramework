@@ -52,10 +52,9 @@
     </CodeAnalysisDependentAssemblyPaths>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Async\AsyncHandlerTest.cs" />
     <Compile Include="Async\ExecutorsThroughThreadManager.cs" />
     <Compile Include="Async\SampleObjects\SyncTaskHandlerWithMessageRegistration.cs" />
-    <Compile Include="Async\SyncHandlerTest.cs" />
+    <Compile Include="Async\AsyncHandlerTest.cs" />
     <Compile Include="Async\SampleObjects\RequestObject.cs" />
     <Compile Include="Async\SampleObjects\SampleAsyncTasksHandler.cs" />
     <Compile Include="FileLoggerTest.cs" />

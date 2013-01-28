@@ -9,7 +9,6 @@ using ZakThread.Async;
 
 namespace ZakThread.Test.Async
 {
-#if NOT_YET_READY
 	[TestFixture]
 	public class AsyncHandlerTest
 	{
@@ -30,7 +29,7 @@ namespace ZakThread.Test.Async
 			sw.Start();
 			var requestObject = new RequestObject(args.CurrentCycle);
 			callsHandler.FireAndForget(requestObject, 1000);
-
+			
 			sw.Stop();
 		}
 
@@ -73,13 +72,13 @@ namespace ZakThread.Test.Async
 			callsHandler.RunThread();
 			Thread.Sleep(100);
 
-			var testThread = new TestThreads(false, DoRequestAndWait, MAX_DEGREE_OF_PARALLELISM);
+			var testThread = new TestThreads(false,DoRequestAndWait, MAX_DEGREE_OF_PARALLELISM);
 			var initTime = testThread.RunParallel(iterations, callsHandler);
 			var sw = new Stopwatch();
 			sw.Start();
 			while ((sw.ElapsedMilliseconds + initTime) < waitTimeMs * iterations * 3 || !testThread.IsFinished)
 			{
-				if (testThread.IsFinished && initTime == 0) initTime = sw.ElapsedMilliseconds;
+				if (testThread.IsFinished && initTime==0) initTime = sw.ElapsedMilliseconds;
 				if (iterations == callsHandler.CallsCount) break;
 				Thread.Sleep(10);
 			}
@@ -228,7 +227,7 @@ namespace ZakThread.Test.Async
 
 			var sw = new Stopwatch();
 			sw.Start();
-			while (sw.ElapsedMilliseconds < waitTimeMs * iterations * 3 || !testThread.IsFinished)
+			while (sw.ElapsedMilliseconds  < waitTimeMs * iterations * 3 || !testThread.IsFinished)
 			{
 				if (iterations == callsHandler.CallsCount) break;
 				Thread.Sleep(100);
@@ -313,5 +312,4 @@ namespace ZakThread.Test.Async
 			testThread.Terminate();
 		}
 	}
-#endif
 }

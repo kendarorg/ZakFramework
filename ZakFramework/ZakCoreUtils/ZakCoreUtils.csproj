@@ -58,7 +58,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="ZakCoreUtils.nuspec" />
+    <None Include="ZakCoreUtils.nuspec">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Content Include="TODO.txt" />

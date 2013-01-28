@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using ZakCore.Utils.Logging;
-using ZakThread.HighPower;
-using ZakThread.HighPower.Bases;
+using ZakThread.Async;
 using ZakThread.Logging;
 using _003AConcurrentTreeStructure.Lib.ConcurrentTreeInternals;
 
@@ -13,7 +12,7 @@ namespace _003AConcurrentTreeStructure.Lib
 	/// This will act as the main container
 	/// </summary>
 	/// <typeparam name="TContent"></typeparam>
-	public class ConcurrentTree<TContent> : BaseAsyncHandler, IDisposable
+	public class ConcurrentTree<TContent> : IDisposable
 	{
 		public TreeNode<TContent> Root { get; private set; }
 
@@ -22,11 +21,12 @@ namespace _003AConcurrentTreeStructure.Lib
 		/// </summary>
 		private readonly TreeCollectionExecutor<TContent> _executor;
 
-		public ConcurrentTree()
+		public ConcurrentTree(ILogger logger= null)
 		{
+			logger = logger==null?NullLogger.Create():logger;
 			Root = new TreeNode<TContent>(string.Empty, this);
 			//Setup the executor
-			_executor = new TreeCollectionExecutor<TContent>(NullLogger.Create(), "CollectionExecutor", this);
+			_executor = new TreeCollectionExecutor<TContent>(logger, "CollectionExecutor" + Guid.NewGuid().ToString(), this);
 			//And run it!
 			_executor.RunThread();
 			// Leave the time to the system to do start
@@ -58,11 +58,11 @@ namespace _003AConcurrentTreeStructure.Lib
 		/// </summary>
 		/// <param name="asyncTask"></param>
 		/// <returns></returns>
-		public override bool ExecuteAsyncProcessing(AsyncTask asyncTask)
+		internal bool ExecuteAsyncProcessing(BaseRequestObject request)
 		{
-			var msg = (ConcurrentTreeMessage) asyncTask.Tag;
+			var msg = request as ConcurrentTreeMessage;
 			if (msg == null) return true;
-			asyncTask.Result = ExecuteOperation(msg);
+			msg.Return = ExecuteOperation(msg);
 			return false;
 		}
 
@@ -70,7 +70,7 @@ namespace _003AConcurrentTreeStructure.Lib
 		/// We will not use this, should see in the future what we could do with this!
 		/// </summary>
 		/// <param name="atl"></param>
-		public override void FinalizeBatchElements(List<AsyncTask> atl)
+		internal void FinalizeBatchElements(IEnumerable<RequestObjectMessage> atl)
 		{
 		}
 
@@ -90,7 +90,7 @@ namespace _003AConcurrentTreeStructure.Lib
 			                                    path);
 
 			var result = StartTask(msg);
-			return (TreeNode<TContent>) result.Result;
+			return (TreeNode<TContent>)msg.Return;
 		}
 
 		internal List<TreeNode<TContent>> GetChildren(TreeNode<TContent> treeNode)
@@ -99,7 +99,7 @@ namespace _003AConcurrentTreeStructure.Lib
 			                                    treeNode);
 
 			var result = StartTask(msg);
-			return (List<TreeNode<TContent>>) result.Result;
+			return (List<TreeNode<TContent>>)msg.Return;
 		}
 
 		internal bool Rename(TreeNode<TContent> treeNode, string newName)
@@ -108,7 +108,7 @@ namespace _003AConcurrentTreeStructure.Lib
 			                                    newName);
 
 			var result = StartTask(msg);
-			return result.Success;
+			return msg.GetReturnAs<bool>();
 		}
 
 		internal bool AddChild(TreeNode<TContent> treeNode, TreeNode<TContent> item)
@@ -117,7 +117,7 @@ namespace _003AConcurrentTreeStructure.Lib
 			                                    treeNode, item);
 
 			var result = StartTask(msg);
-			return result.Success;
+			return (bool)msg.GetReturnAs<bool>();
 		}
 
 		internal void RemoveChild(TreeNode<TContent> treeNode, TreeNode<TContent> item)
@@ -125,7 +125,7 @@ namespace _003AConcurrentTreeStructure.Lib
 			var msg = new ConcurrentTreeMessage(ConcurrentTreeMessageTypes.MsgRemoveChild,
 			                                    treeNode, item);
 
-			_executor.SendMessageToThread(msg);
+			_executor.FireAndForget(msg, 5000);
 		}
 
 		internal void RemoveChild(TreeNode<TContent> treeNode, string itemName)
@@ -133,7 +133,7 @@ namespace _003AConcurrentTreeStructure.Lib
 			var msg = new ConcurrentTreeMessage(ConcurrentTreeMessageTypes.MsgRemoveChildByName,
 			                                    treeNode, itemName);
 
-			_executor.SendMessageToThread(msg);
+			_executor.FireAndForget(msg,5000);
 		}
 
 		/// <summary>
@@ -143,14 +143,8 @@ namespace _003AConcurrentTreeStructure.Lib
 		/// <returns></returns>
 		private ConcurrentTreeMessageResult StartTask(ConcurrentTreeMessage msg)
 		{
-			// Create the task to execute, based on the message
-			var asop = (AsyncTask) RunAsyncOperation(null, msg, null);
-			// Enqueue it on the executor
-			_executor.EnqueTask(asop);
-			// Wait for completion
-			asop.AsyncWaitHandle.WaitOne(5000, true);
-
-			return (ConcurrentTreeMessageResult) asop.Result;
+			_executor.DoRequestAndWait(msg,5000);
+			return msg.GetReturnAs<ConcurrentTreeMessageResult>();
 		}
 
 		#endregion
@@ -289,5 +283,6 @@ namespace _003AConcurrentTreeStructure.Lib
 		}
 
 		#endregion
+
 	}
 }
