@@ -51,7 +51,9 @@
     </CodeAnalysisDependentAssemblyPaths>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DbTest.cs" />
+    <Compile Include="DictionaryExternalParametersTest.cs" />
+    <Compile Include="EventArgsTest.cs" />
+    <Compile Include="SimpleObjectsTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

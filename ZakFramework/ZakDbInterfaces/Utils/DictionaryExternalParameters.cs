@@ -8,6 +8,14 @@ namespace ZakDb.Utils
 		private static readonly object _lockObject = new object();
 		private static Dictionary<string, object> _session;
 
+		public void ResetSession()
+		{
+			lock (_lockObject)
+			{
+				_session = new Dictionary<string, object>();
+			}
+		}
+
 		public DictionaryExternalParameters(Dictionary<string, object> defaults)
 		{
 			_defaults = defaults;
@@ -20,23 +28,45 @@ namespace ZakDb.Utils
 			}
 		}
 
+		public T GetAs<T>(string index)
+		{
+			var toret = this[index];
+			if (toret == null)
+			{
+				return default(T);
+			}
+			return (T)toret;
+		}
+
+
+		public T GetAs<T>(string index,T defaultValue)
+		{
+			var toret = this[index];
+			return (toret == null) ? defaultValue : (T)toret;
+		}
+
 		public object this[string index]
 		{
 			get
 			{
-				if (!_session.ContainsKey(index) && _defaults.ContainsKey(index))
-				{
-					_session.Add(index, _defaults[index]);
-				}
+				object toret = null;
 				if (!_session.ContainsKey(index))
 				{
-					return null;
+					if (_defaults.ContainsKey(index))
+					{
+						toret = _defaults[index];
+						_session.Add(index, toret);
+					}
 				}
-				return _session[index];
+				else
+				{
+					toret = _session[index];
+				}
+				return toret;
 			}
 			set
 			{
-				if (_session.ContainsKey(index))
+				if (!_session.ContainsKey(index))
 				{
 					_session.Add(index, value);
 				}
