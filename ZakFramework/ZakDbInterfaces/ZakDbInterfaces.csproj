@@ -41,7 +41,7 @@
     <Compile Include="Models\ILovModel.cs" />
     <Compile Include="Models\IModel.cs" />
     <Compile Include="Models\ITreeModel.cs" />
-    <Compile Include="Models\IManyToManyModel.cs" />
+    <Compile Include="Models\ManyToManyModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\Exceptions\RepositoryDuplicateKeyException.cs" />
     <Compile Include="Repositories\Exceptions\RepositoryValidationException.cs" />
