@@ -86,10 +86,9 @@ namespace ZakCoreUtils.Test
 		public void String2BytesTestWithStandardEncoding()
 		{
 			const string val = "\\asdfl8-8-";
-			Encoding enc = Encoding.ASCII;
 			int outv;
 			byte[] actual = ConversionUtils.String2Bytes(val);
-			string expected = ConversionUtils.Bytes2String(out outv, actual, 0);
+			string expected = ConversionUtils.Bytes2String(out outv, actual);
 			Assert.AreEqual(expected, val);
 		}
 
@@ -116,9 +115,7 @@ namespace ZakCoreUtils.Test
 		{
 			Guid vg = Guid.NewGuid();
 			byte[] val = ConversionUtils.Guid2Bytes(vg);
-			var bytesList = new List<byte>();
-			bytesList.Add((byte)'0');
-			bytesList.Add((byte)'1');
+			var bytesList = new List<byte> {(byte) '0', (byte) '1'};
 			bytesList.AddRange(val);
 			val = bytesList.ToArray();
 			const int offset = 2;

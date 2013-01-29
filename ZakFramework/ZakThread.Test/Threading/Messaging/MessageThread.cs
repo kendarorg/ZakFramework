@@ -1,5 +1,4 @@
 ﻿
-using System;
 using System.Threading;
 using ZakCore.Utils.Logging;
 using ZakThread.Test.Threading.Simple;
@@ -10,9 +9,9 @@ namespace ZakThread.Test.Threading.Messaging
 	public class MessageThread : BaseMessageThread
 	{
 		private readonly bool _doRegistration;
-		private long _testMessagesCount = 0;
-		private long _sendMessages = 0;
-		private long _terminateMessage = 0;
+		private long _testMessagesCount;
+		private long _sendMessages;
+		private long _terminateMessage;
 
 		public long MessagesCount { get { return Interlocked.Read(ref _testMessagesCount); } }
 

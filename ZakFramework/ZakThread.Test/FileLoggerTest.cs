@@ -3,7 +3,6 @@ using System.IO;
 using System.Threading;
 using NUnit.Framework;
 using ZakCore.Utils.Commons;
-using ZakCore.Utils.Logging;
 using ZakTestUtils;
 using ZakThread.Logging;
 

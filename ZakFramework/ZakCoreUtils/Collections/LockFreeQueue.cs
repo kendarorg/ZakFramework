@@ -74,7 +74,9 @@ namespace ZakCore.Utils.Collections
 		/// </summary>
 		public LockFreeQueue()
 		{
+// ReSharper disable CompareNonConstrainedGenericWithNull
 			_isNullable = default(T) == null;
+// ReSharper restore CompareNonConstrainedGenericWithNull
 			var node = new NodeT();
 			_head._ptr = _tail._ptr = node;
 		}

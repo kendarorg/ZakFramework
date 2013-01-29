@@ -1,16 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using NUnit.Framework;
-using ZakThread.Test.Threading.Messaging;
-using ZakCore.Utils.Logging;
-using ZakThread.Threading;
 using System.Threading;
-using ZakThread.Threading.Enums;
-using ZakThread.Test.Threading.Simple;
-using ZakThread.Test.Async.SampleObjects;
+using NUnit.Framework;
+using ZakCore.Utils.Logging;
 using ZakThread.Async;
+using ZakThread.Test.Async.SampleObjects;
+using ZakThread.Test.Threading.Messaging;
+using ZakThread.Test.Threading.Simple;
+using ZakThread.Threading;
+using ZakThread.Threading.Enums;
 
 namespace ZakThread.Test.Async
 {
@@ -24,7 +21,7 @@ namespace ZakThread.Test.Async
 			var subThread2 = new MessageThread(false, NullLogger.Create(), "SUBTHREAD2");
 			var subThread3 = new SyncTaskHandlerWithMessageRegistration("SYNCTH", 2);
 			var threadManager = new ThreadManager(NullLogger.Create());
-			var privateObject = new Microsoft.VisualStudio.TestTools.UnitTesting.PrivateObject(threadManager);
+			
 			threadManager.RunThread();
 			threadManager.AddThread(subThread);
 			threadManager.AddThread(subThread2);
@@ -50,15 +47,17 @@ namespace ZakThread.Test.Async
 		public void CloningARequestObjectMessageShouldGenerateException()
 		{
 			NotSupportedException expex = null;
+			object cloned = null;
 			var rom = new RequestObjectMessage(new BaseRequestObject(), 1);
 			try
 			{
-				rom.Clone();
+			 cloned = rom.Clone();
 			}
 			catch (NotSupportedException ex)
 			{
 				expex = ex;
 			}
+			Assert.IsNull(cloned);
 			Assert.IsTrue(rom.TimeStamp < DateTime.UtcNow);
 			Assert.AreNotEqual(rom.Id,Guid.Empty);
 			Assert.IsNotNull(expex);

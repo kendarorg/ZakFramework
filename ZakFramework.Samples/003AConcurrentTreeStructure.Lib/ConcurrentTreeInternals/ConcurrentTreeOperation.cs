@@ -1,5 +1,4 @@
 ﻿using System;
-using ZakThread.Threading;
 using ZakThread.Async;
 
 namespace _003AConcurrentTreeStructure.Lib.ConcurrentTreeInternals
@@ -7,9 +6,9 @@ namespace _003AConcurrentTreeStructure.Lib.ConcurrentTreeInternals
 	/// <summary>
 	/// The message that will be used to communicate between the various threads
 	/// </summary>
-	internal class ConcurrentTreeMessage : BaseRequestObject
+	internal class ConcurrentTreeOperation : BaseRequestObject
 	{
-		public ConcurrentTreeMessage(ConcurrentTreeMessageTypes messageType, params object[] parameters)
+		public ConcurrentTreeOperation(ConcurrentTreeOperationTypes messageType, params object[] parameters)
 		{
 			TimeStamp = DateTime.Now;
 			MessageType = messageType;
@@ -17,7 +16,7 @@ namespace _003AConcurrentTreeStructure.Lib.ConcurrentTreeInternals
 		}
 
 		public DateTime TimeStamp { get; set; }
-		public ConcurrentTreeMessageTypes MessageType { get; private set; }
+		public ConcurrentTreeOperationTypes MessageType { get; private set; }
 		public object[] Parameters { get; private set; }
 
 		public string SourceThread { get; set; }

@@ -1,5 +1,4 @@
 ﻿using ZakCore.Utils.Logging;
-using ZakThread.Logging;
 using ZakThread.Threading;
 
 namespace _002AMessageDrivenThread

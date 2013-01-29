@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using ZakCore.Utils.Collections;
-using ZakThread.Test.Async.SampleObjects;
-using ZakThread.Threading;
 
 namespace ZakTestUtils
 {
@@ -21,9 +17,9 @@ namespace ZakTestUtils
 			public object Result { get; set; }
 		}
 
-		private int _maxDegreeOfParallelism;
+		private readonly int _maxDegreeOfParallelism;
 		private readonly bool _waitForTermination;
-		private EventHandler<TestThreadsEventArgs> _toExecute;
+		private readonly EventHandler<TestThreadsEventArgs> _toExecute;
 		public TestThreads(bool waitForTermination, EventHandler<TestThreadsEventArgs> toExecute, int maxDegreeOfParallelism = -1)
 		{
 			_waitForTermination = waitForTermination;
@@ -35,7 +31,7 @@ namespace ZakTestUtils
 		public List<Thread> _threads;
 		public LockFreeQueue<Exception> Exceptions { get; private set; }
 		public LockFreeQueue<object> Results { get; private set; }
-		private long _runningThreads = 0;
+		private long _runningThreads;
 		private ManualResetEventSlim _eventStart;
 
 		public CounterContainer CyclesCounter { get; set; }
@@ -94,7 +90,6 @@ namespace ZakTestUtils
 				sw.Start();
 				while (true)
 				{
-					long start = sw.ElapsedMilliseconds;
 					var ea = new TestThreadsEventArgs
 					{
 						CurrentCycle = i,

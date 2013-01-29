@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading;
 using NUnit.Framework;
 using ZakCore.Utils.Logging;
-using ZakThread.Logging;
 using ZakThread.Test.Threading.Simple;
 using ZakThread.Threading;
 using ZakThread.Threading.Enums;
@@ -221,8 +220,7 @@ namespace ZakThread.Test.Threading
 			const int sleepTime = 1;
 			const string testName = "TestThread";
 			const int messagesToSend = 100;
-			var th = new SimpleMessageThreadConsumer(sleepTime, testName);
-			th.ReceiveAStopMessage = true;
+			var th = new SimpleMessageThreadConsumer(sleepTime, testName) {ReceiveAStopMessage = true};
 
 			th.RunThread();
 			Thread.Sleep(100);

@@ -1,7 +1,7 @@
 ﻿
 using System.Threading;
 
-namespace ZakThread.Test.Async.SampleObjects
+namespace ZakTestUtils
 {
 	public class CounterContainer
 	{

@@ -1,6 +1,5 @@
 ﻿using NUnit.Framework;
 using ZakCore.Utils.Collections;
-using ZakThread.Test.Async.SampleObjects;
 using System.Threading;
 namespace ZakTestUtils.Test
 {
@@ -90,8 +89,7 @@ namespace ZakTestUtils.Test
 		private void ThirdTestReader(object sender, TestThreads.TestThreadsEventArgs args)
 		{
 			var lfq = (LockFreeQueue<int>)args.Param;
-			int item = -1;
-			while ((item = lfq.DequeueSingle())!=0)
+			while (lfq.DequeueSingle()!=0)
 			{
 				_firstTestCounter.Increment();
 			}

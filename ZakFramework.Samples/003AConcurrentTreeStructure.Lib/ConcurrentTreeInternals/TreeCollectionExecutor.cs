@@ -10,7 +10,6 @@ namespace _003AConcurrentTreeStructure.Lib.ConcurrentTreeInternals
 	{
 		private readonly ConcurrentTree<TContent> _container;
 
-		private const long MAX_MS_SINCE_START = 100;
 		private const int MAX_MSGS_ELABORATED = 100;
 
 		public TreeCollectionExecutor(ILogger logger, string threadName, ConcurrentTree<TContent> container)
@@ -44,12 +43,12 @@ namespace _003AConcurrentTreeStructure.Lib.ConcurrentTreeInternals
 
 		public override void RegisterMessages()
 		{
-			RegisterMessage(typeof(ConcurrentTreeMessage));
+			
 		}
 
 		public override bool HandleTaskRequest(RequestObjectMessage container, BaseRequestObject requestObject)
 		{
-			_container.ExecuteOperation((ConcurrentTreeMessage)requestObject);
+			requestObject.Return = _container.ExecuteOperation((ConcurrentTreeOperation)requestObject);
 			return true;
 		}
 

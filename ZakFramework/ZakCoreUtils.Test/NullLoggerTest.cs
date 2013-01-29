@@ -16,8 +16,7 @@ namespace ZakCoreUtils.Test
 			nullLogger.Debug("Message");
 		}
 
-		private const int START_OF_DATA_INDEX = 20;
-
+		
 		#region Log level tests
 
 		[Test]

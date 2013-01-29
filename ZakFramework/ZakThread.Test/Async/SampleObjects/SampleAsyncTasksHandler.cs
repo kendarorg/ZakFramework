@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 using ZakCore.Utils.Logging;
 using ZakThread.Async;
-using System;
-using System.Diagnostics;
 
 namespace ZakThread.Test.Async.SampleObjects
 {
@@ -32,7 +32,7 @@ namespace ZakThread.Test.Async.SampleObjects
 			return true;
 		}
 
-		public override void RunThread(int timeoutMs = 1000)
+		public override void RunThread(int timeoutMs = 0)
 		{
 			base.RunThread(timeoutMs);
 			Debug.WriteLine("ThreadStarted");
@@ -42,7 +42,7 @@ namespace ZakThread.Test.Async.SampleObjects
 		{
 			foreach (var item in batchExecuted)
 			{
-				Interlocked.Increment(ref _callsCount);
+				if(item.Id!= Guid.Empty) Interlocked.Increment(ref _callsCount);
 			}
 		}
 

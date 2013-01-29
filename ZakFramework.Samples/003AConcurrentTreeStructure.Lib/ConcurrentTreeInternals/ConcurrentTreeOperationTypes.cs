@@ -1,6 +1,6 @@
 namespace _003AConcurrentTreeStructure.Lib.ConcurrentTreeInternals
 {
-	internal enum ConcurrentTreeMessageTypes
+	internal enum ConcurrentTreeOperationTypes
 	{
 		MsgFindByPath,
 		MsgGetChildren,

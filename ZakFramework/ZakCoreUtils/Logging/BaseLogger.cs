@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Globalization;
 using ZakCore.Utils.Commons;
 
 namespace ZakCore.Utils.Logging

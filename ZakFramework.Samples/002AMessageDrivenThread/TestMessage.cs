@@ -19,9 +19,7 @@ namespace _002AMessageDrivenThread
 		public string SourceThread { get; set; }
 		public object Clone()
 		{
-			var res = new TestMessage(Id, RunBlock);
-			res.TimeStamp = TimeStamp;
-			res.SourceThread = SourceThread;
+			var res = new TestMessage(Id, RunBlock) {TimeStamp = TimeStamp, SourceThread = SourceThread};
 			return res;
 		}
 	}

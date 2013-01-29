@@ -100,6 +100,7 @@ namespace ZakCoreUtils.Test
 			try
 			{
 				var target = new Crontab(null);
+				Assert.IsTrue(target == null);
 			}
 			catch (ArgumentNullException ex)
 			{
@@ -110,6 +111,7 @@ namespace ZakCoreUtils.Test
 			try
 			{
 				var target = new Crontab("* * * * * * * *", true);
+				Assert.IsTrue(target == null);
 			}
 			catch (IndexOutOfRangeException ex)
 			{
@@ -120,6 +122,7 @@ namespace ZakCoreUtils.Test
 			try
 			{
 				var target = new Crontab("@fakeCommand", true);
+				Assert.IsTrue(target==null);
 			}
 			catch (IndexOutOfRangeException ex)
 			{
@@ -133,7 +136,14 @@ namespace ZakCoreUtils.Test
 		public void CrontabWithSeconds()
 		{
 			var target = new Crontab("10 */1 * * * * *", true);
+			
 			var nxt = target.Next();
+			var now = DateTime.Now;
+			now += TimeSpan.FromMinutes(1);
+			now += TimeSpan.FromSeconds(11);
+			Assert.IsTrue(now>=nxt);
+			
+			
 			Assert.IsTrue(target.MayRunAt(new DateTime(2000, 1, 1, 1, 1, 10)));
 
 			target = new Crontab("* * * * * * *", true);

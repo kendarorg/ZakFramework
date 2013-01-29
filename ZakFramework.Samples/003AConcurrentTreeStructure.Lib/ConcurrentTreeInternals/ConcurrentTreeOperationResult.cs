@@ -2,9 +2,9 @@
 
 namespace _003AConcurrentTreeStructure.Lib.ConcurrentTreeInternals
 {
-	public class ConcurrentTreeMessageResult
+	public class ConcurrentTreeOperationResult
 	{
-		public ConcurrentTreeMessageResult()
+		public ConcurrentTreeOperationResult()
 		{
 			Result = null;
 			Success = false;

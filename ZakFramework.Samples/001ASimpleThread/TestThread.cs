@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using ZakCore.Utils.Logging;
-using ZakThread.Logging;
 using ZakThread.Threading;
 
 namespace _001_A_simple_thread

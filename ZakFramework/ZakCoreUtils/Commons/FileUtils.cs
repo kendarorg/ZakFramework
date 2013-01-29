@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 
@@ -114,8 +115,9 @@ namespace ZakCore.Utils.Commons
 				AppDomain.CurrentDomain.Load(asmToLoad);*/
 				return Assembly.LoadFrom(path);
 			}
-			catch (Exception)
+			catch (Exception ex)
 			{
+				Debug.WriteLine(ex);
 				//Logger.Log("FileUtils", ex);
 			}
 			return null;

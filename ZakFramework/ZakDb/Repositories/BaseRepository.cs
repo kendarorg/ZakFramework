@@ -482,7 +482,9 @@ namespace ZakDb.Repositories
 					{
 						fieldsContent += string.Format("NULL");
 					}
+// ReSharper disable CanBeReplacedWithTryCastAndCheckForNull
 					else if (ob is string)
+// ReSharper restore CanBeReplacedWithTryCastAndCheckForNull
 					{
 						fieldsContent += string.Format("'{0}'", ((string) ob).Trim());
 					}

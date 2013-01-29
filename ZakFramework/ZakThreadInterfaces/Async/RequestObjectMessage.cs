@@ -7,7 +7,7 @@ namespace ZakThread.Async
 {
 	public class RequestObjectMessage : IMessage
 	{
-		private static LockFreeQueue<ManualResetEventSlim> _resetEvents;
+		private static readonly LockFreeQueue<ManualResetEventSlim> _resetEvents;
 
 		static RequestObjectMessage()
 		{

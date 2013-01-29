@@ -285,9 +285,10 @@ namespace ZakCore.Utils.Commons
 				return dt;
 			}
 			
-			var vals = new[] {dt.Second, dt.Minute, dt.Hour, dt.Day, dt.Month + 1, (int) dt.DayOfWeek, dt.Year};
+			
 			// ReSharper disable TooWideLocalVariableScope
 			// ReSharper disable RedundantAssignment
+			int[] vals;
 			int prev = 0;
 			int differenceFromNextNearestPeriod = 0;
 			// ReSharper restore RedundantAssignment
@@ -450,20 +451,7 @@ namespace ZakCore.Utils.Commons
 							{
 								int nextSecond = GetNextNearestItem(vals[i], d, SECONDSPERMINUTE);
 								differenceFromNextNearestPeriod = nextSecond - prev;
-								/*if (differenceFromNextNearestPeriod > 0)
-								{
-									dt += TimeSpan.FromSeconds(differenceFromNextNearestPeriod);
-									differenceFromNextNearestPeriod = 0;
-								}
-								vals = new[] {dt.Second, dt.Minute, dt.Hour, dt.Day, dt.Month + 1, (int) dt.DayOfWeek, dt.Year};*/
-								/*if (differenceFromNextNearestPeriod < 0)
-								{
-									dt = dt.AddMinutes(1);
-									//dt += TimeSpan.FromDays(Math.Abs(differenceFromNextNearestPeriod));
-									vals = new[] { dt.Second, dt.Minute, dt.Hour, dt.Day, dt.Month, (int)dt.DayOfWeek, dt.Year };
-									i--;
-								}
-								else */if (differenceFromNextNearestPeriod > 0)
+								if (differenceFromNextNearestPeriod > 0)
 								{
 									dt = dt.AddSeconds(differenceFromNextNearestPeriod);
 									vals = new[] { dt.Second, dt.Minute, dt.Hour, dt.Day, dt.Month, (int)dt.DayOfWeek, dt.Year };

@@ -476,8 +476,7 @@ namespace ZakCoreUtils.Test
 		public void ItShouldBePosssibleToSaveAnEmptyFile()
 		{
 			var projectRoot = Path.Combine(TestFileUtils.GetSolutionRoot(), "ZakCoreUtils.Test");
-			var file = Path.Combine(projectRoot, "TestIni.ini");
-
+			
 #if DEBUG
 			var destFile = Path.Combine(projectRoot, "bin", "Debug", "TestIni.ini");
 #else

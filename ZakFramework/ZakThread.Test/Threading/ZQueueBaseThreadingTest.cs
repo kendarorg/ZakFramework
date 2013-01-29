@@ -35,7 +35,7 @@ namespace ZakThread.Test.Threading
 			const string testName = "TestThread";
 			var th = new SimpleThread(sleepTime, testName);
 
-			th.RunThread();
+			th.RunThread(100);
 			Thread.Sleep(100);
 
 			Assert.AreEqual(1, BaseThread.ThreadCounter);

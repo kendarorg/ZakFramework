@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Globalization;
 using System.IO;
 using ZakCore.Utils.Collections;
 using ZakCore.Utils.Commons;
@@ -60,7 +59,9 @@ namespace ZakThread.Logging
 			return true;
 		}
 
+// ReSharper disable UnusedParameter.Local
 		private void WriteStringToLog(string toWriteExpanded, string toWrite, LogLevels level)
+// ReSharper restore UnusedParameter.Local
 		{
 			_writeLog.Enqueue(toWriteExpanded);
 		}

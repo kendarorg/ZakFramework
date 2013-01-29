@@ -1,11 +1,9 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Threading;
-using System.Threading.Tasks;
 using NUnit.Framework;
-using ZakThread.Test.Async.SampleObjects;
 using ZakTestUtils;
 using ZakThread.Async;
+using ZakThread.Test.Async.SampleObjects;
 
 namespace ZakThread.Test.Async
 {
@@ -138,7 +136,7 @@ namespace ZakThread.Test.Async
 		{
 			const int iterations = NUMBER_OF_MESSAGES;
 			const int waitTimeMs = 0;
-			int cores = Environment.ProcessorCount;
+			
 			_counter = new CounterContainer();
 			_successful = new CounterContainer();
 			_threadCalls = new CounterContainer();
@@ -174,7 +172,6 @@ namespace ZakThread.Test.Async
 			const int batchSize = 100;
 			const int batchTimeoutMs = 1000;
 
-			int cores = Environment.ProcessorCount;
 			_counter = new CounterContainer();
 			_successful = new CounterContainer();
 			_threadCalls = new CounterContainer();
@@ -215,7 +212,6 @@ namespace ZakThread.Test.Async
 			const int batchSize = 4;
 			const int batchTimeoutMs = 1000;
 
-			int cores = Environment.ProcessorCount;
 			_counter = new CounterContainer();
 			_successful = new CounterContainer();
 			_threadCalls = new CounterContainer();
@@ -252,7 +248,6 @@ namespace ZakThread.Test.Async
 			const int batchSize = BATCH_SIZE;
 			const int batchTimeoutMs = 1;
 
-			int cores = Environment.ProcessorCount;
 			_counter = new CounterContainer();
 			_successful = new CounterContainer();
 			_threadCalls = new CounterContainer();
@@ -288,7 +283,6 @@ namespace ZakThread.Test.Async
 			const int batchSize = NUMBER_OF_MESSAGES;
 			const int batchTimeoutMs = 1;
 
-			int cores = Environment.ProcessorCount;
 			_counter = new CounterContainer();
 			_successful = new CounterContainer();
 			_threadCalls = new CounterContainer();
