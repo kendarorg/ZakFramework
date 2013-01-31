@@ -11,11 +11,11 @@ namespace ZakDb.Queries
 		public QueryOperationType OperationType { get; private set; }
 		public IQueryCondition[] SubQueries { get; private set; }
 		public object ComparandValue { get; private set; }
-		public string FieldName { get; private set; }
+		public QueryField FieldName { get; private set; }
 		public string FullFieldName { get { return string.Format("{0}_{1}", TableAlias, FieldName); } }
 		public string DotFieldName { get { return string.Format("{0}.{1}", TableAlias, FieldName); } }
-		public string TableAlias { get; private set; }
-		public string ComparandFieldName { get; private set; }
+		public QueryTable TableAlias { get; internal set; }
+		public QueryField ComparandFieldName { get; private set; }
 		public QueryOperation Operation { get; private set; }
 		public bool IsComparandNull
 		{
@@ -26,26 +26,38 @@ namespace ZakDb.Queries
 			get { return _comparandSet; }
 		}
 
-		internal QueryCondition(string fieldName,string tableAlias)
+		internal QueryCondition(QueryField fieldName):
+			this()
+		{
+			FieldName = fieldName;
+			TableAlias = FieldName.Table;
+		}
+
+		internal QueryCondition()
 		{
 			_shouldUseValue = false;
 			_comparandSet = false;
 			SubQueries = null;
-			FieldName = fieldName;
-			TableAlias = tableAlias;
 			ComparandValue = null;
 			ComparandFieldName = null;
 			Operation = QueryOperation.None;
 			OperationType = QueryOperationType.None;
 		}
 
-		public QueryCondition SetFieldName(string fieldName)
+		public QueryCondition SetFieldName(QueryField fieldName)
 		{
 			FieldName = fieldName;
 			return this;
 		}
 
-		public QueryCondition SetComparandFieldName(string comparandFieldName)
+		public QueryCondition SetFieldName(string fieldName)
+		{
+			var queryField = TableAlias.GetField(fieldName);
+			FieldName = queryField;
+			return this;
+		}
+
+		public QueryCondition SetComparandFieldName(QueryField comparandFieldName)
 		{
 			ComparandFieldName = comparandFieldName;
 			return this;
@@ -79,7 +91,7 @@ namespace ZakDb.Queries
 			{
 				AssignParent(cond);
 			}
-			Operation = QueryOperation.Or; 
+			Operation = QueryOperation.Or;
 			OperationType = QueryOperationType.Multiple;
 			return this;
 		}
@@ -173,7 +185,7 @@ namespace ZakDb.Queries
 		public QueryCondition In(params object[] values)
 		{
 			Operation = QueryOperation.In;
-			if (values != null && values.Length>0)
+			if (values != null && values.Length > 0)
 			{
 				ComparandValue = values;
 				_comparandSet = true;
@@ -208,7 +220,7 @@ namespace ZakDb.Queries
 			return this;
 		}
 
-		private bool ExceptionOnError(bool exceptionOnError,bool value = false)
+		private bool ExceptionOnError(bool exceptionOnError, bool value = false)
 		{
 			if (exceptionOnError && !value) throw new Exception();
 			return value;
@@ -222,21 +234,21 @@ namespace ZakDb.Queries
 		public bool Validate(bool exceptionOnError = false)
 		{
 			if (Operation == QueryOperation.None) return ExceptionOnError(exceptionOnError);
-			if (string.IsNullOrWhiteSpace(FieldName) && NeedsFieldName) return ExceptionOnError(exceptionOnError);
-			if (string.IsNullOrWhiteSpace(TableAlias)) return ExceptionOnError(exceptionOnError);
+			if (FieldName == null && NeedsFieldName) return ExceptionOnError(exceptionOnError);
+			if (TableAlias == null) return ExceptionOnError(exceptionOnError);
 
 			switch (OperationType)
 			{
 				case (QueryOperationType.Unary):
 					return ExceptionOnError(exceptionOnError,
-						!_comparandSet && string.IsNullOrWhiteSpace(ComparandFieldName));
+						!_comparandSet && ComparandFieldName == null);
 				case (QueryOperationType.Dual):
-					if (_comparandSet && !string.IsNullOrWhiteSpace(ComparandFieldName)) return ExceptionOnError(exceptionOnError);
+					if (_comparandSet && ComparandFieldName != null) return ExceptionOnError(exceptionOnError);
 					if (_shouldUseValue && !_comparandSet) return ExceptionOnError(exceptionOnError);
 					if (!_shouldUseValue && _comparandSet) return ExceptionOnError(exceptionOnError);
 					return true;
 				case (QueryOperationType.Multiple):
-					if (_comparandSet || !string.IsNullOrWhiteSpace(ComparandFieldName)) return ExceptionOnError(exceptionOnError);
+					if (_comparandSet || ComparandFieldName != null) return ExceptionOnError(exceptionOnError);
 					if (SubQueries != null && SubQueries.Length > 0)
 					{
 						foreach (var subQuery in SubQueries)

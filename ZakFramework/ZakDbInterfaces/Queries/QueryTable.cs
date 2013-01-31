@@ -2,13 +2,15 @@
 using System.Collections.Generic;
 using System.Threading;
 using ZakDb.Query;
+using ZakDb.Descriptors;
 
 namespace ZakDb.Queries
 {
-	public class QueryTable : IQueryCondition,IQueryable
+	public class QueryTable : IQueryCondition, IQueryable
 	{
 		private static long _aliasIndex;
 		private List<JoinDescriptor> _joinTables;
+		private TableDescriptor _tableDescriptor;
 		private Dictionary<string, QueryField> _fields;
 		public IQueryable Parent { get; set; }
 		public List<JoinDescriptor> JoinTables
@@ -27,6 +29,12 @@ namespace ZakDb.Queries
 			}
 		}
 
+		public QueryTable(TableDescriptor tableDescriptor, string alias) :
+			this(tableDescriptor.FullName, alias)
+		{
+			_tableDescriptor = tableDescriptor;
+		}
+
 		public QueryTable(string table, string alias = null)
 		{
 			var aliasIndex = Interlocked.Read(ref _aliasIndex);
@@ -43,21 +51,23 @@ namespace ZakDb.Queries
 
 		public QueryTable AddField(string fieldName)
 		{
+			fieldName = fieldName.ToLowerInvariant();
 			if (_fields == null) _fields = new Dictionary<string, QueryField>();
-			_fields.Add(fieldName, new QueryField(fieldName, this));
-			return this;
+			return AddField(new QueryField(fieldName, this));
 		}
 
 		public QueryTable AddField(QueryField field)
 		{
 			if (_fields == null) _fields = new Dictionary<string, QueryField>();
+			var fieldDescriptor = _tableDescriptor[field.Name];
+			if (fieldDescriptor == null) throw new Exception();
 			_fields.Add(field.Name, field);
 			return this;
 		}
 
 		public QueryField GetField(string fieldName)
 		{
-			if (_fields == null || !_fields.ContainsKey(fieldName)) return null;
+			if (_fields == null || !_fields.ContainsKey(fieldName)) AddField(fieldName);
 			return _fields[fieldName];
 		}
 
@@ -86,7 +96,7 @@ namespace ZakDb.Queries
 			return jqt;
 		}
 
-		
+
 		public QueryTable Join(JoinDescriptor joinDescriptor)
 		{
 			if (_joinTables == null) _joinTables = new List<JoinDescriptor>();
@@ -163,7 +173,7 @@ namespace ZakDb.Queries
 		{
 			if (string.IsNullOrWhiteSpace(fieldName))
 			{
-				return new QueryCondition(null, Alias);
+				return new QueryCondition();
 			}
 			QueryCondition toret = null;
 			if (_fields != null && _fields.ContainsKey(fieldName))
@@ -175,97 +185,109 @@ namespace ZakDb.Queries
 
 		public QueryCondition And(params QueryCondition[] querySelects)
 		{
-			var qc = new QueryCondition(null, Alias);
+			var qc = new QueryCondition();
 			Conditions = qc;
 			Conditions.Parent = this;
+			qc.TableAlias = this;
 			return qc.And(querySelects);
 		}
 
 		public QueryCondition Or(params QueryCondition[] querySelects)
 		{
-			var qc = new QueryCondition(null, Alias);
+			var qc = new QueryCondition();
 			Conditions = qc;
 			Conditions.Parent = this;
+			qc.TableAlias = this;
 			return qc.Or(querySelects);
 		}
 
 		public QueryCondition Not(object value = null, bool asNull = false)
 		{
-			var qc = new QueryCondition(null, Alias);
+			var qc = new QueryCondition();
 			Conditions = qc;
 			Conditions.Parent = this;
+			qc.TableAlias = this;
 			return qc.Not(value, asNull);
 		}
 
 		public QueryCondition Eq(object value = null, bool asNull = false)
 		{
-			var qc = new QueryCondition(null, Alias);
+			var qc = new QueryCondition();
 			Conditions = qc;
+			qc.TableAlias = this;
 			Conditions.Parent = this;
 			return qc.Eq(value, asNull);
 		}
 
 		public QueryCondition Neq(object value = null, bool asNull = false)
 		{
-			var qc = new QueryCondition(null, Alias);
+			var qc = new QueryCondition();
 			Conditions = qc;
 			Conditions.Parent = this;
+			qc.TableAlias = this;
 			return qc.Neq(value, asNull);
 		}
 
 		public QueryCondition Gt(object value)
 		{
-			var qc = new QueryCondition(null, Alias);
+			var qc = new QueryCondition();
 			Conditions = qc;
 			Conditions.Parent = this;
+			qc.TableAlias = this;
 			return qc.Gt(value);
 		}
 
 		public QueryCondition Gte(object value)
 		{
-			var qc = new QueryCondition(null, Alias);
+			var qc = new QueryCondition();
 			Conditions = qc;
 			Conditions.Parent = this;
+			qc.TableAlias = this;
 			return qc.Gte(value);
 		}
 
 		public QueryCondition Lt(object value)
 		{
-			var qc = new QueryCondition(null, Alias);
+			var qc = new QueryCondition();
 			Conditions = qc;
 			Conditions.Parent = this;
+			qc.TableAlias = this;
 			return qc.Lt(value);
 		}
 
 		public QueryCondition Lte(object value)
 		{
-			var qc = new QueryCondition(null, Alias);
+			var qc = new QueryCondition();
 			Conditions = qc;
 			Conditions.Parent = this;
+			qc.TableAlias = this;
 			return qc.Lte(value);
 		}
 
 		public QueryCondition In(params object[] values)
 		{
-			var qc = new QueryCondition(null, Alias);
+			var qc = new QueryCondition();
 			Conditions = qc;
 			Conditions.Parent = this;
+			qc.TableAlias = this;
 			return qc.In(values);
 		}
 
 		public QueryCondition IsNull()
 		{
-			var qc = new QueryCondition(null, Alias);
+			var qc = new QueryCondition();
 			Conditions = qc;
 			Conditions.Parent = this;
+			qc.TableAlias = this;
 			return qc.IsNull();
 		}
 
 		public QueryCondition IsNotNull()
 		{
-			var qc = new QueryCondition(null, Alias);
+			var qc = new QueryCondition();
 			Conditions = qc;
 			Conditions.Parent = this;
+			qc.TableAlias = this;
 			return qc.IsNotNull();
 		}
 	}

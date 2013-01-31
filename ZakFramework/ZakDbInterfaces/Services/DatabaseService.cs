@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using ZakDb.Descriptors;
+using ZakDb.Queries;
 
 namespace ZakDb.Services
 {
@@ -31,7 +32,7 @@ namespace ZakDb.Services
 		public void AddFieldDescriptor(string descriptorName, FieldDescriptor fieldDescriptor)
 		{
 			descriptorName = descriptorName.ToLowerInvariant();
-			if(!_fieldsDescriptors.ContainsKey(descriptorName))_fieldsDescriptors.Add(descriptorName,fieldDescriptor);
+			if (!_fieldsDescriptors.ContainsKey(descriptorName)) _fieldsDescriptors.Add(descriptorName, fieldDescriptor);
 		}
 
 		public FieldDescriptor GetFieldDescriptor(string descriptorName)
@@ -69,6 +70,12 @@ namespace ZakDb.Services
 			var rdb = this[db];
 			if (rdb == null) return null;
 			return rdb[tableWithSchema];
+		}
+
+		public QueryTable GetQueryTable(string db, string tableWithSchema, string alias)
+		{
+			var td = GetTable(db, tableWithSchema);
+			return new QueryTable(td, alias);
 		}
 
 		public bool Verify(bool throwOnError = false)

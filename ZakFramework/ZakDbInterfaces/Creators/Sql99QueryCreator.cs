@@ -120,7 +120,7 @@ namespace ZakDb.Creators
 				var value = condition.ComparandValue;
 				return string.Format("{0} {1} {2}", condition.DotFieldName, compare, SetupObjecValueQueryAndObjects(value));
 			}
-			if (!string.IsNullOrEmpty(condition.ComparandFieldName))
+			if (condition.ComparandFieldName!=null)
 			{
 				return string.Format("{0} {1} {2}", condition.DotFieldName, compare, condition.ComparandFieldName);
 			}
@@ -153,7 +153,7 @@ namespace ZakDb.Creators
 				var value = condition.ComparandValue;
 				return string.Format("{0} = {1}", condition.DotFieldName,SetupObjecValueQueryAndObjects(value));
 			}
-			if (!string.IsNullOrEmpty(condition.ComparandFieldName))
+			if (condition.ComparandFieldName!=null)
 			{
 				return string.Format("{0} = {1}", condition.DotFieldName, condition.ComparandFieldName);
 			}

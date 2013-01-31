@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Threading;
 
 namespace ZakDb.Descriptors
 {
 	public class FieldDescriptor
 	{
+		private static int _comparer= 0;
+		private int _hash=0;
 		public FieldDescriptor()
 		{
 			AutoIncrement = false;
@@ -16,6 +19,7 @@ namespace ZakDb.Descriptors
 			Default = null;
 			Precision = -1;
 			IsNullable = true;
+			_hash = Interlocked.Increment(ref _comparer);
 		}
 
 		public bool IsNullable { get; set; }
@@ -33,34 +37,51 @@ namespace ZakDb.Descriptors
 
 		public static bool operator ==(FieldDescriptor a, FieldDescriptor b)
 		{
-			// If both are null, or both are same instance, return true.
-			if (ReferenceEquals(a, b))
-			{
-				return true;
-			}
-
-			// If one is null, but not both, return false.
-			if (((object)a == null) || ((object)b == null))
-			{
-				return false;
-			}
-
-			// Return true if the fields match:
-			return (a.StartAsNotSet == b.StartAsNotSet) &&
-			       (a.AutoIncrement == b.AutoIncrement) &&
-			       (a.DataType == b.DataType) &&
-			       (a.MinLength == b.MinLength) &&
-			       (a.MaxLength == b.MaxLength) &&
-			       (a.MinValue == b.MinValue) &&
-			       (a.MaxValue == b.MaxValue) &&
-			       (a.Default == b.Default) &&
-			       (a.Precision == b.Precision) &&
-			       (a.IsNullable == b.IsNullable);
+			return a.Equals(b);
 		}
 
 		public static bool operator !=(FieldDescriptor a, FieldDescriptor b)
 		{
 			return !(a == b);
+		}
+
+		public override bool Equals(object obj)
+		{
+			var fd = obj as FieldDescriptor;
+			if(fd == null) return false;
+			return base.Equals(fd);
+		}
+
+		private bool Equals(FieldDescriptor b)
+		{
+			// If both are null, or both are same instance, return true.
+			if (ReferenceEquals(this, b))
+			{
+				return true;
+			}
+
+			// If one is null, but not both, return false.
+			if ( ((object)b == null))
+			{
+				return false;
+			}
+
+			// Return true if the fields match:
+			return (StartAsNotSet == b.StartAsNotSet) &&
+						 (AutoIncrement == b.AutoIncrement) &&
+						 (DataType == b.DataType) &&
+						 (MinLength == b.MinLength) &&
+						 (MaxLength == b.MaxLength) &&
+						 (MinValue == b.MinValue) &&
+						 (MaxValue == b.MaxValue) &&
+						 (Default == b.Default) &&
+						 (Precision == b.Precision) &&
+						 (IsNullable == b.IsNullable);
+		}
+
+		public override int GetHashCode()
+		{
+			return _hash;
 		}
 	}
 }
