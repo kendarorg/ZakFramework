@@ -128,8 +128,10 @@ namespace ZakDb.Test
 		public void RegisterTableDescriptor()
 		{
 			var ds = new DatabaseService();
-			var mysql = new DatabaseDescriptor("UserManagement", new SqLiteDbDriver("Data Source=:memory:"));
-			var mongo = new DatabaseDescriptor("CommandQueue", new MongoDbDriver());
+			var mysql = new DatabaseDescriptor("UserManagement", new SqLiteDbDriver(
+				"Data Source=:memory:"));
+			var mongo = new DatabaseDescriptor("CommandQueue", new MongoDbDriver(
+				"mongodb://db1.example.net,db2.example.net:2500/?replicaSet=test"));
 
 			ds.RegisterDatabase(mysql);
 			ds.RegisterDatabase(mongo);

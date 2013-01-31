@@ -26,6 +26,7 @@ namespace ZakDb.Queries
 		string Lte { get; }
 		string Gt { get; }
 		string Gte { get; }
+		string In { get; }
 		bool Validate(TableDescriptor tableDescriptor, bool exceptionOnError = false);
 		T CreateTableQuery<T>(TableDescriptor tableDescriptor);
 		T CreateDatabaseQuery<T>(DatabaseDescriptor dbDescriptor);

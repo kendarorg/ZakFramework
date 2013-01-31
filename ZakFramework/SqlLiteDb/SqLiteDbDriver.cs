@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
 using System.Data.SQLite;
 using ZakDb.Descriptors;
 using ZakDb.Queries;
@@ -8,6 +9,9 @@ namespace SqlLiteDb
 {
 	public class SqLiteDbDriver : IDbDriver
 	{
+		[ThreadStatic] 
+		private static SQLiteConnection _connection;
+
 		public string ConnectionString { get; set; }
 		public IQueryCreator QueryCreator { get; set; }
 		public SqLiteDbDriver(string connectionString)
@@ -21,38 +25,74 @@ namespace SqlLiteDb
 			return QueryCreator.Validate(tableDescriptor, throwOnError);
 		}
 
-		public void CreateDb(string dbName)
+		private void CloseConnection()
 		{
-			SQLiteConnection connection = null;
 			try
 			{
-				connection = new SQLiteConnection(ConnectionString);
-				connection.Open();
-				var version = connection.ServerVersion;
+				if (_connection != null) _connection.Close();
+			}
+			catch (Exception)
+			{
+				
+			}
+		}
+
+		private void OpenConnection()
+		{
+			try
+			{
+				if (_connection == null)
+				{
+					_connection = new SQLiteConnection(ConnectionString);
+				}
+				if (_connection.State == ConnectionState.Closed)
+				{
+					_connection.Open();
+				}
+			}
+			catch (Exception)
+			{
+				CloseConnection();
+			}
+		}
+
+		public void CreateDb(string dbName)
+		{
+			
+			try
+			{
+				OpenConnection();
+				var version = _connection.ServerVersion;
 			}
 			finally
 			{
-				if (connection != null) connection.Close();
+				CloseConnection();
 			}
 		}
 
 		public void CreateTable(TableDescriptor table)
 		{
-			SQLiteConnection connection = null;
 			try
 			{
-				connection = new SQLiteConnection(ConnectionString);
-				connection.Open();
+				OpenConnection();
 				QueryCreator.Validate(table, true);
 				var createQuery = QueryCreator.CreateTableQuery<string>(table);
-				var cmd = new SQLiteCommand(createQuery, connection);
+				var cmd = new SQLiteCommand(createQuery, _connection);
 				cmd.ExecuteNonQuery();
 			}
-			finally
+			catch(Exception)
 			{
-				if (connection != null) connection.Close();
+				CloseConnection();
 			}
 		}
 
+		public bool SupportJoins { get { return true; } }
+		public bool SupportJson { get { return false; } }
+		public bool SupportKeyValueCollections { get { return true; } }
+
+		public void Dispose()
+		{
+			
+		}
 	}
 }

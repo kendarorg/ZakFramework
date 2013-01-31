@@ -32,6 +32,7 @@ namespace ZakDb.Creators
 		public virtual string Lte { get { return Pad("<="); } }
 		public virtual string Gt { get { return Pad(">"); } }
 		public virtual string Gte { get { return Pad(">="); } }
+		public virtual string In { get { return Pad("IN"); } }
 
 		public T CreateQuery<T>(QueryTable table)
 		{
@@ -65,8 +66,11 @@ namespace ZakDb.Creators
 			return (T)toret;
 		}
 
-		private IEnumerable<string> ParseCondition(QueryCondition condition)
+		private IEnumerable<string> ParseCondition(IQueryCondition qc)
 		{
+			var condition = qc  as QueryCondition;
+			if (condition == null) yield break;
+
 			switch (condition.Operation)
 			{
 				case (QueryOperation.Eq):
@@ -86,6 +90,9 @@ namespace ZakDb.Creators
 				case (QueryOperation.IsNull):
 				case (QueryOperation.IsNotNull):
 					yield return ParseConditionNullOrNot(condition, condition.Operation);
+					break;
+				case (QueryOperation.In):
+					yield return ParseConditionIn(condition, condition.Operation);
 					break;
 			}
 		}
@@ -111,7 +118,7 @@ namespace ZakDb.Creators
 			if (condition.IsComparandSet)
 			{
 				var value = condition.ComparandValue;
-				return string.Format("{0} {1} '{2}'", condition.DotFieldName, compare, value);
+				return string.Format("{0} {1} {2}", condition.DotFieldName, compare, SetupObjecValueQueryAndObjects(value));
 			}
 			if (!string.IsNullOrEmpty(condition.ComparandFieldName))
 			{
@@ -144,7 +151,7 @@ namespace ZakDb.Creators
 			if (condition.IsComparandSet)
 			{
 				var value = condition.ComparandValue;
-				return string.Format("{0} = '{1}'", condition.DotFieldName, value);
+				return string.Format("{0} = {1}", condition.DotFieldName,SetupObjecValueQueryAndObjects(value));
 			}
 			if (!string.IsNullOrEmpty(condition.ComparandFieldName))
 			{
@@ -153,6 +160,23 @@ namespace ZakDb.Creators
 			throw new NotImplementedException();
 		}
 
+
+		private string ParseConditionIn(QueryCondition condition, QueryOperation queryOperation)
+		{
+			var newList = new List<string>();
+			if (condition.SubQueries.Length == 1 && condition.SubQueries[0] is QueryTable)
+			{
+				return string.Format("IN {0}", ParseCondition(condition.SubQueries[0]));
+			}
+			else
+			{
+				foreach (var item in condition.SubQueries)
+				{
+					newList.AddRange(ParseCondition(item));
+				}
+				return string.Format("IN {0} {1} {2}", SubOpen, string.Join(",", newList), SubClose);
+			}
+		}
 
 		private bool ExceptionOnError(bool exceptionOnError, bool value = false)
 		{
@@ -191,5 +215,26 @@ namespace ZakDb.Creators
 
 		public abstract T CreateDatabaseQuery<T>(DatabaseDescriptor dbDescriptor);
 		public abstract T CreateDataTypeQuery<T>(FieldDescriptor descriptor, string fieldName);
+
+
+		private string SetupObjecValueQueryAndObjects(object value)
+		{
+			var td = value as QueryTable;
+			if (td == null)
+			{
+				return SetupObjecValue(value);
+			}
+			return string.Format("{0} {1} {2}", SubOpen, CreateQuery<string>(td), SubClose);
+		}
+
+		protected virtual string SetupObjecValue(object value)
+		{
+			if (value is string || value is Guid) return string.Format("'{0}'", value);
+			if (value is DateTime) return string.Format("'{0}'", ((DateTime) value).ToString("o"));
+			if (value is decimal) return string.Format("'{0}'", ((decimal) value).ToString("G"));
+			if (value is float) return string.Format("'{0}'", ((float) value).ToString("G"));
+			if (value is double) return string.Format("'{0}'", ((double) value).ToString("G"));
+			return value.ToString();
+		}
 	}
 }

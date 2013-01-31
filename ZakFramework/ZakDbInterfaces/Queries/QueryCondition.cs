@@ -9,7 +9,7 @@ namespace ZakDb.Queries
 		private bool _comparandSet;
 		private bool _shouldUseValue;
 		public QueryOperationType OperationType { get; private set; }
-		public QueryCondition[] SubQueries { get; private set; }
+		public IQueryCondition[] SubQueries { get; private set; }
 		public object ComparandValue { get; private set; }
 		public string FieldName { get; private set; }
 		public string FullFieldName { get { return string.Format("{0}_{1}", TableAlias, FieldName); } }
@@ -241,7 +241,16 @@ namespace ZakDb.Queries
 					{
 						foreach (var subQuery in SubQueries)
 						{
-							if (!subQuery.Validate(exceptionOnError)) return ExceptionOnError(exceptionOnError);
+							var qc = subQuery as QueryCondition;
+							var qt = subQuery as QueryTable;
+							if (qc != null)
+							{
+								if (!qc.Validate(exceptionOnError)) return ExceptionOnError(exceptionOnError);
+							}
+							else if (qt != null)
+							{
+								if (!qt.Validate(exceptionOnError)) return ExceptionOnError(exceptionOnError);
+							}
 						}
 					}
 					return ExceptionOnError(exceptionOnError,

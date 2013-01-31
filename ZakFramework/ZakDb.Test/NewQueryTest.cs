@@ -2,7 +2,6 @@
 using System;
 using NUnit.Framework;
 using SqlLiteDb;
-using ZakDb.Creators;
 using ZakDb.Queries;
 
 namespace ZakDb.Test
@@ -145,7 +144,7 @@ namespace ZakDb.Test
 			var creator = new SqLiteQueryCreator();
 			var expected = PurgeQuery(string.Format("SELECT {0}.Id AS {0}_Id,{0}.UserName AS {0}_UserName," +
 				"{0}.Password AS {0}_Password FROM Users AS {0}" +
-				" WHERE ( {0}.Id > '{1}' AND {0}.UserName < '{2}' )", table.Alias,id,userName));
+				" WHERE ( {0}.Id > {1} AND {0}.UserName < '{2}' )", table.Alias,id,userName));
 
 			table.AddField("Id");
 			table.AddField("UserName");
