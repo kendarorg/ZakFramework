@@ -1,15 +1,22 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
+using ZakDb.Descriptors;
+using ZakDb.Queries;
 
-namespace ZakDb.Queries
+namespace ZakDb.Creators
 {
-	public class Sql99QueryCreator
+	public abstract class Sql99QueryCreator : IQueryCreator
 	{
 		protected string Pad(string toPad)
 		{
 			return string.Format(" {0} ", toPad.Trim());
 		}
+
+		public Dictionary<Type, Action<TypeCreatorAction>> TypeCreatorAction { get; set; }
+		public Dictionary<Type, Action<TypeConversionAction>> FromDbConversionAction { get; set; }
+		public Dictionary<Type, Action<TypeConversionAction>> ToDbConversionAction { get; set; }
+
+		public virtual string CreateTable { get { return Pad("CREATE TABLE"); } }
 		public virtual string FieldAs { get { return Pad("AS"); } }
 		public virtual string TableAs { get { return Pad("AS"); } }
 		public virtual string Select { get { return Pad("SELECT"); } }
@@ -26,7 +33,7 @@ namespace ZakDb.Queries
 		public virtual string Gt { get { return Pad(">"); } }
 		public virtual string Gte { get { return Pad(">="); } }
 
-		public string CreateQuery(QueryTable table)
+		public T CreateQuery<T>(QueryTable table)
 		{
 #if DEBUG
 			if (!table.Validate(true)) throw new Exception("Invalid query!");
@@ -34,8 +41,8 @@ namespace ZakDb.Queries
 			if (!table.Validate()) throw new Exception("Invalid query!");
 #endif
 
-			var queryList = new List<string>();
-			queryList.Add(Select);
+			var queryList = new List<string> { Select };
+
 			var tomerge = new List<string>();
 			foreach (var field in table.Fields)
 			{
@@ -54,7 +61,8 @@ namespace ZakDb.Queries
 				}
 
 			}
-			return string.Join(" ", queryList);
+			object toret = string.Join(" ", queryList);
+			return (T)toret;
 		}
 
 		private IEnumerable<string> ParseCondition(QueryCondition condition)
@@ -85,7 +93,7 @@ namespace ZakDb.Queries
 		private string ParseConditionCompare(QueryCondition condition, QueryOperation queryOperation)
 		{
 			var compare = string.Empty;
-			switch (condition.Operation)
+			switch (queryOperation)
 			{
 				case (QueryOperation.Lt):
 					compare = Lt;
@@ -103,18 +111,18 @@ namespace ZakDb.Queries
 			if (condition.IsComparandSet)
 			{
 				var value = condition.ComparandValue;
-				return string.Format("{0} {1} '{2}'", condition.FullFieldName, compare, value);
+				return string.Format("{0} {1} '{2}'", condition.DotFieldName, compare, value);
 			}
 			if (!string.IsNullOrEmpty(condition.ComparandFieldName))
 			{
-				return string.Format("{0} {1} {2}", condition.FullFieldName,compare, condition.ComparandFieldName);
+				return string.Format("{0} {1} {2}", condition.DotFieldName, compare, condition.ComparandFieldName);
 			}
 			throw new NotImplementedException();
 		}
 
 		private string ParseConditionNullOrNot(QueryCondition condition, QueryOperation queryOperation)
 		{
-			return string.Format("{0} {1}", condition.FullFieldName, queryOperation == QueryOperation.IsNull?IsNull:IsNotNull);
+			return string.Format("{0} {1}", condition.DotFieldName, queryOperation == QueryOperation.IsNull ? IsNull : IsNotNull);
 		}
 
 		private IEnumerable<string> ParseConditionAndOr(QueryCondition condition, QueryOperation operation)
@@ -131,18 +139,57 @@ namespace ZakDb.Queries
 		{
 			if (condition.IsComparandNull)
 			{
-				return string.Format("{0} IS NULL", condition.FullFieldName);
+				return string.Format("{0} IS NULL", condition.DotFieldName);
 			}
 			if (condition.IsComparandSet)
 			{
 				var value = condition.ComparandValue;
-				return string.Format("{0} = '{1}'", condition.FullFieldName, value);
+				return string.Format("{0} = '{1}'", condition.DotFieldName, value);
 			}
-			if(!string.IsNullOrEmpty(condition.ComparandFieldName))
+			if (!string.IsNullOrEmpty(condition.ComparandFieldName))
 			{
-				return string.Format("{0} = {1}", condition.FullFieldName, condition.ComparandFieldName);
+				return string.Format("{0} = {1}", condition.DotFieldName, condition.ComparandFieldName);
 			}
 			throw new NotImplementedException();
 		}
+
+
+		private bool ExceptionOnError(bool exceptionOnError, bool value = false)
+		{
+			if (exceptionOnError && !value) throw new Exception();
+			return value;
+		}
+
+		public virtual bool Validate(TableDescriptor tableDescriptor,bool exceptionOnError = false)
+		{
+			int autoIncrementCount = 0;
+			foreach (var key in tableDescriptor.Keys)
+			{
+				if (key.AutoIncrement)
+				{
+					if (key.Fields.Length != 1) return ExceptionOnError(exceptionOnError);
+					autoIncrementCount++;
+				}
+			}
+			if (autoIncrementCount > 1) return ExceptionOnError(exceptionOnError);
+			return true;
+		}
+
+		public T CreateTableQuery<T>(TableDescriptor tableDescriptor)
+		{
+			var toret = string.Format("{0} {1} {2} ", CreateTable, tableDescriptor.FullName, SubOpen);
+			var fieldsList = new List<string>();
+			foreach (var field in tableDescriptor.Fields)
+			{
+				fieldsList.Add(CreateDataTypeQuery<string>(field.FieldDescriptor,field.FieldName));
+			}
+			toret += string.Join(",", fieldsList);
+			toret += SubClose;
+			object obj = toret;
+			return (T)obj;
+		}
+
+		public abstract T CreateDatabaseQuery<T>(DatabaseDescriptor dbDescriptor);
+		public abstract T CreateDataTypeQuery<T>(FieldDescriptor descriptor, string fieldName);
 	}
 }

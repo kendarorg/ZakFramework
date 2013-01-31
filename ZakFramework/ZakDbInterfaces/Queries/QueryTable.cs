@@ -10,7 +10,7 @@ namespace ZakDb.Queries
 		private static long _aliasIndex;
 		private List<JoinDescriptor> _joinTables;
 		private Dictionary<string, QueryField> _fields;
-
+		public IQueryable Parent { get; set; }
 		public List<JoinDescriptor> JoinTables
 		{
 			get
@@ -81,7 +81,9 @@ namespace ZakDb.Queries
 
 		public QueryTable Join(QueryTable table, QueryCondition condition)
 		{
-			return Join(new JoinDescriptor(table, condition));
+			var jqt = Join(new JoinDescriptor(table, condition));
+			jqt.Parent = this;
+			return jqt;
 		}
 
 		
@@ -95,6 +97,7 @@ namespace ZakDb.Queries
 		public QueryTable Query(QueryCondition conditions)
 		{
 			Conditions = conditions;
+			Conditions.Parent = this;
 			return this;
 		}
 
@@ -174,6 +177,7 @@ namespace ZakDb.Queries
 		{
 			var qc = new QueryCondition(null, Alias);
 			Conditions = qc;
+			Conditions.Parent = this;
 			return qc.And(querySelects);
 		}
 
@@ -181,6 +185,7 @@ namespace ZakDb.Queries
 		{
 			var qc = new QueryCondition(null, Alias);
 			Conditions = qc;
+			Conditions.Parent = this;
 			return qc.Or(querySelects);
 		}
 
@@ -188,6 +193,7 @@ namespace ZakDb.Queries
 		{
 			var qc = new QueryCondition(null, Alias);
 			Conditions = qc;
+			Conditions.Parent = this;
 			return qc.Not(value, asNull);
 		}
 
@@ -195,6 +201,7 @@ namespace ZakDb.Queries
 		{
 			var qc = new QueryCondition(null, Alias);
 			Conditions = qc;
+			Conditions.Parent = this;
 			return qc.Eq(value, asNull);
 		}
 
@@ -202,6 +209,7 @@ namespace ZakDb.Queries
 		{
 			var qc = new QueryCondition(null, Alias);
 			Conditions = qc;
+			Conditions.Parent = this;
 			return qc.Neq(value, asNull);
 		}
 
@@ -209,6 +217,7 @@ namespace ZakDb.Queries
 		{
 			var qc = new QueryCondition(null, Alias);
 			Conditions = qc;
+			Conditions.Parent = this;
 			return qc.Gt(value);
 		}
 
@@ -216,6 +225,7 @@ namespace ZakDb.Queries
 		{
 			var qc = new QueryCondition(null, Alias);
 			Conditions = qc;
+			Conditions.Parent = this;
 			return qc.Gte(value);
 		}
 
@@ -223,6 +233,7 @@ namespace ZakDb.Queries
 		{
 			var qc = new QueryCondition(null, Alias);
 			Conditions = qc;
+			Conditions.Parent = this;
 			return qc.Lt(value);
 		}
 
@@ -230,6 +241,7 @@ namespace ZakDb.Queries
 		{
 			var qc = new QueryCondition(null, Alias);
 			Conditions = qc;
+			Conditions.Parent = this;
 			return qc.Lte(value);
 		}
 
@@ -237,6 +249,7 @@ namespace ZakDb.Queries
 		{
 			var qc = new QueryCondition(null, Alias);
 			Conditions = qc;
+			Conditions.Parent = this;
 			return qc.In(values);
 		}
 
@@ -244,6 +257,7 @@ namespace ZakDb.Queries
 		{
 			var qc = new QueryCondition(null, Alias);
 			Conditions = qc;
+			Conditions.Parent = this;
 			return qc.IsNull();
 		}
 
@@ -251,6 +265,7 @@ namespace ZakDb.Queries
 		{
 			var qc = new QueryCondition(null, Alias);
 			Conditions = qc;
+			Conditions.Parent = this;
 			return qc.IsNotNull();
 		}
 	}

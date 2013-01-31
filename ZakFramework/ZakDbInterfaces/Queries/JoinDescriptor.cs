@@ -5,6 +5,7 @@ namespace ZakDb.Queries
 {
 	public class JoinDescriptor:IQueryable
 	{
+		public IQueryable Parent { get; set; }
 		public QueryTable JoinTable { get; private set; }
 		public QueryCondition JoinCondition { get; private set; }
 

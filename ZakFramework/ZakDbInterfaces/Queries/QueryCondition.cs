@@ -5,6 +5,7 @@ namespace ZakDb.Queries
 {
 	public class QueryCondition : IQueryable, IQueryCondition
 	{
+		public IQueryable Parent { get; set; }
 		private bool _comparandSet;
 		private bool _shouldUseValue;
 		public QueryOperationType OperationType { get; private set; }
@@ -12,6 +13,7 @@ namespace ZakDb.Queries
 		public object ComparandValue { get; private set; }
 		public string FieldName { get; private set; }
 		public string FullFieldName { get { return string.Format("{0}_{1}", TableAlias, FieldName); } }
+		public string DotFieldName { get { return string.Format("{0}.{1}", TableAlias, FieldName); } }
 		public string TableAlias { get; private set; }
 		public string ComparandFieldName { get; private set; }
 		public QueryOperation Operation { get; private set; }
@@ -53,6 +55,7 @@ namespace ZakDb.Queries
 		{
 			ComparandValue = comparandValue;
 			_comparandSet = true;
+			AssignParent(comparandValue);
 			return this;
 		}
 
@@ -60,6 +63,10 @@ namespace ZakDb.Queries
 		public QueryCondition And(params QueryCondition[] querySelects)
 		{
 			SubQueries = querySelects;
+			foreach (var cond in SubQueries)
+			{
+				AssignParent(cond);
+			}
 			Operation = QueryOperation.And;
 			OperationType = QueryOperationType.Multiple;
 			return this;
@@ -68,6 +75,10 @@ namespace ZakDb.Queries
 		public QueryCondition Or(params QueryCondition[] querySelects)
 		{
 			SubQueries = querySelects;
+			foreach (var cond in SubQueries)
+			{
+				AssignParent(cond);
+			}
 			Operation = QueryOperation.Or; 
 			OperationType = QueryOperationType.Multiple;
 			return this;
@@ -88,6 +99,7 @@ namespace ZakDb.Queries
 			Operation = QueryOperation.Not;
 			SetComparandEvenAsNullIfRequired(value, asNull);
 			OperationType = QueryOperationType.Dual;
+			AssignParent(value);
 			return this;
 		}
 
@@ -96,6 +108,7 @@ namespace ZakDb.Queries
 			Operation = QueryOperation.Eq;
 			SetComparandEvenAsNullIfRequired(value, asNull);
 			OperationType = QueryOperationType.Dual;
+			AssignParent(value);
 			return this;
 		}
 		public QueryCondition Neq(object value = null, bool asNull = false)
@@ -103,6 +116,7 @@ namespace ZakDb.Queries
 			Operation = QueryOperation.Neq;
 			SetComparandEvenAsNullIfRequired(value, asNull);
 			OperationType = QueryOperationType.Dual;
+			AssignParent(value);
 			return this;
 		}
 
@@ -112,6 +126,7 @@ namespace ZakDb.Queries
 			SetComparandIfNotNull(value);
 			OperationType = QueryOperationType.Dual;
 			_shouldUseValue = true;
+			AssignParent(value);
 			return this;
 		}
 
@@ -121,6 +136,7 @@ namespace ZakDb.Queries
 			SetComparandIfNotNull(value);
 			OperationType = QueryOperationType.Dual;
 			_shouldUseValue = true;
+			AssignParent(value);
 			return this;
 		}
 
@@ -130,6 +146,7 @@ namespace ZakDb.Queries
 			SetComparandIfNotNull(value);
 			OperationType = QueryOperationType.Dual;
 			_shouldUseValue = true;
+			AssignParent(value);
 			return this;
 		}
 
@@ -139,6 +156,7 @@ namespace ZakDb.Queries
 			SetComparandIfNotNull(value);
 			OperationType = QueryOperationType.Dual;
 			_shouldUseValue = true;
+			AssignParent(value);
 			return this;
 		}
 
@@ -148,6 +166,7 @@ namespace ZakDb.Queries
 			{
 				ComparandValue = value;
 				_comparandSet = true;
+				AssignParent(value);
 			}
 		}
 
@@ -158,10 +177,21 @@ namespace ZakDb.Queries
 			{
 				ComparandValue = values;
 				_comparandSet = true;
+				foreach (var item in values)
+				{
+					AssignParent(item);
+				}
 			}
 			OperationType = QueryOperationType.Dual;
 			_shouldUseValue = true;
 			return this;
+		}
+
+		private void AssignParent(object item)
+		{
+			if (item == null) return;
+			var cond = item as IQueryable;
+			if (cond != null) cond.Parent = this;
 		}
 
 		public QueryCondition IsNull()

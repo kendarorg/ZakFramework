@@ -1,6 +1,8 @@
 ﻿
 using System;
 using NUnit.Framework;
+using SqlLiteDb;
+using ZakDb.Creators;
 using ZakDb.Queries;
 
 namespace ZakDb.Test
@@ -18,10 +20,10 @@ namespace ZakDb.Test
 		{
 			var id = Guid.NewGuid();
 			var table = new QueryTable("Users");
-			var creator = new Sql99QueryCreator();
+			var creator = new SqLiteQueryCreator();
 			var expected = PurgeQuery(string.Format("SELECT {0}.Id AS {0}_Id,{0}.UserName AS {0}_UserName," +
 																	 "{0}.Password AS {0}_Password FROM Users AS {0}" +
-																	 " WHERE {0}_Id = '{1}'", table.Alias, id));
+																	 " WHERE {0}.Id = '{1}'", table.Alias, id));
 
 			table.AddField("Id");
 			table.AddField("UserName");
@@ -29,7 +31,7 @@ namespace ZakDb.Test
 
 			table.Eq(id).SetFieldName("Id");
 
-			var result = PurgeQuery(creator.CreateQuery(table));
+			var result = PurgeQuery(creator.CreateQuery<string>(table));
 			Assert.AreEqual(expected, result);
 		}
 
@@ -39,10 +41,10 @@ namespace ZakDb.Test
 			var id = Guid.NewGuid();
 			const string userName = "testUser";
 			var table = new QueryTable("Users");
-			var creator = new Sql99QueryCreator();
+			var creator = new SqLiteQueryCreator();
 			var expected = PurgeQuery(string.Format("SELECT {0}.Id AS {0}_Id,{0}.UserName AS {0}_UserName," +
 				"{0}.Password AS {0}_Password FROM Users AS {0} WHERE" +
-				"  ( {0}_UserName = '{1}' AND {0}_Id = '{2}' )", table.Alias, userName, id));
+				"  ( {0}.UserName = '{1}' AND {0}.Id = '{2}' )", table.Alias, userName, id));
 
 			table.AddField("Id");
 			table.AddField("UserName");
@@ -53,7 +55,7 @@ namespace ZakDb.Test
 				table.Eq(id).SetFieldName("Id")
 				);
 
-			var result = PurgeQuery(creator.CreateQuery(table));
+			var result = PurgeQuery(creator.CreateQuery<string>(table));
 			Assert.AreEqual(expected, result);
 		}
 
@@ -64,10 +66,10 @@ namespace ZakDb.Test
 			var id = Guid.NewGuid();
 			const string userName = "testUser";
 			var table = new QueryTable("Users");
-			var creator = new Sql99QueryCreator();
+			var creator = new SqLiteQueryCreator();
 			var expected = PurgeQuery(string.Format("SELECT {0}.Id AS {0}_Id,{0}.UserName AS {0}_UserName," +
 				"{0}.Password AS {0}_Password FROM Users AS {0} WHERE" +
-				"  ( {0}_UserName = '{1}' OR {0}_Id = '{2}' )", table.Alias, userName, id));
+				"  ( {0}.UserName = '{1}' OR {0}.Id = '{2}' )", table.Alias, userName, id));
 
 			table.AddField("Id");
 			table.AddField("UserName");
@@ -78,7 +80,7 @@ namespace ZakDb.Test
 				table.Eq(id).SetFieldName("Id")
 				);
 
-			var result = PurgeQuery(creator.CreateQuery(table));
+			var result = PurgeQuery(creator.CreateQuery<string>(table));
 			Assert.AreEqual(expected, result);
 		}
 
@@ -89,10 +91,10 @@ namespace ZakDb.Test
 			const string userName = "testUser";
 			const string firstName = "Doe";
 			var table = new QueryTable("Users");
-			var creator = new Sql99QueryCreator();
+			var creator = new SqLiteQueryCreator();
 			var expected = PurgeQuery(string.Format("SELECT {0}.Id AS {0}_Id,{0}.UserName AS {0}_UserName," +
 				"{0}.Password AS {0}_Password,{0}.FirstName AS {0}_FirstName FROM Users AS {0} WHERE" +
-				"  ( {0}_UserName = '{1}' AND ( {0}_Id = '{2}' OR {0}_FirstName = '{3}' ) )", 
+				"  ( {0}.UserName = '{1}' AND ( {0}.Id = '{2}' OR {0}.FirstName = '{3}' ) )", 
 				table.Alias, userName, id, firstName));
 
 			table.AddField("Id");
@@ -108,7 +110,7 @@ namespace ZakDb.Test
 				)
 			);
 
-			var result = PurgeQuery(creator.CreateQuery(table));
+			var result = PurgeQuery(creator.CreateQuery<string>(table));
 			Assert.AreEqual(expected, result);
 		}
 
@@ -116,10 +118,10 @@ namespace ZakDb.Test
 		public void ItShouldBePossibleToSetupNullNotNullQuery()
 		{
 			var table = new QueryTable("Users");
-			var creator = new Sql99QueryCreator();
+			var creator = new SqLiteQueryCreator();
 			var expected = PurgeQuery(string.Format("SELECT {0}.Id AS {0}_Id,{0}.UserName AS {0}_UserName," +
 																	 "{0}.Password AS {0}_Password FROM Users AS {0}" +
-																	 " WHERE ( {0}_Id IS NOT NULL AND {0}_UserName IS NULL )", table.Alias));
+																	 " WHERE ( {0}.Id IS NOT NULL AND {0}.UserName IS NULL )", table.Alias));
 
 			table.AddField("Id");
 			table.AddField("UserName");
@@ -130,7 +132,7 @@ namespace ZakDb.Test
 				table.IsNull().SetFieldName("UserName")
 				);
 
-			var result = PurgeQuery(creator.CreateQuery(table));
+			var result = PurgeQuery(creator.CreateQuery<string>(table));
 			Assert.AreEqual(expected, result);
 		}
 
@@ -140,10 +142,10 @@ namespace ZakDb.Test
 			const int id = 10;
 			const string userName = "test";
 			var table = new QueryTable("Users");
-			var creator = new Sql99QueryCreator();
+			var creator = new SqLiteQueryCreator();
 			var expected = PurgeQuery(string.Format("SELECT {0}.Id AS {0}_Id,{0}.UserName AS {0}_UserName," +
 				"{0}.Password AS {0}_Password FROM Users AS {0}" +
-				" WHERE ( {0}_Id > '{1}' AND {0}_UserName < '{2}' )", table.Alias,id,userName));
+				" WHERE ( {0}.Id > '{1}' AND {0}.UserName < '{2}' )", table.Alias,id,userName));
 
 			table.AddField("Id");
 			table.AddField("UserName");
@@ -154,7 +156,7 @@ namespace ZakDb.Test
 				table.Lt(userName).SetFieldName("UserName")
 				);
 
-			var result = PurgeQuery(creator.CreateQuery(table));
+			var result = PurgeQuery(creator.CreateQuery<string>(table));
 			Assert.AreEqual(expected, result);
 		}
 	}
